@@ -205,9 +205,9 @@ export function WaGenerator() {
               </Button>
             </div>
 
-            <div className="space-y-3 rounded-lg border border-border bg-background p-4">
-              <h3 className="text-sm font-semibold">QR code</h3>
-              <div className="flex justify-center">
+            <h3 className="text-sm font-semibold">QR code</h3>
+
+            <div className="flex justify-center rounded-md border border-border bg-background p-4">
                 {qrDataUrl ? (
                   <img
                     src={qrDataUrl}
@@ -219,8 +219,9 @@ export function WaGenerator() {
                 ) : (
                   <div className="h-56 w-56 animate-pulse rounded-md bg-muted" />
                 )}
-              </div>
-              <div className="grid grid-cols-2 gap-2">
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
                 <Button
                   type="button"
                   variant="outline"
@@ -240,7 +241,6 @@ export function WaGenerator() {
                 >
                   <Download className="h-4 w-4" />
                 </Button>
-              </div>
             </div>
           </CardContent>
         </Card>
