@@ -10,6 +10,7 @@ export type WaHistoryItem = {
 
 const KEY = "wa-link-history";
 const MAX = 10;
+const EVT = "wa-link-history-change";
 
 function read(): WaHistoryItem[] {
   if (typeof window === "undefined") return [];
@@ -28,12 +29,20 @@ export function useWaHistory() {
 
   useEffect(() => {
     setItems(read());
+    const sync = () => setItems(read());
+    window.addEventListener(EVT, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(EVT, sync);
+      window.removeEventListener("storage", sync);
+    };
   }, []);
 
   const persist = useCallback((next: WaHistoryItem[]) => {
     setItems(next);
     try {
       window.localStorage.setItem(KEY, JSON.stringify(next));
+      window.dispatchEvent(new Event(EVT));
     } catch {
       // ignore quota errors
     }
