@@ -51,7 +51,7 @@ function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-10 border-b border-primary/20 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3 sm:px-6">
           <h1 className="font-display text-2xl font-black uppercase tracking-tight sm:text-[28px]">
@@ -161,7 +161,7 @@ function Index() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-xl px-4 pb-12 pt-5 sm:px-6 sm:pt-8">
+      <main className="mx-auto w-full max-w-xl flex-1 px-4 pb-12 pt-5 sm:px-6 sm:pt-8">
         <WaGenerator />
       </main>
 
