@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, ExternalLink, Share2, Download } from "lucide-react";
+import { Copy, ExternalLink, Download } from "lucide-react";
 import { useWaHistory } from "@/hooks/use-wa-history";
 
 const MAX_MESSAGE = 1000;
@@ -95,23 +95,6 @@ export function WaGenerator() {
     }
   }
 
-  async function handleShare() {
-    if (!result) return;
-    if (typeof navigator !== "undefined" && "share" in navigator) {
-      try {
-        await navigator.share({
-          title: "Hubungi saya di WhatsApp",
-          text: "Klik link berikut untuk chat di WhatsApp:",
-          url: result.url,
-        });
-        return;
-      } catch {
-        // user cancelled
-      }
-    }
-    copyText(result.url, "Link");
-  }
-
   function handleDownloadQr() {
     if (!qrDataUrl || !result) return;
     const a = document.createElement("a");
@@ -193,15 +176,13 @@ export function WaGenerator() {
       {result && (
         <Card ref={resultRef} className="border-primary/40 bg-primary/5 shadow-sm">
           <CardContent className="space-y-4 p-4 sm:p-6">
-            <h2 className="font-display text-xl font-black uppercase tracking-tight">
-              Link Kamu
-            </h2>
+            <h2 className="text-sm font-semibold">Link kamu</h2>
 
             <div className="min-w-0 break-all rounded-md border border-border bg-background px-3 py-2 text-sm">
               {result.url}
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <Button
                 type="button"
                 variant="outline"
@@ -210,15 +191,6 @@ export function WaGenerator() {
                 aria-label="Salin link"
               >
                 <Copy className="h-4 w-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11"
-                onClick={handleShare}
-                aria-label="Bagikan"
-              >
-                <Share2 className="h-4 w-4" />
               </Button>
               <Button
                 type="button"
@@ -234,9 +206,7 @@ export function WaGenerator() {
             </div>
 
             <div className="space-y-3 rounded-lg border border-border bg-background p-4">
-              <h3 className="font-display text-xl font-black uppercase tracking-tight">
-                QR Code
-              </h3>
+              <h3 className="text-sm font-semibold">QR code</h3>
               <div className="flex justify-center">
                 {qrDataUrl ? (
                   <img
@@ -250,16 +220,27 @@ export function WaGenerator() {
                   <div className="h-56 w-56 animate-pulse rounded-md bg-muted" />
                 )}
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11 w-full"
-                onClick={handleDownloadQr}
-                disabled={!qrDataUrl}
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Unduh PNG
-              </Button>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-11"
+                  onClick={() => copyText(result.url, "Link")}
+                  aria-label="Salin link"
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-11"
+                  onClick={handleDownloadQr}
+                  disabled={!qrDataUrl}
+                  aria-label="Unduh QR"
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
