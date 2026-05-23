@@ -41,7 +41,7 @@ export function WaGenerator() {
     QRCode.toDataURL(result.url, {
       width: 512,
       margin: 2,
-      color: { dark: "#128C7E", light: "#FFFFFF" },
+      color: { dark: "#000000", light: "#FFFFFF" },
     })
       .then((url) => {
         if (!cancelled) setQrDataUrl(url);
@@ -193,43 +193,50 @@ export function WaGenerator() {
       {result && (
         <Card ref={resultRef} className="border-primary/40 bg-primary/5 shadow-sm">
           <CardContent className="space-y-4 p-4 sm:p-6">
-            <div>
-              <h2 className="text-base font-semibold">Link kamu siap</h2>
-              <p className="text-xs text-muted-foreground">
-                Salin link di bawah, lalu tempel di bio sosmed atau pesan.
-              </p>
+            <h2 className="font-display text-xl font-black uppercase tracking-tight">
+              Link Kamu
+            </h2>
+
+            <div className="min-w-0 break-all rounded-md border border-border bg-background px-3 py-2 text-sm">
+              {result.url}
             </div>
 
-            <div className="flex items-stretch gap-2">
-              <div className="min-w-0 flex-1 break-all rounded-md border border-border bg-background px-3 py-2 text-sm">
-                {result.url}
-              </div>
+            <div className="grid grid-cols-3 gap-2">
               <Button
                 type="button"
-                size="icon"
-                className="h-auto shrink-0"
+                variant="outline"
+                className="h-11"
                 onClick={() => copyText(result.url, "Link")}
                 aria-label="Salin link"
               >
                 <Copy className="h-4 w-4" />
               </Button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <Button type="button" variant="outline" className="h-11" onClick={handleShare}>
-                <Share2 className="mr-2 h-4 w-4" />
-                Bagikan
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11"
+                onClick={handleShare}
+                aria-label="Bagikan"
+              >
+                <Share2 className="h-4 w-4" />
               </Button>
-              <Button type="button" variant="outline" className="h-11" asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11"
+                asChild
+                aria-label="Buka di WhatsApp"
+              >
                 <a href={result.url} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  Buka
+                  <ExternalLink className="h-4 w-4" />
                 </a>
               </Button>
             </div>
 
             <div className="space-y-3 rounded-lg border border-border bg-background p-4">
-              <h3 className="text-sm font-semibold">QR Code</h3>
+              <h3 className="font-display text-xl font-black uppercase tracking-tight">
+                QR Code
+              </h3>
               <div className="flex justify-center">
                 {qrDataUrl ? (
                   <img
@@ -253,9 +260,6 @@ export function WaGenerator() {
                 <Download className="mr-2 h-4 w-4" />
                 Unduh PNG
               </Button>
-              <p className="text-center text-xs text-muted-foreground">
-                Scan dengan kamera HP untuk langsung chat.
-              </p>
             </div>
           </CardContent>
         </Card>
