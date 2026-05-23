@@ -54,9 +54,8 @@ function Index() {
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-10 border-b border-primary/20 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3 sm:px-6">
-          <h1 className="text-2xl font-extrabold tracking-tight sm:text-[28px]">
-            <span className="text-primary">WA</span>link
-            <span className="text-primary">Q</span>
+          <h1 className="font-display text-2xl font-black uppercase tracking-tight sm:text-[28px]">
+            <span className="text-primary">WA</span>link<span className="text-primary">Q</span>
           </h1>
           <div className="flex items-center gap-1">
             <Dialog open={histOpen} onOpenChange={setHistOpen}>
@@ -67,7 +66,9 @@ function Index() {
               </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
-                  <DialogTitle>Riwayat link</DialogTitle>
+                  <DialogTitle className="font-display text-xl font-black uppercase tracking-tight">
+                    Riwayat
+                  </DialogTitle>
                 </DialogHeader>
                 {items.length === 0 ? (
                   <p className="py-6 text-center text-sm text-muted-foreground">
@@ -134,7 +135,9 @@ function Index() {
               </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
-                  <DialogTitle>Cara pakai</DialogTitle>
+                  <DialogTitle className="font-display text-xl font-black uppercase tracking-tight">
+                    Cara Pakai
+                  </DialogTitle>
                 </DialogHeader>
                 <ol className="space-y-3 text-sm text-muted-foreground">
                   <li>
