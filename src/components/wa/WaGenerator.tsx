@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, ExternalLink, Download } from "lucide-react";
+import { Copy, ExternalLink, Download, Check, X } from "lucide-react";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
 
@@ -18,6 +18,13 @@ function cleanPhone(raw: string) {
   while (p.startsWith("0")) p = p.slice(1);
   if (p.startsWith(DIAL)) p = p.slice(DIAL.length);
   return p;
+}
+
+function getPhoneValidationState(raw: string): "empty" | "valid" | "invalid" {
+  if (!raw.trim()) return "empty";
+  const cleaned = cleanPhone(raw);
+  if (cleaned.length >= 6 && cleaned.length <= 14) return "valid";
+  return "invalid";
 }
 
 export function WaGenerator() {
@@ -33,6 +40,7 @@ export function WaGenerator() {
   const clearDraft = useWaDraft(phone, message, true);
 
   const charsLeft = MAX_MESSAGE - message.length;
+  const phoneState = getPhoneValidationState(phone);
 
   useEffect(() => {
     if (!result) {
@@ -121,16 +129,36 @@ export function WaGenerator() {
                 <div className="flex h-12 shrink-0 items-center justify-center rounded-md border border-input bg-muted px-3 text-sm font-semibold text-foreground">
                   +62
                 </div>
-                <Input
-                  id="phone"
-                  inputMode="numeric"
-                  autoComplete="tel"
-                  placeholder="81234567890"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="h-12 flex-1 text-base"
-                  aria-invalid={!!error}
-                />
+                <div className="relative flex-1">
+                  <Input
+                    id="phone"
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    placeholder="81234567890"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className={`h-12 w-full pr-10 text-base transition-colors ${
+                      phoneState === "valid"
+                        ? "border-green-500 focus-visible:ring-green-500/40"
+                        : phoneState === "invalid"
+                          ? "border-destructive focus-visible:ring-destructive/40"
+                          : ""
+                    }`}
+                    aria-invalid={!!error || phoneState === "invalid"}
+                  />
+                  {phoneState !== "empty" && (
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-y-0 right-3 flex items-center"
+                    >
+                      {phoneState === "valid" ? (
+                        <Check className="h-5 w-5 text-green-500" />
+                      ) : (
+                        <X className="h-5 w-5 text-destructive" />
+                      )}
+                    </span>
+                  )}
+                </div>
               </div>
               <p className="text-xs text-muted-foreground">
                 Tanpa angka 0 di depan. Contoh: 81234567890.
