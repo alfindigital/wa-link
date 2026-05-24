@@ -1,25 +1,40 @@
-## Ringkasan
-Menambahkan auto-save draft (nomor + pesan) ke localStorage supaya tidak hilang saat refresh atau keluar aplikasi.
+## Rencana: Validasi Real-time Input Nomor WhatsApp
 
-## Perubahan
+### Tujuan
+Memberikan feedback visual instan saat pengguna mengetik nomor WhatsApp — border hijau + ikon centang jika valid, border merah + ikon silang jika tidak valid.
 
-### 1. Hook baru: `src/hooks/use-wa-draft.ts`
-- Key: `wa-link-draft`
-- Simpan: `{ phone: string; message: string; savedAt: number }`
-- Debounce 500 ms sebelum write ke localStorage (hindari write tiap keystroke)
-- Fungsi: `load()` → baca draft, `save(phone, message)` → debounced write, `clear()` → hapus draft
-- Pattern sama seperti `use-wa-history.ts` (read/write safe + event sync jika perlu)
+### Perubahan pada `src/components/wa/WaGenerator.tsx`
 
-### 2. Modifikasi: `src/components/wa/WaGenerator.tsx`
-- Saat mount, panggil `load()`. Kalau ada draft dan tidak ada `result`, isi `phone` dan `message` dari draft.
-- `useEffect` debounced (500 ms) saat `phone` atau `message` berubah → panggil `save(phone, message)`.
-- Saat `handleGenerate` sukses, panggil `clear()` supaya draft bersih setelah link jadi.
-- Saat user mengosongkan kedua field, panggil `clear()`.
+1. **Tambah import ikon**
+   - Impor `Check` dan `X` dari `lucide-react`.
 
-### 3. Batasan
-- Tidak menyimpan error atau result state — hanya input fields.
-- Draft dianggap expired setelah 7 hari (abaikan kalau `savedAt` terlalu lama).
-- Tidak mengubah layout, styling, atau flow lain.
+2. **Buat fungsi validasi real-time**
+   - Fungsi baru `getPhoneValidationState(raw: string): 'empty' | 'valid' | 'invalid'`.
+   - `'empty'` → input kosong (tidak menampilkan indikator).
+   - `'valid'` → `cleanPhone(raw).length >= 6 && <= 14`.
+   - `'invalid'` → sisanya (ada isian tapi tidak memenuhi syarat).
 
-## Hasil
-User mengetik nomor/pesan → refresh halaman → kembali ke halaman → nomor & pesan masih ada. Setelah klik "Buat Link", draft dihapus otomatis.
+3. **Update tampilan input nomor**
+   - Bungkus area input dalam `relative` container untuk menempatkan ikon di dalam kanan input.
+   - Border input berubah dinamis:
+     - `'valid'` → `border-green-500` (atau token semantic `text-green-500` jika tersedia, fallback Tailwind util).
+     - `'invalid'` → `border-destructive`.
+   - Ikon di kanan input:
+     - `'valid'` → `<Check className="h-5 w-5 text-green-500" />`
+     - `'invalid'` → `<X className="h-5 w-5 text-destructive" />`
+     - `'empty'` → tidak ada ikon.
+   - Ikon diberi animasi subtle (mis. fade-in via transition-opacity) agar tidak patah mata.
+
+4. **Pertahankan perilaku error submit**
+   - State `error` tetap dipakai saat tombol "Buat Link" ditekan dan nomor benar-benar invalid.
+   - Pesan error submit tetap muncul di bawah input seperti sekarang.
+   - Validasi real-time bersifat kosmetik; validasi bisnis tetap di `handleGenerate`.
+
+5. **Aksesibilitas**
+   - Ikon diberi `aria-hidden="true"` karena hanya dekoratif.
+   - Border berubah warna memberikan isyarat visual; tidak mengganti `aria-invalid` yang tetap diatur pada saat submit.
+
+### Catatan teknis
+- Hanya mengubah 1 file: `src/components/wa/WaGenerator.tsx`.
+- Tidak memerlukan instalasi package baru (`Check` dan `X` sudah tersedia di `lucide-react`).
+- Tidak memengaruhi fitur draft auto-save atau riwayat yang sudah ada.
