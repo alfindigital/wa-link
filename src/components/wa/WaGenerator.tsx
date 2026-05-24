@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Copy, ExternalLink, Download } from "lucide-react";
 import { useWaHistory } from "@/hooks/use-wa-history";
+import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
 
 const MAX_MESSAGE = 1000;
 const DIAL = "62";
@@ -20,8 +21,8 @@ function cleanPhone(raw: string) {
 }
 
 export function WaGenerator() {
-  const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
+  const [phone, setPhone] = useState(() => loadDraft()?.phone ?? "");
+  const [message, setMessage] = useState(() => loadDraft()?.message ?? "");
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ url: string; phone: string; message: string } | null>(
     null,
@@ -29,6 +30,7 @@ export function WaGenerator() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
   const { add } = useWaHistory();
+  const clearDraft = useWaDraft(phone, message, true);
 
   const charsLeft = MAX_MESSAGE - message.length;
 
@@ -71,6 +73,7 @@ export function WaGenerator() {
     const next = { url, phone: fullPhone, message: trimmed };
     setResult(next);
     add(next);
+    clearDraft();
     setTimeout(() => {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
