@@ -32,7 +32,9 @@ export const Route = createFileRoute("/")({
           "Buat link WhatsApp dengan pesan siap kirim + QR code. Gratis dan tanpa login.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://wa-linkq.lovable.app/" },
     ],
+    links: [{ rel: "canonical", href: "https://wa-linkq.lovable.app/" }],
   }),
 });
 
