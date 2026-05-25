@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wa-linkq.lovable.app/sitemap.xml
