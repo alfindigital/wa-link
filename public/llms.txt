@@ -1,0 +1,9 @@
+# WAlinkQ
+
+> Buat link WhatsApp (wa.me) lengkap dengan pesan otomatis dan QR code. Gratis, tanpa daftar, Bahasa Indonesia.
+
+WAlinkQ adalah generator link WhatsApp berbasis web. Pengguna memasukkan nomor dan pesan, lalu mendapatkan link wa.me siap dibagikan beserta QR code untuk ditempel di bio sosial media atau materi promosi.
+
+## Pages
+
+- [Beranda](/): Generator link WhatsApp + QR code, riwayat tersimpan di perangkat, dan panduan cara pakai.
