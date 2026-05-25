@@ -116,6 +116,26 @@ export function WaGenerator() {
     document.body.removeChild(a);
   }
 
+  async function handleShare() {
+    if (!result) return;
+    if (navigator.vibrate) navigator.vibrate(40);
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Link WhatsApp",
+          text: result.message || "Halo!",
+          url: result.url,
+        });
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          toast.error("Gagal membagikan");
+        }
+      }
+    } else {
+      copyText(result.url, "Link");
+    }
+  }
+
   return (
     <div className="space-y-5">
       <Card className="border-border/60 shadow-sm">
