@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, ExternalLink, Download, Check, X } from "lucide-react";
+import { Copy, ExternalLink, Download, Check, X, Share2 } from "lucide-react";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
 
@@ -114,6 +114,26 @@ export function WaGenerator() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  }
+
+  async function handleShare() {
+    if (!result) return;
+    if (navigator.vibrate) navigator.vibrate(40);
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Link WhatsApp",
+          text: result.message || "Halo!",
+          url: result.url,
+        });
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          toast.error("Gagal membagikan");
+        }
+      }
+    } else {
+      copyText(result.url, "Link");
+    }
   }
 
   return (
@@ -275,6 +295,36 @@ export function WaGenerator() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {result && (
+        <>
+          <div className="h-[calc(56px+env(safe-area-inset-bottom,0px)+12px)] sm:hidden" />
+          <div className="fixed bottom-0 left-1/2 z-20 w-full max-w-xl -translate-x-1/2 sm:hidden">
+            <div className="flex items-center gap-2 border-t border-border/60 bg-background/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-sm shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 flex-1 gap-2 text-sm font-semibold"
+                onClick={() => {
+                  if (navigator.vibrate) navigator.vibrate(40);
+                  copyText(result.url, "Link");
+                }}
+              >
+                <Copy className="h-4 w-4" />
+                Salin
+              </Button>
+              <Button
+                type="button"
+                className="h-11 flex-1 gap-2 text-sm font-semibold"
+                onClick={handleShare}
+              >
+                <Share2 className="h-4 w-4" />
+                Bagikan
+              </Button>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
