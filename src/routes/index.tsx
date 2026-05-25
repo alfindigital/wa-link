@@ -58,6 +58,7 @@ function Index() {
         <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3 sm:px-6">
           <h1 className="font-display text-2xl font-black uppercase tracking-tight sm:text-[28px]">
             <span className="text-primary">WA</span>link<span className="text-primary">Q</span>
+            <span className="sr-only"> — Buat Link WhatsApp Gratis</span>
           </h1>
           <div className="flex items-center gap-1">
             <Dialog open={histOpen} onOpenChange={setHistOpen}>
