@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { History, HelpCircle, Copy, Trash2, ExternalLink } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
+import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
@@ -79,44 +80,51 @@ function Index() {
                   </p>
                 ) : (
                   <>
+                    <p className="px-1 pb-2 text-[11px] text-muted-foreground sm:hidden">
+                      Tips: geser ke kiri untuk menghapus.
+                    </p>
                     <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
                       {items.map((it) => (
-                        <li key={it.id} className="flex items-center gap-2 py-3">
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium">+{it.phone}</p>
-                            <p className="truncate text-xs text-muted-foreground">
-                              {it.message || <span className="italic">Tanpa pesan</span>}
-                            </p>
-                          </div>
-                          <Button
-                            type="button"
-                            size="icon"
-                            variant="ghost"
-                            onClick={() => copyText(it.url)}
-                            aria-label="Salin link"
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            size="icon"
-                            variant="ghost"
-                            asChild
-                            aria-label="Buka link"
-                          >
-                            <a href={it.url} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="h-4 w-4" />
-                            </a>
-                          </Button>
-                          <Button
-                            type="button"
-                            size="icon"
-                            variant="ghost"
-                            onClick={() => remove(it.id)}
-                            aria-label="Hapus"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                        <li key={it.id}>
+                          <SwipeToDelete onDelete={() => remove(it.id)}>
+                            <div className="flex items-center gap-2 py-3">
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate text-sm font-medium">+{it.phone}</p>
+                                <p className="truncate text-xs text-muted-foreground">
+                                  {it.message || <span className="italic">Tanpa pesan</span>}
+                                </p>
+                              </div>
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => copyText(it.url)}
+                                aria-label="Salin link"
+                              >
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                asChild
+                                aria-label="Buka link"
+                              >
+                                <a href={it.url} target="_blank" rel="noopener noreferrer">
+                                  <ExternalLink className="h-4 w-4" />
+                                </a>
+                              </Button>
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => remove(it.id)}
+                                aria-label="Hapus"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </SwipeToDelete>
                         </li>
                       ))}
                     </ul>
