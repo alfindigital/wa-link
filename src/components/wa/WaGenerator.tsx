@@ -301,7 +301,7 @@ export function WaGenerator() {
         <>
           <div className="h-[calc(56px+env(safe-area-inset-bottom,0px)+12px)] sm:hidden" />
           <div className="fixed bottom-0 left-1/2 z-20 w-full max-w-xl -translate-x-1/2 sm:hidden">
-            <div className="flex items-center gap-2 border-t border-border/60 bg-background/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-sm shadow-[0_-8px_24px_rgba(0,0, clinically0,0.06)]">
+            <div className="flex items-center gap-2 border-t border-border/60 bg-background/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-sm shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
               <Button
                 type="button"
                 variant="outline"
