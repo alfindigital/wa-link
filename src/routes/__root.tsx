@@ -72,14 +72,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "WAlinkQ — Buat Link WhatsApp Gratis" },
+      {
+        name: "description",
+        content:
+          "Buat link WhatsApp (wa.me) dengan pesan otomatis dan QR code. Gratis, tanpa daftar, Bahasa Indonesia.",
+      },
+      { property: "og:title", content: "WAlinkQ — Buat Link WhatsApp Gratis" },
+      {
+        property: "og:description",
+        content:
+          "Buat link WhatsApp dengan pesan siap kirim + QR code. Gratis dan tanpa login.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "WAlinkQ" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
