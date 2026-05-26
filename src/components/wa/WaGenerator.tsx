@@ -94,6 +94,7 @@ export function WaGenerator() {
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      if (result) add(result);
       toast.success("Berhasil disalin", {
         description: `${label} sudah tersimpan di papan klip.`,
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
@@ -107,6 +108,7 @@ export function WaGenerator() {
         document.execCommand("copy");
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+        if (result) add(result);
         toast.success("Berhasil disalin", {
           description: `${label} sudah tersimpan di papan klip.`,
           icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
@@ -141,6 +143,7 @@ export function WaGenerator() {
           text: result.message || "Halo!",
           url: result.url,
         });
+        add(result);
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
           toast.error("Gagal membagikan");
