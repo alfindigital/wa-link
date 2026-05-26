@@ -93,7 +93,7 @@ export function WaGenerator() {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      setTimeout(() => setCopied(false), 200 0);
+      setTimeout(() => setCopied(false), 2000);
       toast.success("Berhasil disalin", {
         description: `${label} sudah tersimpan di papan klip.`,
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
@@ -106,7 +106,7 @@ export function WaGenerator() {
       try {
         document.execCommand("copy");
         setCopied(true);
-        setTimeout(() => setCopied(false), 200 0);
+        setTimeout(() => setCopied(false), 2000);
         toast.success("Berhasil disalin", {
           description: `${label} sudah tersimpan di papan klip.`,
           icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
