@@ -36,6 +36,7 @@ export function WaGenerator() {
     null,
   );
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const { add } = useWaHistory();
   const clearDraft = useWaDraft(phone, message, true);
