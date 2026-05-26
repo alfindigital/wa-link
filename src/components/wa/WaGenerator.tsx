@@ -21,6 +21,14 @@ function cleanPhone(raw: string) {
   return p;
 }
 
+function formatPhoneDisplay(digits: string) {
+  // Group as 3-4-4-... e.g. 812 3456 7890
+  const d = digits.slice(0, 14);
+  if (d.length <= 3) return d;
+  if (d.length <= 7) return `${d.slice(0, 3)} ${d.slice(3)}`;
+  return `${d.slice(0, 3)} ${d.slice(3, 7)} ${d.slice(7)}`;
+}
+
 function getPhoneValidationState(raw: string): "empty" | "valid" | "invalid" {
   if (!raw.trim()) return "empty";
   const cleaned = cleanPhone(raw);
@@ -29,7 +37,7 @@ function getPhoneValidationState(raw: string): "empty" | "valid" | "invalid" {
 }
 
 export function WaGenerator() {
-  const [phone, setPhone] = useState(() => loadDraft()?.phone ?? "");
+  const [phone, setPhone] = useState(() => cleanPhone(loadDraft()?.phone ?? ""));
   const [message, setMessage] = useState(() => loadDraft()?.message ?? "");
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ url: string; phone: string; message: string } | null>(
@@ -43,6 +51,20 @@ export function WaGenerator() {
 
   const charsLeft = MAX_MESSAGE - message.length;
   const phoneState = getPhoneValidationState(phone);
+  const phoneDisplay = formatPhoneDisplay(phone);
+
+  function handlePhoneChange(raw: string) {
+    // Auto-strip: spaces, dashes, parentheses, "+", leading 0, leading 62
+    const cleaned = cleanPhone(raw);
+    setPhone(cleaned.slice(0, 14));
+    if (error) setError(null);
+  }
+
+  function handlePhonePaste(e: React.ClipboardEvent<HTMLInputElement>) {
+    e.preventDefault();
+    const text = e.clipboardData.getData("text");
+    handlePhoneChange(text);
+  }
 
   useEffect(() => {
     if (!result) {
@@ -170,11 +192,13 @@ export function WaGenerator() {
                 <div className="relative flex-1">
                   <Input
                     id="phone"
-                    inputMode="numeric"
+                    inputMode="tel"
                     autoComplete="tel"
                     placeholder="81234567890"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    value={phoneDisplay}
+                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    onPaste={handlePhonePaste}
+                    maxLength={16}
                     className={`h-12 w-full pr-10 text-base transition-colors ${
                       phoneState === "valid"
                         ? "border-green-500 focus-visible:ring-green-500/40"
