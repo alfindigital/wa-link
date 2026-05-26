@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { History, HelpCircle, Copy, Trash2, ExternalLink } from "lucide-react";
+import { History, HelpCircle, Copy, Trash2, ExternalLink, CheckCircle2, XCircle } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
 import { Toaster } from "@/components/ui/sonner";
