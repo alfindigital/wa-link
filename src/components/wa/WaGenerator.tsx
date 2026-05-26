@@ -316,6 +316,14 @@ export function WaGenerator() {
         <>
           <div className="h-[calc(56px+env(safe-area-inset-bottom,0px)+12px)] sm:hidden" />
           <div className="fixed bottom-0 left-1/2 z-20 w-full max-w-xl -translate-x-1/2 sm:hidden">
+            <div
+              className={`mx-auto mb-1 flex w-fit items-center gap-1.5 rounded-full bg-green-500 px-3 py-1 text-xs font-semibold text-white shadow-sm transition-all duration-300 ${
+                copied ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+              }`}
+            >
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Link disalin
+            </div>
             <div className="flex items-center gap-2 border-t border-border/60 bg-background/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-sm shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
               <Button
                 type="button"
