@@ -92,7 +92,12 @@ export function WaGenerator() {
   async function copyText(text: string, label = "Link") {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success(`${label} disalin`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 200 0);
+      toast.success("Berhasil disalin", {
+        description: `${label} sudah tersimpan di papan klip.`,
+        icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
+      });
     } catch {
       const ta = document.createElement("textarea");
       ta.value = text;
@@ -100,9 +105,17 @@ export function WaGenerator() {
       ta.select();
       try {
         document.execCommand("copy");
-        toast.success(`${label} disalin`);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 200 0);
+        toast.success("Berhasil disalin", {
+          description: `${label} sudah tersimpan di papan klip.`,
+          icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
+        });
       } catch {
-        toast.error("Gagal menyalin");
+        toast.error("Gagal menyalin", {
+          description: "Coba salin manual atau periksa izin browser.",
+          icon: <XCircle className="h-4 w-4 text-destructive" />,
+        });
       }
       document.body.removeChild(ta);
     }
