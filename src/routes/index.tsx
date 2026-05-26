@@ -47,9 +47,15 @@ function Index() {
   async function copyText(text: string) {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Link disalin");
+      toast.success("Berhasil disalin", {
+        description: "Link sudah tersimpan di papan klip.",
+        icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
+      });
     } catch {
-      toast.error("Gagal menyalin");
+      toast.error("Gagal menyalin", {
+        description: "Coba salin manual atau periksa izin browser.",
+        icon: <XCircle className="h-4 w-4 text-destructive" />,
+      });
     }
   }
 
