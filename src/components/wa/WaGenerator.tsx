@@ -46,8 +46,15 @@ export function WaGenerator() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
   const { add } = useWaHistory();
   const clearDraft = useWaDraft(phone, message, true);
+
+  function scrollToForm() {
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setTimeout(() => messageRef.current?.focus(), 400);
+  }
 
   const charsLeft = MAX_MESSAGE - message.length;
   const phoneState = getPhoneValidationState(phone);
