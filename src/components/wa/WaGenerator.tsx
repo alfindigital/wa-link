@@ -303,6 +303,13 @@ export function WaGenerator() {
               {result.url}
             </div>
 
+            <div className="rounded-md border border-border bg-background px-3 py-2 text-sm">
+              <div className="text-xs font-medium text-muted-foreground">Nomor tujuan</div>
+              <div className="font-mono tabular-nums">
+                +{DIAL} {formatPhoneDisplay(result.phone.startsWith(DIAL) ? result.phone.slice(DIAL.length) : result.phone)}
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-2">
               <Button
                 type="button"
