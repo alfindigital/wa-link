@@ -36,6 +36,13 @@ function getPhoneValidationState(raw: string): "empty" | "valid" | "invalid" {
   return "invalid";
 }
 
+function getPhoneErrorMessage(cleaned: string): string | null {
+  if (!cleaned) return "Nomor tidak boleh kosong. Masukkan nomor WhatsApp kamu.";
+  if (cleaned.length < 6) return `Nomor terlalu pendek (${cleaned.length} digit). Minimal 6 digit tanpa awalan 0 atau 62.`;
+  if (cleaned.length > 14) return `Nomor terlalu panjang (${cleaned.length} digit). Maksimal 14 digit tanpa awalan 0 atau 62.`;
+  return null;
+}
+
 export function WaGenerator() {
   const [phone, setPhone] = useState(() => cleanPhone(loadDraft()?.phone ?? ""));
   const [message, setMessage] = useState(() => loadDraft()?.message ?? "");
