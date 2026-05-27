@@ -185,7 +185,7 @@ export function WaGenerator() {
 
   return (
     <div className="space-y-5">
-      <Card className="border-border/60 shadow-sm">
+      <Card ref={formRef} className="border-border/60 shadow-sm">
         <CardContent className="p-4 sm:p-6">
           <form onSubmit={handleGenerate} className="space-y-4">
             <div className="space-y-2">
