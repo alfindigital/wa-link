@@ -240,9 +240,9 @@ export function WaGenerator() {
               <p className="text-xs text-muted-foreground">
                 Tanpa angka 0 di depan. Contoh: 81234567890.
               </p>
-              {error && (
-                <p className="text-xs font-medium text-destructive" role="alert">
-                  {error}
+              {phoneState === "invalid" && (
+                <p className="text-xs font-medium text-destructive" role="alert" aria-live="polite">
+                  {getPhoneErrorMessage(cleanPhone(phone))}
                 </p>
               )}
             </div>
