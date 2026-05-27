@@ -36,6 +36,13 @@ function getPhoneValidationState(raw: string): "empty" | "valid" | "invalid" {
   return "invalid";
 }
 
+function getPhoneErrorMessage(cleaned: string): string | null {
+  if (!cleaned) return "Nomor tidak boleh kosong. Masukkan nomor WhatsApp kamu.";
+  if (cleaned.length < 6) return `Nomor terlalu pendek (${cleaned.length} digit). Minimal 6 digit tanpa awalan 0 atau 62.`;
+  if (cleaned.length > 14) return `Nomor terlalu panjang (${cleaned.length} digit). Maksimal 14 digit tanpa awalan 0 atau 62.`;
+  return null;
+}
+
 export function WaGenerator() {
   const [phone, setPhone] = useState(() => cleanPhone(loadDraft()?.phone ?? ""));
   const [message, setMessage] = useState(() => loadDraft()?.message ?? "");
@@ -98,8 +105,9 @@ export function WaGenerator() {
   function handleGenerate(e: React.FormEvent) {
     e.preventDefault();
     const cleaned = cleanPhone(phone);
-    if (cleaned.length < 6 || cleaned.length > 14) {
-      setError("Nomor tidak valid. Masukkan 6–14 digit (tanpa 0 atau 62 di depan).");
+    const msg = getPhoneErrorMessage(cleaned);
+    if (msg) {
+      setError(msg);
       setResult(null);
       return;
     }
@@ -232,9 +240,9 @@ export function WaGenerator() {
               <p className="text-xs text-muted-foreground">
                 Tanpa angka 0 di depan. Contoh: 81234567890.
               </p>
-              {error && (
-                <p className="text-xs font-medium text-destructive" role="alert">
-                  {error}
+              {phoneState === "invalid" && (
+                <p className="text-xs font-medium text-destructive" role="alert" aria-live="polite">
+                  {getPhoneErrorMessage(cleanPhone(phone))}
                 </p>
               )}
             </div>
