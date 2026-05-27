@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, ExternalLink, Download, Check, X, Share2 } from "lucide-react";
+import { Copy, ExternalLink, Download, Check, X, Share2, Pencil } from "lucide-react";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
 
@@ -46,8 +46,15 @@ export function WaGenerator() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
   const { add } = useWaHistory();
   const clearDraft = useWaDraft(phone, message, true);
+
+  function scrollToForm() {
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setTimeout(() => messageRef.current?.focus(), 400);
+  }
 
   const charsLeft = MAX_MESSAGE - message.length;
   const phoneState = getPhoneValidationState(phone);
@@ -178,7 +185,7 @@ export function WaGenerator() {
 
   return (
     <div className="space-y-5">
-      <Card className="border-border/60 shadow-sm">
+      <Card ref={formRef} className="border-border/60 shadow-sm">
         <CardContent className="p-4 sm:p-6">
           <form onSubmit={handleGenerate} className="space-y-4">
             <div className="space-y-2">
@@ -246,6 +253,7 @@ export function WaGenerator() {
                 </span>
               </div>
               <Textarea
+                ref={messageRef}
                 id="message"
                 placeholder="Halo, saya mau tanya soal produknya"
                 value={message}
@@ -269,7 +277,19 @@ export function WaGenerator() {
       {result && (
         <Card ref={resultRef} className="border-primary/40 bg-primary/5 shadow-sm">
           <CardContent className="space-y-4 p-4 sm:p-6">
-            <h2 className="text-sm font-semibold">Link kamu</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold">Link kamu</h2>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5 text-xs"
+                onClick={scrollToForm}
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                Ubah Pesan
+              </Button>
+            </div>
 
             <div className="min-w-0 break-all rounded-md border border-border bg-background px-3 py-2 text-sm">
               {result.url}
