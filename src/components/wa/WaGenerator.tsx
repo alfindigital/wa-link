@@ -253,6 +253,7 @@ export function WaGenerator() {
                 </span>
               </div>
               <Textarea
+                ref={messageRef}
                 id="message"
                 placeholder="Halo, saya mau tanya soal produknya"
                 value={message}
