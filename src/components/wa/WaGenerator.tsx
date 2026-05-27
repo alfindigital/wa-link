@@ -256,6 +256,19 @@ export function WaGenerator() {
               <p className="text-xs text-muted-foreground">
                 Tanpa angka 0 di depan. Contoh: 81234567890.
               </p>
+              {detected && (
+                <p
+                  className="text-xs font-medium text-green-600 dark:text-green-500"
+                  role="status"
+                  aria-live="polite"
+                >
+                  {detected === "plus62"
+                    ? "Awalan +62 terdeteksi dan otomatis diubah ke format wa.me."
+                    : detected === "62"
+                      ? "Awalan 62 terdeteksi dan otomatis diubah ke format wa.me."
+                      : "Awalan 0 terdeteksi dan otomatis diubah ke format internasional."}
+                </p>
+              )}
               {phoneState === "invalid" && (
                 <p className="text-xs font-medium text-destructive" role="alert" aria-live="polite">
                   {getPhoneErrorMessage(cleanPhone(phone))}
