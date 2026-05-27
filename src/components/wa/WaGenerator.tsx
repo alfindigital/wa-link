@@ -105,8 +105,9 @@ export function WaGenerator() {
   function handleGenerate(e: React.FormEvent) {
     e.preventDefault();
     const cleaned = cleanPhone(phone);
-    if (cleaned.length < 6 || cleaned.length > 14) {
-      setError("Nomor tidak valid. Masukkan 6–14 digit (tanpa 0 atau 62 di depan).");
+    const msg = getPhoneErrorMessage(cleaned);
+    if (msg) {
+      setError(msg);
       setResult(null);
       return;
     }
