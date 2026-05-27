@@ -43,9 +43,19 @@ function getPhoneErrorMessage(cleaned: string): string | null {
   return null;
 }
 
+function detectPrefix(raw: string): "zero" | "plus62" | "62" | null {
+  const digitsOnly = raw.replace(/\D/g, "");
+  const trimmed = raw.trim();
+  if (trimmed.startsWith("+62")) return "plus62";
+  if (digitsOnly.startsWith("62") && !digitsOnly.startsWith("620")) return "62";
+  if (digitsOnly.startsWith("0")) return "zero";
+  return null;
+}
+
 export function WaGenerator() {
   const [phone, setPhone] = useState(() => cleanPhone(loadDraft()?.phone ?? ""));
   const [message, setMessage] = useState(() => loadDraft()?.message ?? "");
+  const [detected, setDetected] = useState<"zero" | "plus62" | "62" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ url: string; phone: string; message: string } | null>(
     null,
@@ -70,6 +80,12 @@ export function WaGenerator() {
   function handlePhoneChange(raw: string) {
     // Auto-strip: spaces, dashes, parentheses, "+", leading 0, leading 62
     const cleaned = cleanPhone(raw);
+    const prefix = detectPrefix(raw);
+    if (prefix && cleaned.length > 0) {
+      setDetected(prefix);
+      window.clearTimeout((handlePhoneChange as any)._t);
+      (handlePhoneChange as any)._t = window.setTimeout(() => setDetected(null), 2500);
+    }
     setPhone(cleaned.slice(0, 14));
     if (error) setError(null);
   }
@@ -240,6 +256,19 @@ export function WaGenerator() {
               <p className="text-xs text-muted-foreground">
                 Tanpa angka 0 di depan. Contoh: 81234567890.
               </p>
+              {detected && (
+                <p
+                  className="text-xs font-medium text-green-600 dark:text-green-500"
+                  role="status"
+                  aria-live="polite"
+                >
+                  {detected === "plus62"
+                    ? "Awalan +62 terdeteksi dan otomatis diubah ke format wa.me."
+                    : detected === "62"
+                      ? "Awalan 62 terdeteksi dan otomatis diubah ke format wa.me."
+                      : "Awalan 0 terdeteksi dan otomatis diubah ke format internasional."}
+                </p>
+              )}
               {phoneState === "invalid" && (
                 <p className="text-xs font-medium text-destructive" role="alert" aria-live="polite">
                   {getPhoneErrorMessage(cleanPhone(phone))}
