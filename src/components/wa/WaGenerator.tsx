@@ -351,10 +351,28 @@ export function WaGenerator() {
                 id="message"
                 placeholder="Halo, saya mau tanya soal produknya"
                 value={message}
-                onChange={(e) => setMessage(e.target.value.slice(0, MAX_MESSAGE))}
+                onChange={(e) => {
+                  setMessage(e.target.value.slice(0, MAX_MESSAGE));
+                  setDraftSaved(false);
+                }}
                 rows={4}
                 className="resize-none text-base"
               />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span
+                className={`flex items-center gap-1 text-xs text-muted-foreground transition-opacity duration-300 ${
+                  draftSaved ? "opacity-100" : "opacity-0"
+                }`}
+                aria-live="polite"
+              >
+                <CloudCheck className="h-3.5 w-3.5" />
+                Draft tersimpan
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Tersimpan di perangkat
+              </span>
             </div>
 
             <Button
