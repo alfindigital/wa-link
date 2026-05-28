@@ -112,6 +112,13 @@ export function WaGenerator() {
   // Simpan draft otomatis tanpa menghapus setelah generate
   useWaDraft(phone, message, true, () => setDraftSaved(true));
 
+  // Auto-hide draft saved indicator after 2s
+  useEffect(() => {
+    if (!draftSaved) return;
+    const t = setTimeout(() => setDraftSaved(false), 2000);
+    return () => clearTimeout(t);
+  }, [draftSaved]);
+
   function scrollToForm() {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     setTimeout(() => messageRef.current?.focus(), 400);
