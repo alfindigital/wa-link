@@ -43,19 +43,60 @@ function getPhoneErrorMessage(cleaned: string): string | null {
   return null;
 }
 
-function detectPrefix(raw: string): "zero" | "plus62" | "62" | null {
+type DetectedPrefix =
+  | { kind: "plus62" }
+  | { kind: "62" }
+  | { kind: "zero" }
+  | { kind: "warning"; reason: string };
+
+// Deteksi awalan secara ketat. Hanya mengenali pola yang benar-benar terlihat
+// seperti nomor seluler Indonesia (diawali 8 setelah prefix), agar angka "62"
+// atau "0" yang muncul di tengah/tidak diikuti pola seluler tidak salah
+// dianggap sebagai prefix.
+function detectPrefix(raw: string): DetectedPrefix | null {
   const digitsOnly = raw.replace(/\D/g, "");
   const trimmed = raw.trim();
-  if (trimmed.startsWith("+62")) return "plus62";
-  if (digitsOnly.startsWith("62") && !digitsOnly.startsWith("620")) return "62";
-  if (digitsOnly.startsWith("0")) return "zero";
+  if (!digitsOnly) return null;
+
+  // Prefix internasional eksplisit "+62"
+  if (trimmed.startsWith("+62")) {
+    const rest = digitsOnly.slice(2);
+    if (rest.startsWith("8") && rest.length >= 9 && rest.length <= 13) {
+      return { kind: "plus62" };
+    }
+    if (rest.length >= 1) {
+      return {
+        kind: "warning",
+        reason:
+          "Awalan +62 terdeteksi, tapi digit setelahnya tidak seperti nomor seluler Indonesia (biasanya diawali 8). Periksa kembali nomornya.",
+      };
+    }
+  }
+
+  // Prefix "62" tanpa "+" — hanya valid jika diikuti "8" dan panjangnya masuk akal
+  if (digitsOnly.startsWith("628") && digitsOnly.length >= 11 && digitsOnly.length <= 15) {
+    return { kind: "62" };
+  }
+
+  // Prefix lokal "0" — harus "08" untuk nomor seluler Indonesia
+  if (digitsOnly.startsWith("08") && digitsOnly.length >= 10 && digitsOnly.length <= 14) {
+    return { kind: "zero" };
+  }
+  if (digitsOnly.startsWith("0") && !digitsOnly.startsWith("08") && digitsOnly.length >= 3) {
+    return {
+      kind: "warning",
+      reason:
+        "Awalan 0 terdeteksi, tapi nomor seluler Indonesia biasanya dimulai dengan 08. Periksa kembali nomornya.",
+    };
+  }
+
   return null;
 }
 
 export function WaGenerator() {
   const [phone, setPhone] = useState(() => cleanPhone(loadDraft()?.phone ?? ""));
   const [message, setMessage] = useState(() => loadDraft()?.message ?? "");
-  const [detected, setDetected] = useState<"zero" | "plus62" | "62" | null>(null);
+  const [detected, setDetected] = useState<DetectedPrefix | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ url: string; phone: string; message: string } | null>(
     null,
@@ -84,7 +125,14 @@ export function WaGenerator() {
     if (prefix && cleaned.length > 0) {
       setDetected(prefix);
       window.clearTimeout((handlePhoneChange as any)._t);
-      (handlePhoneChange as any)._t = window.setTimeout(() => setDetected(null), 2500);
+      // Warning tetap terlihat sampai pengguna mengubah input; deteksi sukses
+      // akan hilang sendiri setelah 2.5 detik.
+      if (prefix.kind !== "warning") {
+        (handlePhoneChange as any)._t = window.setTimeout(() => setDetected(null), 2500);
+      }
+    } else {
+      setDetected(null);
+      window.clearTimeout((handlePhoneChange as any)._t);
     }
     setPhone(cleaned.slice(0, 14));
     if (error) setError(null);
@@ -258,15 +306,21 @@ export function WaGenerator() {
               </p>
               {detected && (
                 <p
-                  className="text-xs font-medium text-green-600 dark:text-green-500"
-                  role="status"
+                  className={`text-xs font-medium ${
+                    detected.kind === "warning"
+                      ? "text-amber-600 dark:text-amber-500"
+                      : "text-green-600 dark:text-green-500"
+                  }`}
+                  role={detected.kind === "warning" ? "alert" : "status"}
                   aria-live="polite"
                 >
-                  {detected === "plus62"
+                  {detected.kind === "plus62"
                     ? "Awalan +62 terdeteksi dan otomatis diubah ke format wa.me."
-                    : detected === "62"
+                    : detected.kind === "62"
                       ? "Awalan 62 terdeteksi dan otomatis diubah ke format wa.me."
-                      : "Awalan 0 terdeteksi dan otomatis diubah ke format internasional."}
+                      : detected.kind === "zero"
+                        ? "Awalan 0 terdeteksi dan otomatis diubah ke format internasional."
+                        : detected.reason}
                 </p>
               )}
               {phoneState === "invalid" && (
