@@ -187,7 +187,6 @@ export function WaGenerator() {
     const next = { url, phone: fullPhone, message: trimmed };
     setResult(next);
     add(next);
-    clearDraft();
     setTimeout(() => {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
