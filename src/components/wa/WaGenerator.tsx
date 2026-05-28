@@ -139,6 +139,7 @@ export function WaGenerator() {
     }
     setPhone(cleaned.slice(0, 14));
     if (error) setError(null);
+    setDraftSaved(false);
   }
 
   function handlePhonePaste(e: React.ClipboardEvent<HTMLInputElement>) {
