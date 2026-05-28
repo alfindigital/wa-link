@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const KEY = "wa-link-draft";
 const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
@@ -29,7 +29,12 @@ export function clearDraft() {
   }
 }
 
-export function useWaDraft(phone: string, message: string, enabled: boolean) {
+export function useWaDraft(
+  phone: string,
+  message: string,
+  enabled: boolean,
+  onSaved?: () => void,
+) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -45,6 +50,7 @@ export function useWaDraft(phone: string, message: string, enabled: boolean) {
           KEY,
           JSON.stringify({ phone, message, savedAt: Date.now() }),
         );
+        onSaved?.();
       } catch {
         // ignore
       }
@@ -52,7 +58,5 @@ export function useWaDraft(phone: string, message: string, enabled: boolean) {
     return () => {
       if (timer.current) clearTimeout(timer.current);
     };
-  }, [phone, message, enabled]);
-
-  return useCallback(() => clearDraft(), []);
+  }, [phone, message, enabled, onSaved]);
 }

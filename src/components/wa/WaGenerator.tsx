@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, ExternalLink, Download, Check, X, Share2, Pencil } from "lucide-react";
+import { Copy, ExternalLink, Download, Check, X, Share2, Pencil, CloudCheck } from "lucide-react";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
 
@@ -103,11 +103,21 @@ export function WaGenerator() {
   );
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const { add } = useWaHistory();
-  const clearDraft = useWaDraft(phone, message, true);
+
+  // Simpan draft otomatis tanpa menghapus setelah generate
+  useWaDraft(phone, message, true, () => setDraftSaved(true));
+
+  // Auto-hide draft saved indicator after 2s
+  useEffect(() => {
+    if (!draftSaved) return;
+    const t = setTimeout(() => setDraftSaved(false), 2000);
+    return () => clearTimeout(t);
+  }, [draftSaved]);
 
   function scrollToForm() {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -136,6 +146,7 @@ export function WaGenerator() {
     }
     setPhone(cleaned.slice(0, 14));
     if (error) setError(null);
+    setDraftSaved(false);
   }
 
   function handlePhonePaste(e: React.ClipboardEvent<HTMLInputElement>) {
@@ -184,7 +195,6 @@ export function WaGenerator() {
     const next = { url, phone: fullPhone, message: trimmed };
     setResult(next);
     add(next);
-    clearDraft();
     setTimeout(() => {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
@@ -348,10 +358,28 @@ export function WaGenerator() {
                 id="message"
                 placeholder="Halo, saya mau tanya soal produknya"
                 value={message}
-                onChange={(e) => setMessage(e.target.value.slice(0, MAX_MESSAGE))}
+                onChange={(e) => {
+                  setMessage(e.target.value.slice(0, MAX_MESSAGE));
+                  setDraftSaved(false);
+                }}
                 rows={4}
                 className="resize-none text-base"
               />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span
+                className={`flex items-center gap-1 text-xs text-muted-foreground transition-opacity duration-300 ${
+                  draftSaved ? "opacity-100" : "opacity-0"
+                }`}
+                aria-live="polite"
+              >
+                <CloudCheck className="h-3.5 w-3.5" />
+                Draft tersimpan
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Tersimpan di perangkat
+              </span>
             </div>
 
             <Button
