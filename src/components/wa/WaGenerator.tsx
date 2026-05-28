@@ -96,7 +96,7 @@ function detectPrefix(raw: string): DetectedPrefix | null {
 export function WaGenerator() {
   const [phone, setPhone] = useState(() => cleanPhone(loadDraft()?.phone ?? ""));
   const [message, setMessage] = useState(() => loadDraft()?.message ?? "");
-  const [detected, setDetected] = useState<"zero" | "plus62" | "62" | null>(null);
+  const [detected, setDetected] = useState<DetectedPrefix | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ url: string; phone: string; message: string } | null>(
     null,
@@ -125,7 +125,14 @@ export function WaGenerator() {
     if (prefix && cleaned.length > 0) {
       setDetected(prefix);
       window.clearTimeout((handlePhoneChange as any)._t);
-      (handlePhoneChange as any)._t = window.setTimeout(() => setDetected(null), 2500);
+      // Warning tetap terlihat sampai pengguna mengubah input; deteksi sukses
+      // akan hilang sendiri setelah 2.5 detik.
+      if (prefix.kind !== "warning") {
+        (handlePhoneChange as any)._t = window.setTimeout(() => setDetected(null), 2500);
+      }
+    } else {
+      setDetected(null);
+      window.clearTimeout((handlePhoneChange as any)._t);
     }
     setPhone(cleaned.slice(0, 14));
     if (error) setError(null);
@@ -299,15 +306,21 @@ export function WaGenerator() {
               </p>
               {detected && (
                 <p
-                  className="text-xs font-medium text-green-600 dark:text-green-500"
-                  role="status"
+                  className={`text-xs font-medium ${
+                    detected.kind === "warning"
+                      ? "text-amber-600 dark:text-amber-500"
+                      : "text-green-600 dark:text-green-500"
+                  }`}
+                  role={detected.kind === "warning" ? "alert" : "status"}
                   aria-live="polite"
                 >
-                  {detected === "plus62"
+                  {detected.kind === "plus62"
                     ? "Awalan +62 terdeteksi dan otomatis diubah ke format wa.me."
-                    : detected === "62"
+                    : detected.kind === "62"
                       ? "Awalan 62 terdeteksi dan otomatis diubah ke format wa.me."
-                      : "Awalan 0 terdeteksi dan otomatis diubah ke format internasional."}
+                      : detected.kind === "zero"
+                        ? "Awalan 0 terdeteksi dan otomatis diubah ke format internasional."
+                        : detected.reason}
                 </p>
               )}
               {phoneState === "invalid" && (
