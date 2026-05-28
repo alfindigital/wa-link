@@ -29,8 +29,14 @@ export function clearDraft() {
   }
 }
 
-export function useWaDraft(phone: string, message: string, enabled: boolean) {
+export function useWaDraft(
+  phone: string,
+  message: string,
+  enabled: boolean,
+  onSaved?: () => void,
+) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const savedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!enabled) return;
@@ -45,6 +51,12 @@ export function useWaDraft(phone: string, message: string, enabled: boolean) {
           KEY,
           JSON.stringify({ phone, message, savedAt: Date.now() }),
         );
+        onSaved?.();
+        // auto-hide saved indicator after 2s
+        if (savedTimer.current) clearTimeout(savedTimer.current);
+        savedTimer.current = setTimeout(() => {
+          // onSaved is called again by consumer if needed; here we just clear indicator in consumer
+        }, 2000);
       } catch {
         // ignore
       }
@@ -52,7 +64,7 @@ export function useWaDraft(phone: string, message: string, enabled: boolean) {
     return () => {
       if (timer.current) clearTimeout(timer.current);
     };
-  }, [phone, message, enabled]);
+  }, [phone, message, enabled, onSaved]);
 
   return useCallback(() => clearDraft(), []);
 }
