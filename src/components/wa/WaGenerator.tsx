@@ -103,11 +103,14 @@ export function WaGenerator() {
   );
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const { add } = useWaHistory();
-  const clearDraft = useWaDraft(phone, message, true);
+
+  // Simpan draft otomatis tanpa menghapus setelah generate
+  useWaDraft(phone, message, true, () => setDraftSaved(true));
 
   function scrollToForm() {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
