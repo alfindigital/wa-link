@@ -43,12 +43,53 @@ function getPhoneErrorMessage(cleaned: string): string | null {
   return null;
 }
 
-function detectPrefix(raw: string): "zero" | "plus62" | "62" | null {
+type DetectedPrefix =
+  | { kind: "plus62" }
+  | { kind: "62" }
+  | { kind: "zero" }
+  | { kind: "warning"; reason: string };
+
+// Deteksi awalan secara ketat. Hanya mengenali pola yang benar-benar terlihat
+// seperti nomor seluler Indonesia (diawali 8 setelah prefix), agar angka "62"
+// atau "0" yang muncul di tengah/tidak diikuti pola seluler tidak salah
+// dianggap sebagai prefix.
+function detectPrefix(raw: string): DetectedPrefix | null {
   const digitsOnly = raw.replace(/\D/g, "");
   const trimmed = raw.trim();
-  if (trimmed.startsWith("+62")) return "plus62";
-  if (digitsOnly.startsWith("62") && !digitsOnly.startsWith("620")) return "62";
-  if (digitsOnly.startsWith("0")) return "zero";
+  if (!digitsOnly) return null;
+
+  // Prefix internasional eksplisit "+62"
+  if (trimmed.startsWith("+62")) {
+    const rest = digitsOnly.slice(2);
+    if (rest.startsWith("8") && rest.length >= 9 && rest.length <= 13) {
+      return { kind: "plus62" };
+    }
+    if (rest.length >= 1) {
+      return {
+        kind: "warning",
+        reason:
+          "Awalan +62 terdeteksi, tapi digit setelahnya tidak seperti nomor seluler Indonesia (biasanya diawali 8). Periksa kembali nomornya.",
+      };
+    }
+  }
+
+  // Prefix "62" tanpa "+" — hanya valid jika diikuti "8" dan panjangnya masuk akal
+  if (digitsOnly.startsWith("628") && digitsOnly.length >= 11 && digitsOnly.length <= 15) {
+    return { kind: "62" };
+  }
+
+  // Prefix lokal "0" — harus "08" untuk nomor seluler Indonesia
+  if (digitsOnly.startsWith("08") && digitsOnly.length >= 10 && digitsOnly.length <= 14) {
+    return { kind: "zero" };
+  }
+  if (digitsOnly.startsWith("0") && !digitsOnly.startsWith("08") && digitsOnly.length >= 3) {
+    return {
+      kind: "warning",
+      reason:
+        "Awalan 0 terdeteksi, tapi nomor seluler Indonesia biasanya dimulai dengan 08. Periksa kembali nomornya.",
+    };
+  }
+
   return null;
 }
 
