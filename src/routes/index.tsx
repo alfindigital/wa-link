@@ -111,18 +111,60 @@ function Index() {
                         <li key={it.id}>
                           <SwipeToDelete onDelete={() => remove(it.id)}>
                             <div className="flex items-center gap-2 py-3">
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => toggleFavorite(it.id)}
+                                aria-label={it.favorite ? "Hapus dari favorit" : "Jadikan favorit"}
+                                aria-pressed={!!it.favorite}
+                                className="h-8 w-8 shrink-0"
+                              >
+                                <Star
+                                  className={`h-4 w-4 ${it.favorite ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
+                                />
+                              </Button>
                               <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium">+{it.phone}</p>
-                                <p className="truncate text-xs text-muted-foreground">
-                                  {it.message || <span className="italic">Tanpa pesan</span>}
-                                </p>
+                                {it.label ? (
+                                  <>
+                                    <p className="truncate text-sm font-semibold">{it.label}</p>
+                                    <p className="truncate text-xs text-muted-foreground">
+                                      +{it.phone}
+                                      {it.message ? ` · ${it.message}` : ""}
+                                    </p>
+                                  </>
+                                ) : (
+                                  <>
+                                    <p className="truncate text-sm font-medium">+{it.phone}</p>
+                                    <p className="truncate text-xs text-muted-foreground">
+                                      {it.message || <span className="italic">Tanpa pesan</span>}
+                                    </p>
+                                  </>
+                                )}
                               </div>
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => {
+                                  const next = window.prompt(
+                                    "Nama kontak (kosongkan untuk hapus):",
+                                    it.label ?? "",
+                                  );
+                                  if (next !== null) setLabel(it.id, next);
+                                }}
+                                aria-label="Edit nama"
+                                className="h-8 w-8 shrink-0"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
                               <Button
                                 type="button"
                                 size="icon"
                                 variant="ghost"
                                 onClick={() => copyText(it.url)}
                                 aria-label="Salin link"
+                                className="h-8 w-8 shrink-0"
                               >
                                 <Copy className="h-4 w-4" />
                               </Button>
@@ -132,6 +174,7 @@ function Index() {
                                 variant="ghost"
                                 asChild
                                 aria-label="Buka link"
+                                className="h-8 w-8 shrink-0"
                               >
                                 <a href={it.url} target="_blank" rel="noopener noreferrer">
                                   <ExternalLink className="h-4 w-4" />
@@ -143,6 +186,7 @@ function Index() {
                                 variant="ghost"
                                 onClick={() => remove(it.id)}
                                 aria-label="Hapus"
+                                className="h-8 w-8 shrink-0"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
