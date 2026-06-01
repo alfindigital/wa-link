@@ -201,6 +201,8 @@ export function WaGenerator() {
     const next = { url, phone: fullPhone, message: trimmed };
     setResult(next);
     add(next);
+    vibrate(40);
+    playBlip("success");
     setTimeout(() => {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
@@ -212,6 +214,8 @@ export function WaGenerator() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       if (result) add(result);
+      vibrate(20);
+      playBlip("copy");
       toast.success("Berhasil disalin", {
         description: `${label} sudah tersimpan di papan klip.`,
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
@@ -226,6 +230,8 @@ export function WaGenerator() {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
         if (result) add(result);
+        vibrate(20);
+        playBlip("copy");
         toast.success("Berhasil disalin", {
           description: `${label} sudah tersimpan di papan klip.`,
           icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
@@ -242,6 +248,7 @@ export function WaGenerator() {
 
   function handleDownloadQr() {
     if (!qrDataUrl || !result) return;
+    vibrate(30);
     const a = document.createElement("a");
     a.href = qrDataUrl;
     a.download = `wa-${result.phone}.png`;
@@ -252,7 +259,7 @@ export function WaGenerator() {
 
   async function handleShare() {
     if (!result) return;
-    if (navigator.vibrate) navigator.vibrate(40);
+    vibrate(40);
     if (navigator.share) {
       try {
         await navigator.share({
