@@ -111,6 +111,9 @@ export function WaGenerator() {
   const formRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const { add } = useWaHistory();
+  const { items: templates, add: addTemplate, remove: removeTemplate } = useWaTemplates();
+  const [newTemplate, setNewTemplate] = useState("");
+  const [tplPopOpen, setTplPopOpen] = useState(false);
 
   // Simpan draft otomatis tanpa menghapus setelah generate
   useWaDraft(phone, message, true, () => setDraftSaved(true));
