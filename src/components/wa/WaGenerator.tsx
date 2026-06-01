@@ -600,3 +600,51 @@ export function WaGenerator() {
     </div>
   );
 }
+
+function ChatPreview({ phone, message }: { phone: string; message: string }) {
+  const [time, setTime] = useState<string>("—:—");
+  useEffect(() => {
+    const t = new Date();
+    setTime(
+      `${String(t.getHours()).padStart(2, "0")}.${String(t.getMinutes()).padStart(2, "0")}`,
+    );
+  }, [message]);
+  const display = phone ? `+62 ${formatPhoneDisplay(phone)}` : "+62 ...";
+  const initial = phone ? phone.charAt(0) : "?";
+  const text = message.trim();
+  return (
+    <div
+      aria-label="Pratinjau pesan"
+      className="overflow-hidden rounded-lg border border-border bg-background"
+    >
+      <div className="flex items-center gap-2 border-b border-border bg-muted/60 px-3 py-2">
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#25d366] text-xs font-bold text-white">
+          {initial}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs font-semibold">{display}</p>
+          <p className="text-[10px] text-emerald-600 dark:text-emerald-400">online</p>
+        </div>
+      </div>
+      <div
+        className="relative max-h-[180px] overflow-y-auto px-3 py-3"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 20% 10%, hsl(var(--muted-foreground)/0.05) 0, transparent 40%), radial-gradient(circle at 80% 80%, hsl(var(--muted-foreground)/0.05) 0, transparent 40%)",
+        }}
+      >
+        <div className="ml-auto max-w-[85%] rounded-lg rounded-tr-sm bg-[#dcf8c6] px-2.5 py-1.5 text-[13px] text-[#111b21] shadow-sm dark:bg-[#005c4b] dark:text-[#e9edef]">
+          {text ? (
+            <p className="whitespace-pre-wrap break-words">{text}</p>
+          ) : (
+            <p className="italic opacity-60">Halo!</p>
+          )}
+          <div className="mt-0.5 flex items-center justify-end gap-1 text-[10px] opacity-70">
+            <span>{time}</span>
+            <CheckCheck className="h-3 w-3 text-sky-500" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
