@@ -366,6 +366,68 @@ export function WaGenerator() {
                   {charsLeft}
                 </span>
               </div>
+              <div className="flex flex-wrap gap-1.5">
+                {templates.map((t) => (
+                  <span key={t.id} className="group inline-flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMessage(t.text.slice(0, MAX_MESSAGE));
+                        setDraftSaved(false);
+                        vibrate(15);
+                      }}
+                      className="rounded-full border border-border bg-muted/50 px-2.5 py-1 text-xs text-foreground transition-colors hover:bg-muted"
+                    >
+                      {t.text}
+                    </button>
+                    {!t.isDefault && (
+                      <button
+                        type="button"
+                        onClick={() => removeTemplate(t.id)}
+                        aria-label={`Hapus template ${t.text}`}
+                        className="ml-0.5 rounded-full p-0.5 text-muted-foreground hover:bg-muted hover:text-destructive"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    )}
+                  </span>
+                ))}
+                <Popover open={tplPopOpen} onOpenChange={setTplPopOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="Tambah template pesan"
+                      className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      <Plus className="h-3 w-3" />
+                      Tambah
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 space-y-2" align="start">
+                    <p className="text-xs font-medium">Template baru</p>
+                    <Input
+                      value={newTemplate}
+                      onChange={(e) => setNewTemplate(e.target.value)}
+                      placeholder="Tulis pesan template..."
+                      className="h-9 text-sm"
+                      maxLength={120}
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => {
+                        addTemplate(newTemplate);
+                        setNewTemplate("");
+                        setTplPopOpen(false);
+                      }}
+                      disabled={!newTemplate.trim()}
+                    >
+                      Simpan
+                    </Button>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <Textarea
                 ref={messageRef}
                 id="message"
@@ -378,6 +440,9 @@ export function WaGenerator() {
                 rows={4}
                 className="resize-none text-base"
               />
+              {(phoneState === "valid" || message.trim().length > 0) && (
+                <ChatPreview phone={phone} message={message} />
+              )}
             </div>
 
             <div className="flex items-center justify-between">
