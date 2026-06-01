@@ -235,6 +235,39 @@ function Index() {
             </Dialog>
 
             <ThemeToggle />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Pengaturan">
+                  <Settings2 className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuLabel>Pengaturan</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <div className="flex items-center justify-between px-2 py-2 text-sm">
+                  <label htmlFor="pref-sound">Suara</label>
+                  <Switch
+                    id="pref-sound"
+                    checked={sound}
+                    onCheckedChange={(v) => {
+                      setSound(v);
+                      setPref("sound", v);
+                    }}
+                  />
+                </div>
+                <div className="flex items-center justify-between px-2 py-2 text-sm">
+                  <label htmlFor="pref-haptic">Getar</label>
+                  <Switch
+                    id="pref-haptic"
+                    checked={haptic}
+                    onCheckedChange={(v) => {
+                      setHaptic(v);
+                      setPref("haptic", v);
+                    }}
+                  />
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
