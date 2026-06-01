@@ -6,6 +6,8 @@ export type WaHistoryItem = {
   message: string;
   url: string;
   createdAt: number;
+  label?: string;
+  favorite?: boolean;
 };
 
 const KEY = "wa-link-history";
@@ -18,10 +20,20 @@ function read(): WaHistoryItem[] {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    return sortItems(parsed);
   } catch {
     return [];
   }
+}
+
+function sortItems(list: WaHistoryItem[]): WaHistoryItem[] {
+  return [...list].sort((a, b) => {
+    const fa = a.favorite ? 1 : 0;
+    const fb = b.favorite ? 1 : 0;
+    if (fa !== fb) return fb - fa;
+    return b.createdAt - a.createdAt;
+  });
 }
 
 export function useWaHistory() {
@@ -50,13 +62,17 @@ export function useWaHistory() {
 
   const add = useCallback(
     (item: Omit<WaHistoryItem, "id" | "createdAt">) => {
+      const current = read();
+      const existing = current.find((it) => it.url === item.url);
       const next: WaHistoryItem = {
         ...item,
+        label: item.label ?? existing?.label,
+        favorite: item.favorite ?? existing?.favorite,
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         createdAt: Date.now(),
       };
-      const deduped = read().filter((it) => it.url !== next.url);
-      persist([next, ...deduped].slice(0, MAX));
+      const deduped = current.filter((it) => it.url !== next.url);
+      persist(sortItems([next, ...deduped]).slice(0, MAX));
     },
     [persist],
   );
@@ -68,7 +84,27 @@ export function useWaHistory() {
     [persist],
   );
 
+  const setLabel = useCallback(
+    (id: string, label: string) => {
+      const next = read().map((it) =>
+        it.id === id ? { ...it, label: label.trim() || undefined } : it,
+      );
+      persist(sortItems(next));
+    },
+    [persist],
+  );
+
+  const toggleFavorite = useCallback(
+    (id: string) => {
+      const next = read().map((it) =>
+        it.id === id ? { ...it, favorite: !it.favorite } : it,
+      );
+      persist(sortItems(next));
+    },
+    [persist],
+  );
+
   const clear = useCallback(() => persist([]), [persist]);
 
-  return { items, add, remove, clear };
+  return { items, add, remove, clear, setLabel, toggleFavorite };
 }

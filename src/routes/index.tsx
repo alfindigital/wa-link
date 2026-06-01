@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { History, HelpCircle, Copy, Trash2, ExternalLink, CheckCircle2, XCircle, Globe, Facebook, Youtube } from "lucide-react";
+import { useEffect, useState } from "react";
+import { History, HelpCircle, Copy, Trash2, ExternalLink, CheckCircle2, XCircle, Globe, Facebook, Youtube, Star, Pencil, Settings2 } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
 import { Toaster } from "@/components/ui/sonner";
@@ -13,8 +13,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { toast } from "sonner";
+import { getPrefs, setPref } from "@/lib/feedback";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -42,7 +51,15 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [howOpen, setHowOpen] = useState(false);
   const [histOpen, setHistOpen] = useState(false);
-  const { items, remove, clear } = useWaHistory();
+  const { items, remove, clear, setLabel, toggleFavorite } = useWaHistory();
+  const [sound, setSound] = useState(false);
+  const [haptic, setHaptic] = useState(true);
+
+  useEffect(() => {
+    const p = getPrefs();
+    setSound(p.sound);
+    setHaptic(p.haptic);
+  }, []);
 
   async function copyText(text: string) {
     try {
@@ -94,18 +111,60 @@ function Index() {
                         <li key={it.id}>
                           <SwipeToDelete onDelete={() => remove(it.id)}>
                             <div className="flex items-center gap-2 py-3">
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => toggleFavorite(it.id)}
+                                aria-label={it.favorite ? "Hapus dari favorit" : "Jadikan favorit"}
+                                aria-pressed={!!it.favorite}
+                                className="h-8 w-8 shrink-0"
+                              >
+                                <Star
+                                  className={`h-4 w-4 ${it.favorite ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
+                                />
+                              </Button>
                               <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium">+{it.phone}</p>
-                                <p className="truncate text-xs text-muted-foreground">
-                                  {it.message || <span className="italic">Tanpa pesan</span>}
-                                </p>
+                                {it.label ? (
+                                  <>
+                                    <p className="truncate text-sm font-semibold">{it.label}</p>
+                                    <p className="truncate text-xs text-muted-foreground">
+                                      +{it.phone}
+                                      {it.message ? ` · ${it.message}` : ""}
+                                    </p>
+                                  </>
+                                ) : (
+                                  <>
+                                    <p className="truncate text-sm font-medium">+{it.phone}</p>
+                                    <p className="truncate text-xs text-muted-foreground">
+                                      {it.message || <span className="italic">Tanpa pesan</span>}
+                                    </p>
+                                  </>
+                                )}
                               </div>
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => {
+                                  const next = window.prompt(
+                                    "Nama kontak (kosongkan untuk hapus):",
+                                    it.label ?? "",
+                                  );
+                                  if (next !== null) setLabel(it.id, next);
+                                }}
+                                aria-label="Edit nama"
+                                className="h-8 w-8 shrink-0"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
                               <Button
                                 type="button"
                                 size="icon"
                                 variant="ghost"
                                 onClick={() => copyText(it.url)}
                                 aria-label="Salin link"
+                                className="h-8 w-8 shrink-0"
                               >
                                 <Copy className="h-4 w-4" />
                               </Button>
@@ -115,6 +174,7 @@ function Index() {
                                 variant="ghost"
                                 asChild
                                 aria-label="Buka link"
+                                className="h-8 w-8 shrink-0"
                               >
                                 <a href={it.url} target="_blank" rel="noopener noreferrer">
                                   <ExternalLink className="h-4 w-4" />
@@ -126,6 +186,7 @@ function Index() {
                                 variant="ghost"
                                 onClick={() => remove(it.id)}
                                 aria-label="Hapus"
+                                className="h-8 w-8 shrink-0"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
@@ -174,6 +235,39 @@ function Index() {
             </Dialog>
 
             <ThemeToggle />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Pengaturan">
+                  <Settings2 className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuLabel>Pengaturan</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <div className="flex items-center justify-between px-2 py-2 text-sm">
+                  <label htmlFor="pref-sound">Suara</label>
+                  <Switch
+                    id="pref-sound"
+                    checked={sound}
+                    onCheckedChange={(v) => {
+                      setSound(v);
+                      setPref("sound", v);
+                    }}
+                  />
+                </div>
+                <div className="flex items-center justify-between px-2 py-2 text-sm">
+                  <label htmlFor="pref-haptic">Getar</label>
+                  <Switch
+                    id="pref-haptic"
+                    checked={haptic}
+                    onCheckedChange={(v) => {
+                      setHaptic(v);
+                      setPref("haptic", v);
+                    }}
+                  />
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>

@@ -7,9 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, ExternalLink, Download, Check, X, Share2, Pencil, CloudCheck } from "lucide-react";
+import { Copy, ExternalLink, Download, Check, X, Share2, Pencil, CloudCheck, Plus, CheckCheck } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
+import { useWaTemplates } from "@/hooks/use-wa-templates";
+import { vibrate, playBlip } from "@/lib/feedback";
 
 const MAX_MESSAGE = 1000;
 const DIAL = "62";
@@ -108,6 +111,9 @@ export function WaGenerator() {
   const formRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const { add } = useWaHistory();
+  const { items: templates, add: addTemplate, remove: removeTemplate } = useWaTemplates();
+  const [newTemplate, setNewTemplate] = useState("");
+  const [tplPopOpen, setTplPopOpen] = useState(false);
 
   // Simpan draft otomatis tanpa menghapus setelah generate
   useWaDraft(phone, message, true, () => setDraftSaved(true));
@@ -195,6 +201,8 @@ export function WaGenerator() {
     const next = { url, phone: fullPhone, message: trimmed };
     setResult(next);
     add(next);
+    vibrate(40);
+    playBlip("success");
     setTimeout(() => {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
@@ -206,6 +214,8 @@ export function WaGenerator() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       if (result) add(result);
+      vibrate(20);
+      playBlip("copy");
       toast.success("Berhasil disalin", {
         description: `${label} sudah tersimpan di papan klip.`,
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
@@ -220,6 +230,8 @@ export function WaGenerator() {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
         if (result) add(result);
+        vibrate(20);
+        playBlip("copy");
         toast.success("Berhasil disalin", {
           description: `${label} sudah tersimpan di papan klip.`,
           icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
@@ -236,6 +248,7 @@ export function WaGenerator() {
 
   function handleDownloadQr() {
     if (!qrDataUrl || !result) return;
+    vibrate(30);
     const a = document.createElement("a");
     a.href = qrDataUrl;
     a.download = `wa-${result.phone}.png`;
@@ -246,7 +259,7 @@ export function WaGenerator() {
 
   async function handleShare() {
     if (!result) return;
-    if (navigator.vibrate) navigator.vibrate(40);
+    vibrate(40);
     if (navigator.share) {
       try {
         await navigator.share({
@@ -353,6 +366,68 @@ export function WaGenerator() {
                   {charsLeft}
                 </span>
               </div>
+              <div className="flex flex-wrap gap-1.5">
+                {templates.map((t) => (
+                  <span key={t.id} className="group inline-flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMessage(t.text.slice(0, MAX_MESSAGE));
+                        setDraftSaved(false);
+                        vibrate(15);
+                      }}
+                      className="rounded-full border border-border bg-muted/50 px-2.5 py-1 text-xs text-foreground transition-colors hover:bg-muted"
+                    >
+                      {t.text}
+                    </button>
+                    {!t.isDefault && (
+                      <button
+                        type="button"
+                        onClick={() => removeTemplate(t.id)}
+                        aria-label={`Hapus template ${t.text}`}
+                        className="ml-0.5 rounded-full p-0.5 text-muted-foreground hover:bg-muted hover:text-destructive"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    )}
+                  </span>
+                ))}
+                <Popover open={tplPopOpen} onOpenChange={setTplPopOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="Tambah template pesan"
+                      className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      <Plus className="h-3 w-3" />
+                      Tambah
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 space-y-2" align="start">
+                    <p className="text-xs font-medium">Template baru</p>
+                    <Input
+                      value={newTemplate}
+                      onChange={(e) => setNewTemplate(e.target.value)}
+                      placeholder="Tulis pesan template..."
+                      className="h-9 text-sm"
+                      maxLength={120}
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => {
+                        addTemplate(newTemplate);
+                        setNewTemplate("");
+                        setTplPopOpen(false);
+                      }}
+                      disabled={!newTemplate.trim()}
+                    >
+                      Simpan
+                    </Button>
+                  </PopoverContent>
+                </Popover>
+              </div>
               <Textarea
                 ref={messageRef}
                 id="message"
@@ -365,6 +440,9 @@ export function WaGenerator() {
                 rows={4}
                 className="resize-none text-base"
               />
+              {(phoneState === "valid" || message.trim().length > 0) && (
+                <ChatPreview phone={phone} message={message} />
+              )}
             </div>
 
             <div className="flex items-center justify-between">
@@ -502,10 +580,7 @@ export function WaGenerator() {
                 type="button"
                 variant="outline"
                 className="h-11 flex-1 gap-2 text-sm font-semibold"
-                onClick={() => {
-                  if (navigator.vibrate) navigator.vibrate(40);
-                  copyText(result.url, "Link");
-                }}
+                onClick={() => copyText(result.url, "Link")}
               >
                 <Copy className="h-4 w-4" />
                 Salin
@@ -522,6 +597,54 @@ export function WaGenerator() {
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+function ChatPreview({ phone, message }: { phone: string; message: string }) {
+  const [time, setTime] = useState<string>("—:—");
+  useEffect(() => {
+    const t = new Date();
+    setTime(
+      `${String(t.getHours()).padStart(2, "0")}.${String(t.getMinutes()).padStart(2, "0")}`,
+    );
+  }, [message]);
+  const display = phone ? `+62 ${formatPhoneDisplay(phone)}` : "+62 ...";
+  const initial = phone ? phone.charAt(0) : "?";
+  const text = message.trim();
+  return (
+    <div
+      aria-label="Pratinjau pesan"
+      className="overflow-hidden rounded-lg border border-border bg-background"
+    >
+      <div className="flex items-center gap-2 border-b border-border bg-muted/60 px-3 py-2">
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#25d366] text-xs font-bold text-white">
+          {initial}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs font-semibold">{display}</p>
+          <p className="text-[10px] text-emerald-600 dark:text-emerald-400">online</p>
+        </div>
+      </div>
+      <div
+        className="relative max-h-[180px] overflow-y-auto px-3 py-3"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 20% 10%, hsl(var(--muted-foreground)/0.05) 0, transparent 40%), radial-gradient(circle at 80% 80%, hsl(var(--muted-foreground)/0.05) 0, transparent 40%)",
+        }}
+      >
+        <div className="ml-auto max-w-[85%] rounded-lg rounded-tr-sm bg-[#dcf8c6] px-2.5 py-1.5 text-[13px] text-[#111b21] shadow-sm dark:bg-[#005c4b] dark:text-[#e9edef]">
+          {text ? (
+            <p className="whitespace-pre-wrap break-words">{text}</p>
+          ) : (
+            <p className="italic opacity-60">Halo!</p>
+          )}
+          <div className="mt-0.5 flex items-center justify-end gap-1 text-[10px] opacity-70">
+            <span>{time}</span>
+            <CheckCheck className="h-3 w-3 text-sky-500" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
