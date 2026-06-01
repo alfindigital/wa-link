@@ -51,7 +51,15 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [howOpen, setHowOpen] = useState(false);
   const [histOpen, setHistOpen] = useState(false);
-  const { items, remove, clear } = useWaHistory();
+  const { items, remove, clear, setLabel, toggleFavorite } = useWaHistory();
+  const [sound, setSound] = useState(false);
+  const [haptic, setHaptic] = useState(true);
+
+  useEffect(() => {
+    const p = getPrefs();
+    setSound(p.sound);
+    setHaptic(p.haptic);
+  }, []);
 
   async function copyText(text: string) {
     try {
