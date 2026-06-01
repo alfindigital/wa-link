@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { History, HelpCircle, Copy, Trash2, ExternalLink, CheckCircle2, XCircle, Globe, Facebook, Youtube } from "lucide-react";
+import { useEffect, useState } from "react";
+import { History, HelpCircle, Copy, Trash2, ExternalLink, CheckCircle2, XCircle, Globe, Facebook, Youtube, Star, Pencil, Settings2 } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
 import { Toaster } from "@/components/ui/sonner";
@@ -13,8 +13,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { toast } from "sonner";
+import { getPrefs, setPref } from "@/lib/feedback";
 
 export const Route = createFileRoute("/")({
   component: Index,
