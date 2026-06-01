@@ -515,10 +515,7 @@ export function WaGenerator() {
                 type="button"
                 variant="outline"
                 className="h-11 flex-1 gap-2 text-sm font-semibold"
-                onClick={() => {
-                  if (navigator.vibrate) navigator.vibrate(40);
-                  copyText(result.url, "Link");
-                }}
+                onClick={() => copyText(result.url, "Link")}
               >
                 <Copy className="h-4 w-4" />
                 Salin
