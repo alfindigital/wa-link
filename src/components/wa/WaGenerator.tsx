@@ -114,6 +114,8 @@ export function WaGenerator() {
   const { items: templates, add: addTemplate, remove: removeTemplate } = useWaTemplates();
   const [newTemplate, setNewTemplate] = useState("");
   const [tplPopOpen, setTplPopOpen] = useState(false);
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const cursorPosRef = useRef(0);
 
   // Simpan draft otomatis tanpa menghapus setelah generate
   useWaDraft(phone, message, true, () => setDraftSaved(true));
