@@ -472,6 +472,13 @@ export function WaGenerator() {
                 onChange={(e) => {
                   setMessage(e.target.value.slice(0, MAX_MESSAGE));
                   setDraftSaved(false);
+                  cursorPosRef.current = e.target.selectionStart;
+                }}
+                onKeyUp={(e) => {
+                  cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
+                }}
+                onClick={(e) => {
+                  cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
                 }}
                 rows={4}
                 className="resize-none text-base"
