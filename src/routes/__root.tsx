@@ -87,6 +87,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "WAlinkQ" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "WAlinkQ — Buat Link WhatsApp Gratis" },
+      { name: "description", content: "WA Link Generator creates custom WhatsApp links and QR codes with pre-filled messages." },
+      { property: "og:description", content: "WA Link Generator creates custom WhatsApp links and QR codes with pre-filled messages." },
+      { name: "twitter:description", content: "WA Link Generator creates custom WhatsApp links and QR codes with pre-filled messages." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0e337aee-3e9d-4df1-9d2d-c50547bd50a1/id-preview-e2cc7ea3--3ac30c5e-d242-4bac-b5c8-78d7bf0867ca.lovable.app-1780359319779.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0e337aee-3e9d-4df1-9d2d-c50547bd50a1/id-preview-e2cc7ea3--3ac30c5e-d242-4bac-b5c8-78d7bf0867ca.lovable.app-1780359319779.png" },
     ],
     links: [
       {
