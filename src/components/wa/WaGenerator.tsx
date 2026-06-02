@@ -644,6 +644,32 @@ export function WaGenerator() {
   );
 }
 
+const EMOJIS = [
+  "😀","😂","🥰","😍","🤔","😢","😡","👍","👎","🙏",
+  "🔥","❤️","💯","✅","❌","⭐","🎉","🎁","🚀","💡",
+  "😊","😅","🤗","😴","😭","😤","🤝","👏","💪","🙌",
+  "😋","😎","🤓","🥳","😱","😬","👋","✌️","🤞","🫡",
+  "🤣","🙃","😉","🥺","😇","🤭","🤷","👌","👆","🫶",
+];
+
+function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
+  return (
+    <div className="grid grid-cols-10 gap-1">
+      {EMOJIS.map((emoji) => (
+        <button
+          key={emoji}
+          type="button"
+          onClick={() => onSelect(emoji)}
+          className="flex h-8 w-8 items-center justify-center rounded-md text-lg transition-colors hover:bg-muted"
+          aria-label={`Insert emoji ${emoji}`}
+        >
+          {emoji}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function ChatPreview({ phone, message }: { phone: string; message: string }) {
   const [time, setTime] = useState<string>("—:—");
   useEffect(() => {
