@@ -360,13 +360,47 @@ export function WaGenerator() {
                 <Label htmlFor="message" className="text-sm font-semibold">
                   Pesan <span className="font-normal text-muted-foreground">(opsional)</span>
                 </Label>
-                <span
-                  className={`text-xs ${
-                    charsLeft < 0 ? "text-destructive" : "text-muted-foreground"
-                  }`}
-                >
-                  {charsLeft}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="Tambah emoji"
+                        className="inline-flex h-6 items-center rounded-md border border-border px-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        <Smile className="h-3.5 w-3.5" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-64 p-2" align="end">
+                      <EmojiGrid
+                        onSelect={(emoji) => {
+                          const el = messageRef.current;
+                          if (!el) return;
+                          const pos = cursorPosRef.current;
+                          const before = message.slice(0, pos);
+                          const after = message.slice(pos);
+                          const next = (before + emoji + after).slice(0, MAX_MESSAGE);
+                          setMessage(next);
+                          setDraftSaved(false);
+                          const newPos = pos + emoji.length;
+                          cursorPosRef.current = newPos;
+                          requestAnimationFrame(() => {
+                            el.focus();
+                            el.setSelectionRange(newPos, newPos);
+                          });
+                          setEmojiOpen(false);
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <span
+                    className={`text-xs ${
+                      charsLeft < 0 ? "text-destructive" : "text-muted-foreground"
+                    }`}
+                  >
+                    {charsLeft}
+                  </span>
+                </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {templates.map((t) => (
