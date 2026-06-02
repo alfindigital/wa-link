@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, ExternalLink, Download, Check, X, Share2, Pencil, CloudCheck, Plus, CheckCheck } from "lucide-react";
+import { Copy, ExternalLink, Download, Check, X, Share2, Pencil, CloudCheck, Plus, CheckCheck, Smile } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
@@ -114,6 +114,8 @@ export function WaGenerator() {
   const { items: templates, add: addTemplate, remove: removeTemplate } = useWaTemplates();
   const [newTemplate, setNewTemplate] = useState("");
   const [tplPopOpen, setTplPopOpen] = useState(false);
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const cursorPosRef = useRef(0);
 
   // Simpan draft otomatis tanpa menghapus setelah generate
   useWaDraft(phone, message, true, () => setDraftSaved(true));
@@ -358,13 +360,47 @@ export function WaGenerator() {
                 <Label htmlFor="message" className="text-sm font-semibold">
                   Pesan <span className="font-normal text-muted-foreground">(opsional)</span>
                 </Label>
-                <span
-                  className={`text-xs ${
-                    charsLeft < 0 ? "text-destructive" : "text-muted-foreground"
-                  }`}
-                >
-                  {charsLeft}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="Tambah emoji"
+                        className="inline-flex h-6 items-center rounded-md border border-border px-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        <Smile className="h-3.5 w-3.5" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-64 p-2" align="end">
+                      <EmojiGrid
+                        onSelect={(emoji) => {
+                          const el = messageRef.current;
+                          if (!el) return;
+                          const pos = cursorPosRef.current;
+                          const before = message.slice(0, pos);
+                          const after = message.slice(pos);
+                          const next = (before + emoji + after).slice(0, MAX_MESSAGE);
+                          setMessage(next);
+                          setDraftSaved(false);
+                          const newPos = pos + emoji.length;
+                          cursorPosRef.current = newPos;
+                          requestAnimationFrame(() => {
+                            el.focus();
+                            el.setSelectionRange(newPos, newPos);
+                          });
+                          setEmojiOpen(false);
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <span
+                    className={`text-xs ${
+                      charsLeft < 0 ? "text-destructive" : "text-muted-foreground"
+                    }`}
+                  >
+                    {charsLeft}
+                  </span>
+                </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {templates.map((t) => (
@@ -436,6 +472,13 @@ export function WaGenerator() {
                 onChange={(e) => {
                   setMessage(e.target.value.slice(0, MAX_MESSAGE));
                   setDraftSaved(false);
+                  cursorPosRef.current = e.target.selectionStart;
+                }}
+                onKeyUp={(e) => {
+                  cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
+                }}
+                onClick={(e) => {
+                  cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
                 }}
                 rows={4}
                 className="resize-none text-base"
@@ -597,6 +640,32 @@ export function WaGenerator() {
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+const EMOJIS = [
+  "😀","😂","🥰","😍","🤔","😢","😡","👍","👎","🙏",
+  "🔥","❤️","💯","✅","❌","⭐","🎉","🎁","🚀","💡",
+  "😊","😅","🤗","😴","😭","😤","🤝","👏","💪","🙌",
+  "😋","😎","🤓","🥳","😱","😬","👋","✌️","🤞","🫡",
+  "🤣","🙃","😉","🥺","😇","🤭","🤷","👌","👆","🫶",
+];
+
+function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
+  return (
+    <div className="grid grid-cols-10 gap-1">
+      {EMOJIS.map((emoji) => (
+        <button
+          key={emoji}
+          type="button"
+          onClick={() => onSelect(emoji)}
+          className="flex h-8 w-8 items-center justify-center rounded-md text-lg transition-colors hover:bg-muted"
+          aria-label={`Insert emoji ${emoji}`}
+        >
+          {emoji}
+        </button>
+      ))}
     </div>
   );
 }
