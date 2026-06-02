@@ -361,38 +361,6 @@ export function WaGenerator() {
                   Pesan <span className="font-normal text-muted-foreground">(opsional)</span>
                 </Label>
                 <div className="flex items-center gap-1.5">
-                  <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
-                    <PopoverTrigger asChild>
-                      <button
-                        type="button"
-                        aria-label="Tambah emoji"
-                        className="inline-flex h-6 items-center rounded-md border border-border px-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                      >
-                        <Smile className="h-3.5 w-3.5" />
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64 p-2" align="end">
-                      <EmojiGrid
-                        onSelect={(emoji) => {
-                          const el = messageRef.current;
-                          if (!el) return;
-                          const pos = cursorPosRef.current;
-                          const before = message.slice(0, pos);
-                          const after = message.slice(pos);
-                          const next = (before + emoji + after).slice(0, MAX_MESSAGE);
-                          setMessage(next);
-                          setDraftSaved(false);
-                          const newPos = pos + emoji.length;
-                          cursorPosRef.current = newPos;
-                          requestAnimationFrame(() => {
-                            el.focus();
-                            el.setSelectionRange(newPos, newPos);
-                          });
-                          setEmojiOpen(false);
-                        }}
-                      />
-                    </PopoverContent>
-                  </Popover>
                   <span
                     className={`text-xs ${
                       charsLeft < 0 ? "text-destructive" : "text-muted-foreground"
@@ -464,25 +432,59 @@ export function WaGenerator() {
                   </PopoverContent>
                 </Popover>
               </div>
-              <Textarea
-                ref={messageRef}
-                id="message"
-                placeholder="Halo, saya mau tanya soal produknya"
-                value={message}
-                onChange={(e) => {
-                  setMessage(e.target.value.slice(0, MAX_MESSAGE));
-                  setDraftSaved(false);
-                  cursorPosRef.current = e.target.selectionStart;
-                }}
-                onKeyUp={(e) => {
-                  cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
-                }}
-                onClick={(e) => {
-                  cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
-                }}
-                rows={4}
-                className="resize-none text-base"
-              />
+              <div className="relative">
+                <Textarea
+                  ref={messageRef}
+                  id="message"
+                  placeholder="Halo, saya mau tanya soal produknya"
+                  value={message}
+                  onChange={(e) => {
+                    setMessage(e.target.value.slice(0, MAX_MESSAGE));
+                    setDraftSaved(false);
+                    cursorPosRef.current = e.target.selectionStart;
+                  }}
+                  onKeyUp={(e) => {
+                    cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
+                  }}
+                  onClick={(e) => {
+                    cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
+                  }}
+                  rows={4}
+                  className="resize-none pr-10 text-base"
+                />
+                <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="Tambah emoji"
+                      className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      <Smile className="h-4 w-4" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-2" align="end">
+                    <EmojiGrid
+                      onSelect={(emoji) => {
+                        const el = messageRef.current;
+                        if (!el) return;
+                        const pos = cursorPosRef.current;
+                        const before = message.slice(0, pos);
+                        const after = message.slice(pos);
+                        const next = (before + emoji + after).slice(0, MAX_MESSAGE);
+                        setMessage(next);
+                        setDraftSaved(false);
+                        const newPos = pos + emoji.length;
+                        cursorPosRef.current = newPos;
+                        requestAnimationFrame(() => {
+                          el.focus();
+                          el.setSelectionRange(newPos, newPos);
+                        });
+                        setEmojiOpen(false);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
               {(phoneState === "valid" || message.trim().length > 0) && (
                 <ChatPreview phone={phone} message={message} />
               )}
