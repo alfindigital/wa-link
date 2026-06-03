@@ -661,28 +661,162 @@ export function WaGenerator() {
   );
 }
 
-const EMOJIS = [
-  "😀","😂","🥰","😍","🤔","😢","😡","👍","👎","🙏",
-  "🔥","❤️","💯","✅","❌","⭐","🎉","🎁","🚀","💡",
-  "😊","😅","🤗","😴","😭","😤","🤝","👏","💪","🙌",
-  "😋","😎","🤓","🥳","😱","😬","👋","✌️","🤞","🫡",
-  "🤣","🙃","😉","🥺","😇","🤭","🤷","👌","👆","🫶",
+type EmojiItem = { e: string; k: string };
+const EMOJI_LIST: EmojiItem[] = [
+  { e: "😀", k: "senyum smile happy senang grin" },
+  { e: "😂", k: "tawa laugh joy lucu ngakak" },
+  { e: "🥰", k: "cinta love sayang smiling hearts" },
+  { e: "😍", k: "cinta love mata hati kagum" },
+  { e: "🤔", k: "mikir think bingung" },
+  { e: "😢", k: "sedih cry nangis tear" },
+  { e: "😡", k: "marah angry kesal" },
+  { e: "👍", k: "jempol thumbs up oke bagus like" },
+  { e: "👎", k: "jempol bawah thumbs down tidak" },
+  { e: "🙏", k: "terima kasih makasih doa pray thanks" },
+  { e: "🔥", k: "api fire keren hot" },
+  { e: "❤️", k: "hati love cinta merah heart" },
+  { e: "💯", k: "seratus 100 mantap" },
+  { e: "✅", k: "ceklis check ok benar done" },
+  { e: "❌", k: "silang salah cross no" },
+  { e: "⭐", k: "bintang star favorit" },
+  { e: "🎉", k: "pesta party tada selamat" },
+  { e: "🎁", k: "hadiah gift kado" },
+  { e: "🚀", k: "roket rocket cepat launch" },
+  { e: "💡", k: "lampu idea ide bohlam" },
+  { e: "😊", k: "senyum blush ramah" },
+  { e: "😅", k: "ketawa keringat awkward" },
+  { e: "🤗", k: "peluk hug pelukan" },
+  { e: "😴", k: "tidur sleep ngantuk" },
+  { e: "😭", k: "nangis cry sedih sob" },
+  { e: "😤", k: "kesal huff frustasi" },
+  { e: "🤝", k: "salaman handshake deal" },
+  { e: "👏", k: "tepuk tangan clap applause" },
+  { e: "💪", k: "kuat strong otot semangat" },
+  { e: "🙌", k: "angkat tangan raised hands hore" },
+  { e: "😋", k: "enak yummy lapar" },
+  { e: "😎", k: "keren cool kacamata" },
+  { e: "🤓", k: "nerd kutu buku" },
+  { e: "🥳", k: "pesta ulang tahun party hat" },
+  { e: "😱", k: "kaget shocked teriak" },
+  { e: "😬", k: "grimace meringis canggung" },
+  { e: "👋", k: "halo hi dadah wave" },
+  { e: "✌️", k: "peace damai victory" },
+  { e: "🤞", k: "jari silang fingers crossed harap" },
+  { e: "🫡", k: "hormat salute siap" },
+  { e: "🤣", k: "ngakak rofl ketawa guling" },
+  { e: "🙃", k: "terbalik upside down" },
+  { e: "😉", k: "kedip wink" },
+  { e: "🥺", k: "memohon pleading sedih" },
+  { e: "😇", k: "malaikat angel polos" },
+  { e: "🤭", k: "tutup mulut giggle" },
+  { e: "🤷", k: "bingung shrug tidak tahu" },
+  { e: "👌", k: "ok oke" },
+  { e: "👆", k: "tunjuk atas point up" },
+  { e: "🫶", k: "hati tangan heart hands love" },
 ];
 
+const RECENT_KEY = "wa-emoji-recent";
+const MAX_RECENT = 16;
+
+function loadRecentEmojis(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(RECENT_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr.filter((x) => typeof x === "string").slice(0, MAX_RECENT) : [];
+  } catch {
+    return [];
+  }
+}
+
 function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
+  const [tab, setTab] = useState<"recent" | "all">(() => (loadRecentEmojis().length > 0 ? "recent" : "all"));
+  const [recent, setRecent] = useState<string[]>(() => loadRecentEmojis());
+  const [query, setQuery] = useState("");
+
+  const handlePick = (emoji: string) => {
+    onSelect(emoji);
+    setRecent((prev) => {
+      const next = [emoji, ...prev.filter((x) => x !== emoji)].slice(0, MAX_RECENT);
+      try {
+        window.localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
+
+  const q = query.trim().toLowerCase();
+  const filtered = q
+    ? EMOJI_LIST.filter((it) => it.e.includes(q) || it.k.toLowerCase().includes(q))
+    : null;
+
+  const renderGrid = (items: string[], emptyMsg: string) => {
+    if (items.length === 0) {
+      return <p className="px-1 py-4 text-center text-xs text-muted-foreground">{emptyMsg}</p>;
+    }
+    return (
+      <div className="grid grid-cols-8 gap-0.5 sm:grid-cols-10 sm:gap-1">
+        {items.map((emoji, i) => (
+          <button
+            key={`${emoji}-${i}`}
+            type="button"
+            onClick={() => handlePick(emoji)}
+            className="flex h-7 w-7 items-center justify-center rounded-md text-base transition-colors hover:bg-muted sm:h-8 sm:w-8 sm:text-lg"
+            aria-label={`Insert emoji ${emoji}`}
+          >
+            {emoji}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
   return (
-    <div className="grid grid-cols-8 gap-0.5 sm:grid-cols-10 sm:gap-1">
-      {EMOJIS.map((emoji) => (
-        <button
-          key={emoji}
-          type="button"
-          onClick={() => onSelect(emoji)}
-          className="flex h-7 w-7 items-center justify-center rounded-md text-base transition-colors hover:bg-muted sm:h-8 sm:w-8 sm:text-lg"
-          aria-label={`Insert emoji ${emoji}`}
-        >
-          {emoji}
-        </button>
-      ))}
+    <div className="flex flex-col gap-1.5">
+      <Input
+        type="search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Cari emoji…"
+        aria-label="Cari emoji"
+        className="h-8 text-xs"
+      />
+      {filtered ? (
+        renderGrid(filtered.map((it) => it.e), "Tidak ada emoji yang cocok.")
+      ) : (
+        <>
+          <div className="flex gap-1 border-b border-border" role="tablist">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === "recent"}
+              onClick={() => setTab("recent")}
+              className={`flex-1 rounded-t-md px-2 py-1 text-xs font-medium transition-colors ${
+                tab === "recent" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Terakhir
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === "all"}
+              onClick={() => setTab("all")}
+              className={`flex-1 rounded-t-md px-2 py-1 text-xs font-medium transition-colors ${
+                tab === "all" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Semua
+            </button>
+          </div>
+          {tab === "recent"
+            ? renderGrid(recent, "Belum ada emoji yang dipakai.")
+            : renderGrid(EMOJI_LIST.map((it) => it.e), "")}
+        </>
+      )}
     </div>
   );
 }
