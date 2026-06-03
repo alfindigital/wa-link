@@ -462,7 +462,12 @@ export function WaGenerator() {
                       <Smile className="h-4 w-4" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-64 p-2" align="end">
+                  <PopoverContent
+                    className="w-auto min-w-[14rem] max-w-[min(20rem,calc(100vw-1.5rem))] p-1.5 sm:min-w-[16rem] sm:p-2"
+                    align="end"
+                    sideOffset={6}
+                    collisionPadding={8}
+                  >
                     <EmojiGrid
                       onSelect={(emoji) => {
                         const el = messageRef.current;
