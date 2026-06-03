@@ -661,13 +661,13 @@ const EMOJIS = [
 
 function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
   return (
-    <div className="grid grid-cols-10 gap-1">
+    <div className="grid grid-cols-8 gap-0.5 sm:grid-cols-10 sm:gap-1">
       {EMOJIS.map((emoji) => (
         <button
           key={emoji}
           type="button"
           onClick={() => onSelect(emoji)}
-          className="flex h-8 w-8 items-center justify-center rounded-md text-lg transition-colors hover:bg-muted"
+          className="flex h-7 w-7 items-center justify-center rounded-md text-base transition-colors hover:bg-muted sm:h-8 sm:w-8 sm:text-lg"
           aria-label={`Insert emoji ${emoji}`}
         >
           {emoji}
