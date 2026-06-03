@@ -462,7 +462,12 @@ export function WaGenerator() {
                       <Smile className="h-4 w-4" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-64 p-2" align="end">
+                  <PopoverContent
+                    className="w-auto min-w-[14rem] max-w-[min(20rem,calc(100vw-1.5rem))] p-1.5 sm:min-w-[16rem] sm:p-2"
+                    align="end"
+                    sideOffset={6}
+                    collisionPadding={8}
+                  >
                     <EmojiGrid
                       onSelect={(emoji) => {
                         const el = messageRef.current;
@@ -656,13 +661,13 @@ const EMOJIS = [
 
 function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
   return (
-    <div className="grid grid-cols-10 gap-1">
+    <div className="grid grid-cols-8 gap-0.5 sm:grid-cols-10 sm:gap-1">
       {EMOJIS.map((emoji) => (
         <button
           key={emoji}
           type="button"
           onClick={() => onSelect(emoji)}
-          className="flex h-8 w-8 items-center justify-center rounded-md text-lg transition-colors hover:bg-muted"
+          className="flex h-7 w-7 items-center justify-center rounded-md text-base transition-colors hover:bg-muted sm:h-8 sm:w-8 sm:text-lg"
           aria-label={`Insert emoji ${emoji}`}
         >
           {emoji}
