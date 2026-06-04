@@ -505,21 +505,6 @@ export function WaGenerator() {
               )}
             </div>
 
-            <div className="flex items-center justify-between">
-              <span
-                className={`flex items-center gap-1 text-xs text-muted-foreground transition-opacity duration-300 ${
-                  draftSaved ? "opacity-100" : "opacity-0"
-                }`}
-                aria-live="polite"
-              >
-                <CloudCheck className="h-3.5 w-3.5" />
-                Draft tersimpan
-              </span>
-              <span className="text-xs text-muted-foreground">
-                Tersimpan di perangkat
-              </span>
-            </div>
-
             <Button
               type="submit"
               className="h-12 w-full text-base font-semibold"
