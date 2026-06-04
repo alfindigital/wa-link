@@ -13,8 +13,7 @@ const MAX = 20;
 const DEFAULTS: WaTemplate[] = [
   { id: "d-1", text: "Halo, saya mau order", isDefault: true },
   { id: "d-2", text: "Apakah masih ready?", isDefault: true },
-  { id: "d-3", text: "Bisa nego harga?", isDefault: true },
-  { id: "d-4", text: "Mau tanya soal produknya", isDefault: true },
+  { id: "d-3", text: "Mau tanya soal produknya", isDefault: true },
 ];
 
 function read(): WaTemplate[] {
