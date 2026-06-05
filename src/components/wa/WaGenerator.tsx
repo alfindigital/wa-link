@@ -281,6 +281,28 @@ export function WaGenerator() {
     }
   }
 
+  function wrapSelection(prefix: string, suffix: string) {
+    const el = messageRef.current;
+    if (!el) return;
+    const start = el.selectionStart ?? cursorPosRef.current;
+    const end = el.selectionEnd ?? start;
+    const selected = message.slice(start, end);
+    const inner = selected || "teks";
+    const before = message.slice(0, start);
+    const after = message.slice(end);
+    const next = (before + prefix + inner + suffix + after).slice(0, MAX_MESSAGE);
+    setMessage(next);
+    setDraftSaved(false);
+    const selStart = start + prefix.length;
+    const selEnd = selStart + inner.length;
+    cursorPosRef.current = selEnd;
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(selStart, selEnd);
+    });
+    vibrate(10);
+  }
+
   return (
     <div className="space-y-5">
       <Card ref={formRef} className="border-border/60 shadow-sm">
