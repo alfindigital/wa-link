@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, ExternalLink, Download, Check, X, Share2, Pencil, CloudCheck, Plus, CheckCheck, Smile } from "lucide-react";
+import { Copy, ExternalLink, Download, Check, X, Share2, Pencil, CloudCheck, Plus, CheckCheck, Smile, Bold, Italic, Strikethrough, User } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
@@ -281,6 +281,28 @@ export function WaGenerator() {
     }
   }
 
+  function wrapSelection(prefix: string, suffix: string) {
+    const el = messageRef.current;
+    if (!el) return;
+    const start = el.selectionStart ?? cursorPosRef.current;
+    const end = el.selectionEnd ?? start;
+    const selected = message.slice(start, end);
+    const inner = selected || "teks";
+    const before = message.slice(0, start);
+    const after = message.slice(end);
+    const next = (before + prefix + inner + suffix + after).slice(0, MAX_MESSAGE);
+    setMessage(next);
+    setDraftSaved(false);
+    const selStart = start + prefix.length;
+    const selEnd = selStart + inner.length;
+    cursorPosRef.current = selEnd;
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(selStart, selEnd);
+    });
+    vibrate(10);
+  }
+
   return (
     <div className="space-y-5">
       <Card ref={formRef} className="border-border/60 shadow-sm">
@@ -451,26 +473,47 @@ export function WaGenerator() {
                     cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
                   }}
                   rows={4}
-                  className="resize-none pr-10 text-base"
+                  className="resize-none pr-2 pt-2 text-base"
                 />
+                <div className="absolute right-1.5 top-1.5 flex items-center gap-0.5 rounded-md border border-border bg-background/95 p-0.5 shadow-sm backdrop-blur">
+                  <button
+                    type="button"
+                    aria-label="Tebal"
+                    title="Tebal (*teks*)"
+                    onClick={() => wrapSelection("*", "*")}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <Bold className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Miring"
+                    title="Miring (_teks_)"
+                    onClick={() => wrapSelection("_", "_")}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <Italic className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Coret"
+                    title="Coret (~teks~)"
+                    onClick={() => wrapSelection("~", "~")}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <Strikethrough className="h-3.5 w-3.5" />
+                  </button>
+                  <span className="mx-0.5 h-4 w-px bg-border" />
                 <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
                   <PopoverTrigger asChild>
-                    <TooltipProvider delayDuration={300}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
-                            type="button"
-                            aria-label="Tambah emoji"
-                            className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                          >
-                            <Smile className="h-4 w-4" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top" align="center">
-                          <p>Tambah emoji ke pesan</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <button
+                      type="button"
+                      aria-label="Tambah emoji"
+                      title="Tambah emoji"
+                      className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      <Smile className="h-3.5 w-3.5" />
+                    </button>
                   </PopoverTrigger>
                   <PopoverContent
                     className="w-auto min-w-[14rem] max-w-[min(20rem,calc(100vw-1.5rem))] p-1.5 sm:min-w-[16rem] sm:p-2"
@@ -499,6 +542,7 @@ export function WaGenerator() {
                     />
                   </PopoverContent>
                 </Popover>
+                </div>
               </div>
               {(phoneState === "valid" || message.trim().length > 0) && (
                 <ChatPreview phone={phone} message={message} />
@@ -815,7 +859,6 @@ function ChatPreview({ phone, message }: { phone: string; message: string }) {
     );
   }, [message]);
   const display = phone ? `+62 ${formatPhoneDisplay(phone)}` : "+62 ...";
-  const initial = phone ? phone.charAt(0) : "?";
   const text = message.trim();
   return (
     <div
@@ -823,8 +866,8 @@ function ChatPreview({ phone, message }: { phone: string; message: string }) {
       className="overflow-hidden rounded-lg border border-border bg-background"
     >
       <div className="flex items-center gap-2 border-b border-border bg-muted/60 px-3 py-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#25d366] text-xs font-bold text-white">
-          {initial}
+        <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-muted text-muted-foreground">
+          <User className="h-5 w-5" strokeWidth={2.2} />
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-semibold">{display}</p>

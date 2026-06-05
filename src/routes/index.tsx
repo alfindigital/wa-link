@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { History, HelpCircle, Copy, Trash2, ExternalLink, CheckCircle2, XCircle, Globe, Facebook, Youtube, Star, Pencil, Settings2, Moon } from "lucide-react";
+import { History, HelpCircle, Copy, Trash2, ExternalLink, CheckCircle2, XCircle, Globe, Facebook, Youtube, Star, Pencil, Settings, Moon } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
 import { Toaster } from "@/components/ui/sonner";
@@ -15,6 +15,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -102,11 +103,6 @@ function Index() {
           </h1>
           <div className="flex items-center gap-1">
             <Dialog open={histOpen} onOpenChange={setHistOpen}>
-              <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Riwayat">
-                  <History className="h-4 w-4" />
-                </Button>
-              </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle className="font-display text-xl font-black uppercase tracking-tight">
@@ -222,11 +218,6 @@ function Index() {
             </Dialog>
 
             <Dialog open={howOpen} onOpenChange={setHowOpen}>
-              <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Cara pakai">
-                  <HelpCircle className="h-4 w-4" />
-                </Button>
-              </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle className="font-display text-xl font-black uppercase tracking-tight">
@@ -252,11 +243,20 @@ function Index() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Pengaturan">
-                  <Settings2 className="h-4 w-4" />
+                <Button variant="ghost" size="icon" className="h-10 w-10" aria-label="Pengaturan">
+                  <Settings className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52">
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem onSelect={() => setHistOpen(true)}>
+                  <History className="mr-2 h-4 w-4" />
+                  Riwayat
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setHowOpen(true)}>
+                  <HelpCircle className="mr-2 h-4 w-4" />
+                  Cara pakai
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuLabel>Pengaturan</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <div className="flex items-center justify-between px-2 py-2 text-sm">
