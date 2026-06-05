@@ -455,7 +455,7 @@ export function WaGenerator() {
                   </PopoverContent>
                 </Popover>
               </div>
-              <div className="relative">
+              <div className="overflow-hidden rounded-md border border-input bg-background focus-within:ring-1 focus-within:ring-ring">
                 <Textarea
                   ref={messageRef}
                   id="message"
@@ -473,52 +473,53 @@ export function WaGenerator() {
                     cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
                   }}
                   rows={4}
-                  className="resize-none pr-2 pt-2 text-base"
+                  className="resize-none rounded-none border-0 bg-transparent text-base shadow-none focus-visible:ring-0"
                 />
-                <div className="absolute right-1.5 top-1.5 flex items-center gap-0.5 rounded-md border border-border bg-background/95 p-0.5 shadow-sm backdrop-blur">
+                <div className="flex items-center gap-0.5 border-t border-border bg-muted/40 px-1.5 py-1">
                   <button
                     type="button"
                     aria-label="Tebal"
                     title="Tebal (*teks*)"
                     onClick={() => wrapSelection("*", "*")}
-                    className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted"
                   >
-                    <Bold className="h-3.5 w-3.5" />
+                    <Bold className="h-4 w-4" />
                   </button>
                   <button
                     type="button"
                     aria-label="Miring"
                     title="Miring (_teks_)"
                     onClick={() => wrapSelection("_", "_")}
-                    className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted"
                   >
-                    <Italic className="h-3.5 w-3.5" />
+                    <Italic className="h-4 w-4" />
                   </button>
                   <button
                     type="button"
                     aria-label="Coret"
                     title="Coret (~teks~)"
                     onClick={() => wrapSelection("~", "~")}
-                    className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted"
                   >
-                    <Strikethrough className="h-3.5 w-3.5" />
+                    <Strikethrough className="h-4 w-4" />
                   </button>
-                  <span className="mx-0.5 h-4 w-px bg-border" />
+                  <span className="mx-1 h-5 w-px bg-border" />
                 <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
                   <PopoverTrigger asChild>
                     <button
                       type="button"
                       aria-label="Tambah emoji"
                       title="Tambah emoji"
-                      className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted"
                     >
-                      <Smile className="h-3.5 w-3.5" />
+                      <Smile className="h-4 w-4" />
                     </button>
                   </PopoverTrigger>
                   <PopoverContent
                     className="w-auto min-w-[14rem] max-w-[min(20rem,calc(100vw-1.5rem))] p-1.5 sm:min-w-[16rem] sm:p-2"
-                    align="end"
-                    sideOffset={6}
+                    align="start"
+                    side="top"
+                    sideOffset={8}
                     collisionPadding={8}
                   >
                     <EmojiGrid
