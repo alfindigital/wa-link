@@ -859,7 +859,6 @@ function ChatPreview({ phone, message }: { phone: string; message: string }) {
     );
   }, [message]);
   const display = phone ? `+62 ${formatPhoneDisplay(phone)}` : "+62 ...";
-  const initial = phone ? phone.charAt(0) : "?";
   const text = message.trim();
   return (
     <div
@@ -867,8 +866,8 @@ function ChatPreview({ phone, message }: { phone: string; message: string }) {
       className="overflow-hidden rounded-lg border border-border bg-background"
     >
       <div className="flex items-center gap-2 border-b border-border bg-muted/60 px-3 py-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#25d366] text-xs font-bold text-white">
-          {initial}
+        <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-muted text-muted-foreground">
+          <User className="h-5 w-5" strokeWidth={2.2} />
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-semibold">{display}</p>
