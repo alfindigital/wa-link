@@ -451,26 +451,47 @@ export function WaGenerator() {
                     cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
                   }}
                   rows={4}
-                  className="resize-none pr-10 text-base"
+                  className="resize-none pr-2 pt-2 text-base"
                 />
+                <div className="absolute right-1.5 top-1.5 flex items-center gap-0.5 rounded-md border border-border bg-background/95 p-0.5 shadow-sm backdrop-blur">
+                  <button
+                    type="button"
+                    aria-label="Tebal"
+                    title="Tebal (*teks*)"
+                    onClick={() => wrapSelection("*", "*")}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <Bold className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Miring"
+                    title="Miring (_teks_)"
+                    onClick={() => wrapSelection("_", "_")}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <Italic className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Coret"
+                    title="Coret (~teks~)"
+                    onClick={() => wrapSelection("~", "~")}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <Strikethrough className="h-3.5 w-3.5" />
+                  </button>
+                  <span className="mx-0.5 h-4 w-px bg-border" />
                 <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
                   <PopoverTrigger asChild>
-                    <TooltipProvider delayDuration={300}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
-                            type="button"
-                            aria-label="Tambah emoji"
-                            className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                          >
-                            <Smile className="h-4 w-4" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top" align="center">
-                          <p>Tambah emoji ke pesan</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <button
+                      type="button"
+                      aria-label="Tambah emoji"
+                      title="Tambah emoji"
+                      className="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      <Smile className="h-3.5 w-3.5" />
+                    </button>
                   </PopoverTrigger>
                   <PopoverContent
                     className="w-auto min-w-[14rem] max-w-[min(20rem,calc(100vw-1.5rem))] p-1.5 sm:min-w-[16rem] sm:p-2"
@@ -499,6 +520,7 @@ export function WaGenerator() {
                     />
                   </PopoverContent>
                 </Popover>
+                </div>
               </div>
               {(phoneState === "valid" || message.trim().length > 0) && (
                 <ChatPreview phone={phone} message={message} />
