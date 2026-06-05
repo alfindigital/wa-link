@@ -234,7 +234,6 @@ function Index() {
               </DialogContent>
             </Dialog>
 
-            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Pengaturan">
