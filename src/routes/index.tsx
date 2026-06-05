@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { History, HelpCircle, Copy, Trash2, ExternalLink, CheckCircle2, XCircle, Globe, Facebook, Youtube, Star, Pencil, Settings2 } from "lucide-react";
+import { History, HelpCircle, Copy, Trash2, ExternalLink, CheckCircle2, XCircle, Globe, Facebook, Youtube, Star, Pencil, Settings2, Moon } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -54,12 +53,29 @@ function Index() {
   const { items, remove, clear, setLabel, toggleFavorite } = useWaHistory();
   const [sound, setSound] = useState(false);
   const [haptic, setHaptic] = useState(true);
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     const p = getPrefs();
     setSound(p.sound);
     setHaptic(p.haptic);
+    const saved = typeof window !== "undefined" ? window.localStorage.getItem("theme") : null;
+    const isDark = saved === "dark";
+    setDark(isDark);
+    if (typeof document !== "undefined") {
+      document.documentElement.classList.toggle("dark", isDark);
+    }
   }, []);
+
+  function toggleDark(v: boolean) {
+    setDark(v);
+    document.documentElement.classList.toggle("dark", v);
+    try {
+      window.localStorage.setItem("theme", v ? "dark" : "light");
+    } catch {
+      // ignore
+    }
+  }
 
   async function copyText(text: string) {
     try {
@@ -234,7 +250,6 @@ function Index() {
               </DialogContent>
             </Dialog>
 
-            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Pengaturan">
@@ -244,6 +259,12 @@ function Index() {
               <DropdownMenuContent align="end" className="w-52">
                 <DropdownMenuLabel>Pengaturan</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <div className="flex items-center justify-between px-2 py-2 text-sm">
+                  <label htmlFor="pref-dark" className="flex items-center gap-2">
+                    <Moon className="h-3.5 w-3.5" /> Mode gelap
+                  </label>
+                  <Switch id="pref-dark" checked={dark} onCheckedChange={toggleDark} />
+                </div>
                 <div className="flex items-center justify-between px-2 py-2 text-sm">
                   <label htmlFor="pref-sound">Suara</label>
                   <Switch
