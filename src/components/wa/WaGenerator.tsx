@@ -110,6 +110,7 @@ export function WaGenerator() {
     null,
   );
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [qrError, setQrError] = useState(false);
   const [copied, setCopied] = useState(false);
   const [draftSaved, setDraftSaved] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
@@ -181,9 +182,11 @@ export function WaGenerator() {
   useEffect(() => {
     if (!result) {
       setQrDataUrl(null);
+      setQrError(false);
       return;
     }
     let cancelled = false;
+    setQrError(false);
     QRCode.toDataURL(result.url, {
       width: 512,
       margin: 2,
@@ -193,7 +196,13 @@ export function WaGenerator() {
         if (!cancelled) setQrDataUrl(url);
       })
       .catch(() => {
-        if (!cancelled) setQrDataUrl(null);
+        if (cancelled) return;
+        setQrDataUrl(null);
+        setQrError(true);
+        toast.error("Gagal membuat QR", {
+          description: "Coba ulangi atau salin link manual.",
+          icon: <XCircle className="h-4 w-4 text-destructive" />,
+        });
       });
     return () => {
       cancelled = true;
