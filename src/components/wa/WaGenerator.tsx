@@ -646,6 +646,11 @@ export function WaGenerator() {
                     width={224}
                     height={224}
                   />
+                ) : qrError ? (
+                  <div className="flex h-56 w-56 flex-col items-center justify-center gap-2 rounded-md bg-muted/40 px-3 text-center text-xs text-muted-foreground">
+                    <XCircle className="h-6 w-6 text-destructive" />
+                    QR gagal dibuat. Coba lagi.
+                  </div>
                 ) : (
                   <div className="h-56 w-56 animate-pulse rounded-md bg-muted" />
                 )}
