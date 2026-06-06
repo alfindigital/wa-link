@@ -98,8 +98,12 @@ function detectPrefix(raw: string): DetectedPrefix | null {
 }
 
 export function WaGenerator() {
-  const [phone, setPhone] = useState(() => cleanPhone(loadDraft()?.phone ?? ""));
-  const [message, setMessage] = useState(() => loadDraft()?.message ?? "");
+  // IMPORTANT: do NOT read localStorage in useState initializer — it runs
+  // during hydration on the client and produces SSR/CSR mismatches when a
+  // draft exists. Hydrate empty, then load draft in an effect.
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+  const [hydrated, setHydrated] = useState(false);
   const [detected, setDetected] = useState<DetectedPrefix | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ url: string; phone: string; message: string } | null>(
@@ -118,8 +122,18 @@ export function WaGenerator() {
   const [emojiOpen, setEmojiOpen] = useState(false);
   const cursorPosRef = useRef(0);
 
+  // Load saved draft after mount to avoid hydration mismatch.
+  useEffect(() => {
+    const d = loadDraft();
+    if (d) {
+      if (d.phone) setPhone(cleanPhone(d.phone));
+      if (d.message) setMessage(d.message);
+    }
+    setHydrated(true);
+  }, []);
+
   // Simpan draft otomatis tanpa menghapus setelah generate
-  useWaDraft(phone, message, true, () => setDraftSaved(true));
+  useWaDraft(phone, message, hydrated, () => setDraftSaved(true));
 
   // Auto-hide draft saved indicator after 2s
   useEffect(() => {
