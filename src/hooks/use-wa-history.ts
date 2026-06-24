@@ -96,9 +96,7 @@ export function useWaHistory() {
 
   const toggleFavorite = useCallback(
     (id: string) => {
-      const next = read().map((it) =>
-        it.id === id ? { ...it, favorite: !it.favorite } : it,
-      );
+      const next = read().map((it) => (it.id === id ? { ...it, favorite: !it.favorite } : it));
       persist(sortItems(next));
     },
     [persist],

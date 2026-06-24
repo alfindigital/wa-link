@@ -7,6 +7,7 @@ Mengaplikasikan 4 ide improvement sekaligus ke WAlinkQ. Semua pure frontend, dat
 ### 1. Template Pesan Cepat (Snippets)
 
 **File baru:** `src/hooks/use-wa-templates.ts`
+
 - Hook `useWaTemplates()` yang baca/tulis ke `localStorage` key `wa-link-templates`.
 - API: `{ items, add(text), remove(id) }`.
 - Seed default saat pertama kali kosong:
@@ -16,6 +17,7 @@ Mengaplikasikan 4 ide improvement sekaligus ke WAlinkQ. Semua pure frontend, dat
   - "Mau tanya soal produknya"
 
 **Perubahan di `src/components/wa/WaGenerator.tsx`:**
+
 - Di atas `<Textarea>` pesan, render baris chip horizontal (`flex flex-wrap gap-1.5`).
 - Tiap chip = `Button` kecil `variant="outline" size="sm"` → klik = isi `message` dengan teks template (replace, bukan append). Chip "+" terakhir membuka popover kecil dengan input untuk menambah template custom.
 - Tiap chip custom punya tombol "×" mini untuk hapus (hanya untuk yg ditambah user, bukan default).
@@ -26,6 +28,7 @@ Mengaplikasikan 4 ide improvement sekaligus ke WAlinkQ. Semua pure frontend, dat
 ### 2. Nama Kontak & Favorit di Riwayat
 
 **Perubahan di `src/hooks/use-wa-history.ts`:**
+
 - Tambah field opsional `label?: string` dan `favorite?: boolean` di `WaHistoryItem`.
 - Tambah method:
   - `setLabel(id, label)` — update label item.
@@ -34,6 +37,7 @@ Mengaplikasikan 4 ide improvement sekaligus ke WAlinkQ. Semua pure frontend, dat
 - Tetap dedupe per `url`; saat re-add dari `WaGenerator`, pertahankan `label` & `favorite` dari item lama yang `url`-nya sama.
 
 **Perubahan di `src/routes/index.tsx` (Dialog Riwayat):**
+
 - Tiap item:
   - Render ikon bintang (`Star` dari lucide) kiri sebagai toggle favorite. Filled kuning jika `favorite`.
   - Render `label` di atas nomor sebagai judul kalau ada; nomor pindah jadi baris kedua (font lebih kecil).
@@ -45,6 +49,7 @@ Mengaplikasikan 4 ide improvement sekaligus ke WAlinkQ. Semua pure frontend, dat
 ### 7. Preview Card (Simulasi Chat)
 
 **Perubahan di `src/components/wa/WaGenerator.tsx`:**
+
 - Komponen kecil inline `<ChatPreview phone message />` yang dirender **di dalam form**, tepat di bawah `Textarea` pesan, hanya saat `phone` valid ATAU `message` ada isi.
 - Tampilan: kartu kecil mirip bubble chat WhatsApp:
   - Header tipis: avatar lingkaran inisial + "+62 812 …" + status hijau "online".
@@ -58,6 +63,7 @@ Mengaplikasikan 4 ide improvement sekaligus ke WAlinkQ. Semua pure frontend, dat
 ### 8. Sound & Haptic Feedback
 
 **File baru:** `src/lib/feedback.ts`
+
 - `vibrate(pattern: number | number[])` — wrap `navigator.vibrate` dengan guard `typeof navigator !== "undefined"` dan toggle preferensi.
 - `playBlip(kind: "success" | "copy")` — pakai Web Audio API (oscillator + envelope), tidak butuh file aset. Lazy-init `AudioContext` saat pertama dipakai.
 - Preferensi user disimpan di `localStorage`:
@@ -66,12 +72,14 @@ Mengaplikasikan 4 ide improvement sekaligus ke WAlinkQ. Semua pure frontend, dat
 - Export helper `getPrefs() / setPref(key, value)`.
 
 **Perubahan di `src/components/wa/WaGenerator.tsx`:**
+
 - Di `handleGenerate` (setelah sukses set result): `vibrate(40); playBlip("success");`
 - Di `copyText` (setelah sukses): `vibrate(20); playBlip("copy");`
 - Di `handleDownloadQr`: `vibrate(30);`
 - `handleShare` sudah ada `navigator.vibrate(40)` — ganti ke helper agar respek preferensi.
 
 **Toggle preferensi di header (`src/routes/index.tsx`):**
+
 - Tambah DropdownMenu kecil (ikon `Settings2`) di sebelah `ThemeToggle` berisi 2 switch: "Suara" & "Getar". Pakai komponen `Switch` shadcn yg sudah tersedia.
 
 ---

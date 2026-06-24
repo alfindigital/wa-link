@@ -81,8 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "WAlinkQ — Buat Link WhatsApp Gratis" },
       {
         property: "og:description",
-        content:
-          "Buat link WhatsApp dengan pesan siap kirim + QR code. Gratis dan tanpa login.",
+        content: "Buat link WhatsApp dengan pesan siap kirim + QR code. Gratis dan tanpa login.",
       },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "WAlinkQ" },
@@ -90,11 +89,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "WAlinkQ — Buat Link WhatsApp Gratis" },
       {
         name: "twitter:description",
-        content:
-          "Buat link WhatsApp dengan pesan siap kirim + QR code. Gratis dan tanpa login.",
+        content: "Buat link WhatsApp dengan pesan siap kirim + QR code. Gratis dan tanpa login.",
       },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0e337aee-3e9d-4df1-9d2d-c50547bd50a1/id-preview-e2cc7ea3--3ac30c5e-d242-4bac-b5c8-78d7bf0867ca.lovable.app-1780359319779.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0e337aee-3e9d-4df1-9d2d-c50547bd50a1/id-preview-e2cc7ea3--3ac30c5e-d242-4bac-b5c8-78d7bf0867ca.lovable.app-1780359319779.png" },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0e337aee-3e9d-4df1-9d2d-c50547bd50a1/id-preview-e2cc7ea3--3ac30c5e-d242-4bac-b5c8-78d7bf0867ca.lovable.app-1780359319779.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0e337aee-3e9d-4df1-9d2d-c50547bd50a1/id-preview-e2cc7ea3--3ac30c5e-d242-4bac-b5c8-78d7bf0867ca.lovable.app-1780359319779.png",
+      },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },

@@ -8,7 +8,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, ExternalLink, Download, Check, X, Share2, Pencil, CloudCheck, Plus, CheckCheck, Smile, Bold, Italic, Strikethrough, User } from "lucide-react";
+import {
+  Copy,
+  ExternalLink,
+  Download,
+  Check,
+  X,
+  Share2,
+  Pencil,
+  CloudCheck,
+  Plus,
+  CheckCheck,
+  Smile,
+  Bold,
+  Italic,
+  Strikethrough,
+  User,
+} from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
@@ -17,6 +33,9 @@ import { vibrate, playBlip } from "@/lib/feedback";
 
 const MAX_MESSAGE = 1000;
 const DIAL = "62";
+
+// Debounce handle for the auto-hide of the prefix-detected hint.
+let phoneWarnTimer: ReturnType<typeof setTimeout> | undefined;
 
 function cleanPhone(raw: string) {
   let p = raw.replace(/\D/g, "");
@@ -42,8 +61,10 @@ function getPhoneValidationState(raw: string): "empty" | "valid" | "invalid" {
 
 function getPhoneErrorMessage(cleaned: string): string | null {
   if (!cleaned) return "Nomor tidak boleh kosong. Masukkan nomor WhatsApp kamu.";
-  if (cleaned.length < 6) return `Nomor terlalu pendek (${cleaned.length} digit). Minimal 6 digit tanpa awalan 0 atau 62.`;
-  if (cleaned.length > 14) return `Nomor terlalu panjang (${cleaned.length} digit). Maksimal 14 digit tanpa awalan 0 atau 62.`;
+  if (cleaned.length < 6)
+    return `Nomor terlalu pendek (${cleaned.length} digit). Minimal 6 digit tanpa awalan 0 atau 62.`;
+  if (cleaned.length > 14)
+    return `Nomor terlalu panjang (${cleaned.length} digit). Maksimal 14 digit tanpa awalan 0 atau 62.`;
   return null;
 }
 
@@ -158,15 +179,15 @@ export function WaGenerator() {
     const prefix = detectPrefix(raw);
     if (prefix && cleaned.length > 0) {
       setDetected(prefix);
-      window.clearTimeout((handlePhoneChange as any)._t);
+      window.clearTimeout(phoneWarnTimer);
       // Warning tetap terlihat sampai pengguna mengubah input; deteksi sukses
       // akan hilang sendiri setelah 2.5 detik.
       if (prefix.kind !== "warning") {
-        (handlePhoneChange as any)._t = window.setTimeout(() => setDetected(null), 2500);
+        phoneWarnTimer = setTimeout(() => setDetected(null), 2500);
       }
     } else {
       setDetected(null);
-      window.clearTimeout((handlePhoneChange as any)._t);
+      window.clearTimeout(phoneWarnTimer);
     }
     setPhone(cleaned.slice(0, 14));
     if (error) setError(null);
@@ -527,45 +548,45 @@ export function WaGenerator() {
                     <Strikethrough className="h-4 w-4" />
                   </button>
                   <span className="mx-1 h-5 w-px bg-border" />
-                <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
-                  <PopoverTrigger asChild>
-                    <button
-                      type="button"
-                      aria-label="Tambah emoji"
-                      title="Tambah emoji"
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted"
+                  <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="Tambah emoji"
+                        title="Tambah emoji"
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted"
+                      >
+                        <Smile className="h-4 w-4" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto min-w-[14rem] max-w-[min(20rem,calc(100vw-1.5rem))] p-1.5 sm:min-w-[16rem] sm:p-2"
+                      align="start"
+                      side="top"
+                      sideOffset={8}
+                      collisionPadding={8}
                     >
-                      <Smile className="h-4 w-4" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-auto min-w-[14rem] max-w-[min(20rem,calc(100vw-1.5rem))] p-1.5 sm:min-w-[16rem] sm:p-2"
-                    align="start"
-                    side="top"
-                    sideOffset={8}
-                    collisionPadding={8}
-                  >
-                    <EmojiGrid
-                      onSelect={(emoji) => {
-                        const el = messageRef.current;
-                        if (!el) return;
-                        const pos = cursorPosRef.current;
-                        const before = message.slice(0, pos);
-                        const after = message.slice(pos);
-                        const next = (before + emoji + after).slice(0, MAX_MESSAGE);
-                        setMessage(next);
-                        setDraftSaved(false);
-                        const newPos = pos + emoji.length;
-                        cursorPosRef.current = newPos;
-                        requestAnimationFrame(() => {
-                          el.focus();
-                          el.setSelectionRange(newPos, newPos);
-                        });
-                        setEmojiOpen(false);
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
+                      <EmojiGrid
+                        onSelect={(emoji) => {
+                          const el = messageRef.current;
+                          if (!el) return;
+                          const pos = cursorPosRef.current;
+                          const before = message.slice(0, pos);
+                          const after = message.slice(pos);
+                          const next = (before + emoji + after).slice(0, MAX_MESSAGE);
+                          setMessage(next);
+                          setDraftSaved(false);
+                          const newPos = pos + emoji.length;
+                          cursorPosRef.current = newPos;
+                          requestAnimationFrame(() => {
+                            el.focus();
+                            el.setSelectionRange(newPos, newPos);
+                          });
+                          setEmojiOpen(false);
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
               {(phoneState === "valid" || message.trim().length > 0) && (
@@ -608,7 +629,10 @@ export function WaGenerator() {
             <div className="rounded-md border border-border bg-background px-3 py-2 text-sm">
               <div className="text-xs font-medium text-muted-foreground">Nomor tujuan</div>
               <div className="font-mono tabular-nums">
-                +{DIAL} {formatPhoneDisplay(result.phone.startsWith(DIAL) ? result.phone.slice(DIAL.length) : result.phone)}
+                +{DIAL}{" "}
+                {formatPhoneDisplay(
+                  result.phone.startsWith(DIAL) ? result.phone.slice(DIAL.length) : result.phone,
+                )}
               </div>
             </div>
 
@@ -638,44 +662,44 @@ export function WaGenerator() {
             <h3 className="text-sm font-semibold">QR code</h3>
 
             <div className="flex justify-center rounded-md border border-border bg-background p-4">
-                {qrDataUrl ? (
-                  <img
-                    src={qrDataUrl}
-                    alt="QR code link WhatsApp"
-                    className="h-56 w-56 rounded-md"
-                    width={224}
-                    height={224}
-                  />
-                ) : qrError ? (
-                  <div className="flex h-56 w-56 flex-col items-center justify-center gap-2 rounded-md bg-muted/40 px-3 text-center text-xs text-muted-foreground">
-                    <XCircle className="h-6 w-6 text-destructive" />
-                    QR gagal dibuat. Coba lagi.
-                  </div>
-                ) : (
-                  <div className="h-56 w-56 animate-pulse rounded-md bg-muted" />
-                )}
+              {qrDataUrl ? (
+                <img
+                  src={qrDataUrl}
+                  alt="QR code link WhatsApp"
+                  className="h-56 w-56 rounded-md"
+                  width={224}
+                  height={224}
+                />
+              ) : qrError ? (
+                <div className="flex h-56 w-56 flex-col items-center justify-center gap-2 rounded-md bg-muted/40 px-3 text-center text-xs text-muted-foreground">
+                  <XCircle className="h-6 w-6 text-destructive" />
+                  QR gagal dibuat. Coba lagi.
+                </div>
+              ) : (
+                <div className="h-56 w-56 animate-pulse rounded-md bg-muted" />
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-11"
-                  onClick={() => copyText(result.url, "Link")}
-                  aria-label="Salin link"
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-11"
-                  onClick={handleDownloadQr}
-                  disabled={!qrDataUrl}
-                  aria-label="Unduh QR"
-                >
-                  <Download className="h-4 w-4" />
-                </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11"
+                onClick={() => copyText(result.url, "Link")}
+                aria-label="Salin link"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11"
+                onClick={handleDownloadQr}
+                disabled={!qrDataUrl}
+                aria-label="Unduh QR"
+              >
+                <Download className="h-4 w-4" />
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -789,7 +813,9 @@ function loadRecentEmojis(): string[] {
 }
 
 function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
-  const [tab, setTab] = useState<"recent" | "all">(() => (loadRecentEmojis().length > 0 ? "recent" : "all"));
+  const [tab, setTab] = useState<"recent" | "all">(() =>
+    loadRecentEmojis().length > 0 ? "recent" : "all",
+  );
   const [recent, setRecent] = useState<string[]>(() => loadRecentEmojis());
   const [query, setQuery] = useState("");
 
@@ -843,7 +869,10 @@ function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
         className="h-8 text-xs"
       />
       {filtered ? (
-        renderGrid(filtered.map((it) => it.e), "Tidak ada emoji yang cocok.")
+        renderGrid(
+          filtered.map((it) => it.e),
+          "Tidak ada emoji yang cocok.",
+        )
       ) : (
         <>
           <div className="flex gap-1 border-b border-border" role="tablist">
@@ -853,7 +882,9 @@ function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
               aria-selected={tab === "recent"}
               onClick={() => setTab("recent")}
               className={`flex-1 rounded-t-md px-2 py-1 text-xs font-medium transition-colors ${
-                tab === "recent" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"
+                tab === "recent"
+                  ? "bg-muted text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Terakhir
@@ -864,7 +895,9 @@ function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
               aria-selected={tab === "all"}
               onClick={() => setTab("all")}
               className={`flex-1 rounded-t-md px-2 py-1 text-xs font-medium transition-colors ${
-                tab === "all" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"
+                tab === "all"
+                  ? "bg-muted text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Semua
@@ -872,7 +905,10 @@ function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
           </div>
           {tab === "recent"
             ? renderGrid(recent, "Belum ada emoji yang dipakai.")
-            : renderGrid(EMOJI_LIST.map((it) => it.e), "")}
+            : renderGrid(
+                EMOJI_LIST.map((it) => it.e),
+                "",
+              )}
         </>
       )}
     </div>
@@ -883,9 +919,7 @@ function ChatPreview({ phone, message }: { phone: string; message: string }) {
   const [time, setTime] = useState<string>("—:—");
   useEffect(() => {
     const t = new Date();
-    setTime(
-      `${String(t.getHours()).padStart(2, "0")}.${String(t.getMinutes()).padStart(2, "0")}`,
-    );
+    setTime(`${String(t.getHours()).padStart(2, "0")}.${String(t.getMinutes()).padStart(2, "0")}`);
   }, [message]);
   const display = phone ? `+62 ${formatPhoneDisplay(phone)}` : "+62 ...";
   const text = message.trim();

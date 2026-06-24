@@ -29,12 +29,7 @@ export function clearDraft() {
   }
 }
 
-export function useWaDraft(
-  phone: string,
-  message: string,
-  enabled: boolean,
-  onSaved?: () => void,
-) {
+export function useWaDraft(phone: string, message: string, enabled: boolean, onSaved?: () => void) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -46,10 +41,7 @@ export function useWaDraft(
           window.localStorage.removeItem(KEY);
           return;
         }
-        window.localStorage.setItem(
-          KEY,
-          JSON.stringify({ phone, message, savedAt: Date.now() }),
-        );
+        window.localStorage.setItem(KEY, JSON.stringify({ phone, message, savedAt: Date.now() }));
         onSaved?.();
       } catch {
         // ignore
