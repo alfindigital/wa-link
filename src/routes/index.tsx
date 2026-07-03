@@ -248,7 +248,8 @@ function Index() {
                     Belum ada link tersimpan.
                   </p>
                 ) : (
-                  <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
+                  <>
+                    <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
                       {items.map((it) => (
                         <li key={it.id}>
                           <SwipeToDelete onDelete={() => handleRemove(it.id)}>
