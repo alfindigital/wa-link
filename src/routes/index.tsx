@@ -241,6 +241,15 @@ function Index() {
                         onChange={handleImport}
                       />
                     </label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1 px-2 text-[11px] text-destructive hover:text-destructive"
+                      onClick={handleClearAll}
+                      disabled={items.length === 0}
+                    >
+                      <Trash2 className="h-3 w-3" /> Hapus semua
+                    </Button>
                   </div>
                 </div>
                 {items.length === 0 ? (
@@ -332,11 +341,6 @@ function Index() {
                         </li>
                       ))}
                     </ul>
-                    <div className="flex justify-end pt-2">
-                      <Button variant="ghost" size="sm" onClick={handleClearAll}>
-                        Hapus semua
-                      </Button>
-                    </div>
                   </>
                 )}
               </DialogContent>
