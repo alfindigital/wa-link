@@ -13,6 +13,8 @@ import {
   Pencil,
   Settings,
   Moon,
+  Volume2,
+  Vibrate,
   Download,
   Upload,
   Phone,
