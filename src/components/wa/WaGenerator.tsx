@@ -323,7 +323,6 @@ export function WaGenerator() {
     const after = message.slice(end);
     const next = (before + prefix + inner + suffix + after).slice(0, MAX_MESSAGE);
     setMessage(next);
-    setDraftSaved(false);
     const selStart = start + prefix.length;
     const selEnd = selStart + inner.length;
     cursorPosRef.current = selEnd;
@@ -431,7 +430,6 @@ export function WaGenerator() {
                       type="button"
                       onClick={() => {
                         setMessage(t.text.slice(0, MAX_MESSAGE));
-                        setDraftSaved(false);
                         vibrate(15);
                       }}
                       className="rounded-full border border-border bg-muted/50 px-2.5 py-1 text-xs text-foreground transition-colors hover:bg-muted"
@@ -494,7 +492,6 @@ export function WaGenerator() {
                   value={message}
                   onChange={(e) => {
                     setMessage(e.target.value.slice(0, MAX_MESSAGE));
-                    setDraftSaved(false);
                     cursorPosRef.current = e.target.selectionStart;
                   }}
                   onKeyUp={(e) => {
@@ -562,7 +559,6 @@ export function WaGenerator() {
                           const after = message.slice(pos);
                           const next = (before + emoji + after).slice(0, MAX_MESSAGE);
                           setMessage(next);
-                          setDraftSaved(false);
                           const newPos = pos + emoji.length;
                           cursorPosRef.current = newPos;
                           requestAnimationFrame(() => {
