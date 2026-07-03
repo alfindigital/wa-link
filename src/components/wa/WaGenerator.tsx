@@ -173,11 +173,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   // Simpan draft otomatis tanpa menghapus setelah generate
   useWaDraft(phone, message, hydrated);
 
-  function scrollToForm() {
-    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    setTimeout(() => messageRef.current?.focus(), 400);
-  }
-
   function resizeTextarea() {
     const el = messageRef.current;
     if (!el) return;
