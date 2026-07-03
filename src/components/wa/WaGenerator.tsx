@@ -179,6 +179,17 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     setTimeout(() => messageRef.current?.focus(), 400);
   }
 
+  function resizeTextarea() {
+    const el = messageRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.max(88, el.scrollHeight)}px`;
+  }
+
+  useEffect(() => {
+    resizeTextarea();
+  }, [message]);
+
   const charsLeft = MAX_MESSAGE - message.length;
   const phoneState = getPhoneValidationState(phone);
   const phoneDisplay = formatPhoneDisplay(phone);
@@ -483,6 +494,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   onChange={(e) => {
                     setMessage(e.target.value.slice(0, MAX_MESSAGE));
                     cursorPosRef.current = e.target.selectionStart;
+                    resizeTextarea();
                   }}
                   onKeyUp={(e) => {
                     cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
@@ -490,8 +502,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   onClick={(e) => {
                     cursorPosRef.current = (e.target as HTMLTextAreaElement).selectionStart;
                   }}
-                  rows={4}
-                  className="resize-none rounded-none border-0 bg-transparent text-base shadow-none focus-visible:ring-0"
+                  rows={1}
+                  className="min-h-[88px] resize-none rounded-none border-0 bg-transparent text-base shadow-none focus-visible:ring-0"
                   suppressHydrationWarning
                 />
                 <div className="flex items-center gap-0.5 border-t border-border bg-muted/40 px-1.5 py-1">
