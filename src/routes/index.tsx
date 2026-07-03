@@ -9,8 +9,6 @@ import {
   CheckCircle2,
   XCircle,
   Globe,
-  Facebook,
-  Youtube,
   Star,
   Pencil,
   Settings,
@@ -349,44 +347,6 @@ function Index() {
           className="inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-primary"
         >
           <Globe className="h-3.5 w-3.5" aria-hidden="true" />
-        </a>
-        <a
-          href="https://fb.com/alfindigital"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Facebook @alfindigital"
-          title="Facebook @alfindigital"
-          className="inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-primary"
-        >
-          <Facebook className="h-3.5 w-3.5" aria-hidden="true" />
-        </a>
-        <a
-          href="https://youtube.com/@alfindigital"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="YouTube @alfindigital"
-          title="YouTube @alfindigital"
-          className="inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-primary"
-        >
-          <Youtube className="h-3.5 w-3.5" aria-hidden="true" />
-        </a>
-        <a
-          href="https://tiktok.com/@alfindigital"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="TikTok @alfindigital"
-          title="TikTok @alfindigital"
-          className="inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-primary"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="h-3.5 w-3.5"
-            aria-hidden="true"
-          >
-            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V9.83a8.16 8.16 0 0 0 4.77 1.52V7.9a4.83 4.83 0 0 1-1.84-1.21Z" />
-          </svg>
         </a>
         <a
           href="https://x.com/alfindigital"
