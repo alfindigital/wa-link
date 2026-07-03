@@ -179,6 +179,17 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     setTimeout(() => messageRef.current?.focus(), 400);
   }
 
+  function resizeTextarea() {
+    const el = messageRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.max(88, el.scrollHeight)}px`;
+  }
+
+  useEffect(() => {
+    resizeTextarea();
+  }, [message]);
+
   const charsLeft = MAX_MESSAGE - message.length;
   const phoneState = getPhoneValidationState(phone);
   const phoneDisplay = formatPhoneDisplay(phone);
