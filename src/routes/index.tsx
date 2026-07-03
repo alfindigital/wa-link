@@ -184,18 +184,18 @@ function Index() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-10 border-b border-primary/20 bg-background/85 backdrop-blur">
-        <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-xl items-center justify-between px-3 py-2.5 sm:px-6 sm:py-3">
           <h1 className="font-display text-2xl font-black uppercase tracking-tight sm:text-[28px]">
             <span className="text-primary">WA</span>link<span className="text-primary">Q</span>
             <span className="sr-only"> — Bikin Link WhatsApp + QR Code Gratis</span>
           </h1>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <Dialog open={histOpen} onOpenChange={setHistOpen}>
               <DialogTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10"
+                  className="h-9 w-9"
                   aria-label="Riwayat"
                 >
                   <History className="h-5 w-5" />
@@ -207,6 +207,42 @@ function Index() {
                     Riwayat
                   </DialogTitle>
                 </DialogHeader>
+                <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-1">
+                  {linksMonth > 0 && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                      Kamu buat {linksMonth} link bulan ini
+                    </span>
+                  )}
+                  <div className="ml-auto flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1 px-2 text-[11px]"
+                      onClick={() => exportHistoryJSON(items)}
+                      disabled={items.length === 0}
+                    >
+                      <Download className="h-3 w-3" /> JSON
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1 px-2 text-[11px]"
+                      onClick={() => exportHistoryCSV(items)}
+                      disabled={items.length === 0}
+                    >
+                      <Download className="h-3 w-3" /> CSV
+                    </Button>
+                    <label className="inline-flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 text-[11px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground">
+                      <Upload className="h-3 w-3" /> Import
+                      <input
+                        type="file"
+                        accept="application/json"
+                        className="hidden"
+                        onChange={handleImport}
+                      />
+                    </label>
+                  </div>
+                </div>
                 {items.length === 0 ? (
                   <p className="py-6 text-center text-sm text-muted-foreground">
                     Belum ada link tersimpan.
@@ -219,7 +255,7 @@ function Index() {
                     <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
                       {items.map((it) => (
                         <li key={it.id}>
-                          <SwipeToDelete onDelete={() => remove(it.id)}>
+                          <SwipeToDelete onDelete={() => handleRemove(it.id)}>
                             <div className="flex items-center gap-2 py-3">
                               <Button
                                 type="button"
@@ -256,13 +292,7 @@ function Index() {
                                 type="button"
                                 size="icon"
                                 variant="ghost"
-                                onClick={() => {
-                                  const next = window.prompt(
-                                    "Nama kontak (kosongkan untuk hapus):",
-                                    it.label ?? "",
-                                  );
-                                  if (next !== null) setLabel(it.id, next);
-                                }}
+                                onClick={() => setEditingId(it.id)}
                                 aria-label="Edit nama"
                                 className="h-8 w-8 shrink-0"
                               >
@@ -294,7 +324,7 @@ function Index() {
                                 type="button"
                                 size="icon"
                                 variant="ghost"
-                                onClick={() => remove(it.id)}
+                                onClick={() => handleRemove(it.id)}
                                 aria-label="Hapus"
                                 className="h-8 w-8 shrink-0"
                               >
@@ -306,7 +336,7 @@ function Index() {
                       ))}
                     </ul>
                     <div className="flex justify-end pt-2">
-                      <Button variant="ghost" size="sm" onClick={clear}>
+                      <Button variant="ghost" size="sm" onClick={handleClearAll}>
                         Hapus semua
                       </Button>
                     </div>
@@ -320,7 +350,7 @@ function Index() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10"
+                  className="h-9 w-9"
                   aria-label="Cara pakai"
                 >
                   <HelpCircle className="h-5 w-5" />
