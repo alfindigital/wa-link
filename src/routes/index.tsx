@@ -205,13 +205,7 @@ function Index() {
                     Riwayat
                   </DialogTitle>
                 </DialogHeader>
-                <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-1">
-                  {linksMonth > 0 && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-                      Kamu buat {linksMonth} link bulan ini
-                    </span>
-                  )}
-                  <div className="ml-auto flex items-center gap-1">
+                <div className="flex flex-wrap items-center justify-end gap-1 px-1 pb-1">
                     <Button
                       variant="ghost"
                       size="sm"
