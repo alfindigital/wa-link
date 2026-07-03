@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivasiRouteImport } from './routes/privasi'
+import { Route as LinkWaJualanRouteImport } from './routes/link-wa-jualan'
+import { Route as LinkWaCsRouteImport } from './routes/link-wa-cs'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -23,6 +25,16 @@ const PrivasiRoute = PrivasiRouteImport.update({
   path: '/privasi',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LinkWaJualanRoute = LinkWaJualanRouteImport.update({
+  id: '/link-wa-jualan',
+  path: '/link-wa-jualan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LinkWaCsRoute = LinkWaCsRouteImport.update({
+  id: '/link-wa-cs',
+  path: '/link-wa-cs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,30 +43,49 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/link-wa-cs': typeof LinkWaCsRoute
+  '/link-wa-jualan': typeof LinkWaJualanRoute
   '/privasi': typeof PrivasiRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/link-wa-cs': typeof LinkWaCsRoute
+  '/link-wa-jualan': typeof LinkWaJualanRoute
   '/privasi': typeof PrivasiRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/link-wa-cs': typeof LinkWaCsRoute
+  '/link-wa-jualan': typeof LinkWaJualanRoute
   '/privasi': typeof PrivasiRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/privasi' | '/sitemap.xml'
+  fullPaths:
+    | '/'
+    | '/link-wa-cs'
+    | '/link-wa-jualan'
+    | '/privasi'
+    | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/privasi' | '/sitemap.xml'
-  id: '__root__' | '/' | '/privasi' | '/sitemap.xml'
+  to: '/' | '/link-wa-cs' | '/link-wa-jualan' | '/privasi' | '/sitemap.xml'
+  id:
+    | '__root__'
+    | '/'
+    | '/link-wa-cs'
+    | '/link-wa-jualan'
+    | '/privasi'
+    | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LinkWaCsRoute: typeof LinkWaCsRoute
+  LinkWaJualanRoute: typeof LinkWaJualanRoute
   PrivasiRoute: typeof PrivasiRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
@@ -75,6 +106,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivasiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/link-wa-jualan': {
+      id: '/link-wa-jualan'
+      path: '/link-wa-jualan'
+      fullPath: '/link-wa-jualan'
+      preLoaderRoute: typeof LinkWaJualanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/link-wa-cs': {
+      id: '/link-wa-cs'
+      path: '/link-wa-cs'
+      fullPath: '/link-wa-cs'
+      preLoaderRoute: typeof LinkWaCsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +132,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LinkWaCsRoute: LinkWaCsRoute,
+  LinkWaJualanRoute: LinkWaJualanRoute,
   PrivasiRoute: PrivasiRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }

@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import QRCode from "qrcode";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { CheckCircle2, Share2, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Copy,
@@ -29,6 +27,9 @@ import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
 import { useWaTemplates } from "@/hooks/use-wa-templates";
 import { vibrate, playBlip } from "@/lib/feedback";
+import { copyToClipboard } from "@/lib/clipboard";
+import { bumpLinkCreated } from "@/lib/stats";
+import { shareOrDownloadBrandedQr } from "@/lib/qr-share";
 
 const MAX_MESSAGE = 1000;
 const DIAL = "62";
@@ -114,12 +115,12 @@ function detectPrefix(raw: string): DetectedPrefix | null {
   return null;
 }
 
-export function WaGenerator() {
+export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}) {
   // IMPORTANT: do NOT read localStorage in useState initializer — it runs
   // during hydration on the client and produces SSR/CSR mismatches when a
   // draft exists. Hydrate empty, then load draft in an effect.
   const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(initialMessage ?? "");
   const [hydrated, setHydrated] = useState(false);
   const [detected, setDetected] = useState<DetectedPrefix | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -146,10 +147,10 @@ export function WaGenerator() {
     const d = loadDraft();
     if (d) {
       if (d.phone) setPhone(cleanPhone(d.phone));
-      if (d.message) setMessage(d.message);
+      if (d.message && !initialMessage) setMessage(d.message);
     }
     setHydrated(true);
-  }, []);
+  }, [initialMessage]);
 
   // Simpan draft otomatis tanpa menghapus setelah generate
   useWaDraft(phone, message, hydrated);
