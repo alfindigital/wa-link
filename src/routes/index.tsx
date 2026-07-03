@@ -205,6 +205,9 @@ function Index() {
                   <DialogTitle className="font-display text-xl font-black uppercase tracking-tight">
                     Riwayat
                   </DialogTitle>
+                  <DialogDescription className="sr-only">
+                    Daftar link WhatsApp yang pernah kamu buat.
+                  </DialogDescription>
                 </DialogHeader>
                 <div className="flex flex-wrap items-center justify-end gap-1 px-1 pb-1">
                     <Button
@@ -354,6 +357,9 @@ function Index() {
                   <DialogTitle className="font-display text-xl font-black uppercase tracking-tight">
                     Cara Pakai
                   </DialogTitle>
+                  <DialogDescription className="sr-only">
+                    Panduan singkat membuat link WhatsApp dan QR code.
+                  </DialogDescription>
                 </DialogHeader>
                 <ol className="space-y-2">
                   {[
