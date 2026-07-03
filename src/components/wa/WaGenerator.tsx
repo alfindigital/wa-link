@@ -16,9 +16,7 @@ import {
   X,
   Share2,
   Pencil,
-  CloudCheck,
   Plus,
-  CheckCheck,
   Smile,
   Bold,
   Italic,
@@ -33,9 +31,6 @@ import { vibrate, playBlip } from "@/lib/feedback";
 
 const MAX_MESSAGE = 1000;
 const DIAL = "62";
-
-// Debounce handle for the auto-hide of the prefix-detected hint.
-let phoneWarnTimer: ReturnType<typeof setTimeout> | undefined;
 
 function cleanPhone(raw: string) {
   let p = raw.replace(/\D/g, "");
@@ -133,10 +128,10 @@ export function WaGenerator() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [qrError, setQrError] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [draftSaved, setDraftSaved] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
+  const phoneWarnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { add } = useWaHistory();
   const { items: templates, add: addTemplate, remove: removeTemplate } = useWaTemplates();
   const [newTemplate, setNewTemplate] = useState("");
@@ -155,14 +150,7 @@ export function WaGenerator() {
   }, []);
 
   // Simpan draft otomatis tanpa menghapus setelah generate
-  useWaDraft(phone, message, hydrated, () => setDraftSaved(true));
-
-  // Auto-hide draft saved indicator after 2s
-  useEffect(() => {
-    if (!draftSaved) return;
-    const t = setTimeout(() => setDraftSaved(false), 2000);
-    return () => clearTimeout(t);
-  }, [draftSaved]);
+  useWaDraft(phone, message, hydrated);
 
   function scrollToForm() {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -179,19 +167,18 @@ export function WaGenerator() {
     const prefix = detectPrefix(raw);
     if (prefix && cleaned.length > 0) {
       setDetected(prefix);
-      window.clearTimeout(phoneWarnTimer);
+      if (phoneWarnTimer.current) window.clearTimeout(phoneWarnTimer.current);
       // Warning tetap terlihat sampai pengguna mengubah input; deteksi sukses
       // akan hilang sendiri setelah 2.5 detik.
       if (prefix.kind !== "warning") {
-        phoneWarnTimer = setTimeout(() => setDetected(null), 2500);
+        phoneWarnTimer.current = setTimeout(() => setDetected(null), 2500);
       }
     } else {
       setDetected(null);
-      window.clearTimeout(phoneWarnTimer);
+      if (phoneWarnTimer.current) window.clearTimeout(phoneWarnTimer.current);
     }
     setPhone(cleaned.slice(0, 14));
     if (error) setError(null);
-    setDraftSaved(false);
   }
 
   function handlePhonePaste(e: React.ClipboardEvent<HTMLInputElement>) {
