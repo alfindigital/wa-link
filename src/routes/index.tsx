@@ -496,11 +496,11 @@ function Index() {
           </svg>
         </a>
         <a
-          href="https://t.me/alfidx"
+          href="https://t.me/alfindigitalcom"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Telegram @alfidx"
-          title="Telegram @alfidx"
+          aria-label="Telegram @alfindigitalcom"
+          title="Telegram @alfindigitalcom"
           className="inline-flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:text-primary"
         >
           <svg
