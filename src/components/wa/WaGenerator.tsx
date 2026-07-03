@@ -14,7 +14,6 @@ import {
   Download,
   Check,
   X,
-  Share2,
   Pencil,
   Plus,
   Smile,
@@ -23,6 +22,7 @@ import {
   Strikethrough,
   User,
   CheckCheck,
+  ChevronDown,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
@@ -129,6 +129,7 @@ export function WaGenerator() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [qrError, setQrError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [qrOpen, setQrOpen] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
@@ -292,27 +293,6 @@ export function WaGenerator() {
     document.body.removeChild(a);
   }
 
-  async function handleShare() {
-    if (!result) return;
-    vibrate(40);
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Link WhatsApp",
-          text: result.message || "Halo!",
-          url: result.url,
-        });
-        add(result);
-      } catch (err) {
-        if ((err as Error).name !== "AbortError") {
-          toast.error("Gagal membagikan");
-        }
-      }
-    } else {
-      copyText(result.url, "Link");
-    }
-  }
-
   function wrapSelection(prefix: string, suffix: string) {
     const el = messageRef.current;
     if (!el) return;
@@ -380,9 +360,6 @@ export function WaGenerator() {
                   )}
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Tanpa angka 0 di depan. Contoh: 81234567890.
-              </p>
               {detected && (
                 <p
                   className={`text-xs font-medium ${
@@ -623,8 +600,7 @@ export function WaGenerator() {
             <div className="grid grid-cols-2 gap-2">
               <Button
                 type="button"
-                variant="outline"
-                className="h-11"
+                className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
                 onClick={() => copyText(result.url, "Link")}
                 aria-label="Salin link"
               >
@@ -632,8 +608,7 @@ export function WaGenerator() {
               </Button>
               <Button
                 type="button"
-                variant="outline"
-                className="h-11"
+                className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
                 asChild
                 aria-label="Buka di WhatsApp"
               >
@@ -643,85 +618,68 @@ export function WaGenerator() {
               </Button>
             </div>
 
-            <h3 className="text-sm font-semibold">QR code</h3>
+            <button
+              type="button"
+              onClick={() => setQrOpen((v) => !v)}
+              aria-expanded={qrOpen}
+              className="flex w-full items-center justify-between rounded-md border border-border bg-background px-3 py-2 text-sm font-semibold transition-colors hover:bg-muted"
+            >
+              <span>QR code</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${qrOpen ? "rotate-180" : ""}`}
+              />
+            </button>
 
-            <div className="flex justify-center rounded-md border border-border bg-background p-4">
-              {qrDataUrl ? (
-                <img
-                  src={qrDataUrl}
-                  alt="QR code link WhatsApp"
-                  className="h-56 w-56 rounded-md"
-                  width={224}
-                  height={224}
-                />
-              ) : qrError ? (
-                <div className="flex h-56 w-56 flex-col items-center justify-center gap-2 rounded-md bg-muted/40 px-3 text-center text-xs text-muted-foreground">
-                  <XCircle className="h-6 w-6 text-destructive" />
-                  QR gagal dibuat. Coba lagi.
+            {qrOpen && (
+              <>
+                <div className="flex justify-center rounded-md border border-border bg-background p-4">
+                  {qrDataUrl ? (
+                    <img
+                      src={qrDataUrl}
+                      alt="QR code link WhatsApp"
+                      className="h-56 w-56 rounded-md"
+                      width={224}
+                      height={224}
+                    />
+                  ) : qrError ? (
+                    <div className="flex h-56 w-56 flex-col items-center justify-center gap-2 rounded-md bg-muted/40 px-3 text-center text-xs text-muted-foreground">
+                      <XCircle className="h-6 w-6 text-destructive" />
+                      QR gagal dibuat. Coba lagi.
+                    </div>
+                  ) : (
+                    <div className="h-56 w-56 animate-pulse rounded-md bg-muted" />
+                  )}
                 </div>
-              ) : (
-                <div className="h-56 w-56 animate-pulse rounded-md bg-muted" />
-              )}
-            </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11"
-                onClick={() => copyText(result.url, "Link")}
-                aria-label="Salin link"
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11"
-                onClick={handleDownloadQr}
-                disabled={!qrDataUrl}
-                aria-label="Unduh QR"
-              >
-                <Download className="h-4 w-4" />
-              </Button>
-            </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    type="button"
+                    className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={() => copyText(result.url, "Link")}
+                    aria-label="Salin link"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={handleDownloadQr}
+                    disabled={!qrDataUrl}
+                    aria-label="Unduh QR"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       )}
 
-      {result && (
-        <>
-          <div className="h-[calc(56px+env(safe-area-inset-bottom,0px)+12px)] sm:hidden" />
-          <div className="fixed bottom-0 left-1/2 z-20 w-full max-w-xl -translate-x-1/2 sm:hidden">
-            <div
-              className={`mx-auto mb-1 flex w-fit items-center gap-1.5 rounded-full bg-green-500 px-3 py-1 text-xs font-semibold text-white shadow-sm transition-all duration-300 ${
-                copied ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
-              }`}
-            >
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              Link disalin
-            </div>
-            <div className="flex items-center gap-2 border-t border-border/60 bg-background/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-sm shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11 flex-1 gap-2 text-sm font-semibold"
-                onClick={() => copyText(result.url, "Link")}
-              >
-                <Copy className="h-4 w-4" />
-                Salin
-              </Button>
-              <Button
-                type="button"
-                className="h-11 flex-1 gap-2 text-sm font-semibold"
-                onClick={handleShare}
-              >
-                <Share2 className="h-4 w-4" />
-                Bagikan
-              </Button>
-            </div>
-          </div>
-        </>
+      {result && copied && (
+        <div className="pointer-events-none fixed bottom-4 left-1/2 z-20 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm sm:hidden">
+          Link disalin
+        </div>
       )}
     </div>
   );
