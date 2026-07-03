@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { CheckCircle2, Share2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,7 @@ import { useWaTemplates } from "@/hooks/use-wa-templates";
 import { vibrate, playBlip } from "@/lib/feedback";
 import { copyToClipboard } from "@/lib/clipboard";
 import { bumpLinkCreated } from "@/lib/stats";
-import { shareOrDownloadBrandedQr } from "@/lib/qr-share";
+
 
 const MAX_MESSAGE = 1000;
 const DIAL = "62";
@@ -292,19 +292,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     }
   }
 
-  async function handleShareBranded() {
-    if (!result) return;
-    try {
-      vibrate(20);
-      const r = await shareOrDownloadBrandedQr({ url: result.url, phone: result.phone });
-      toast.success(r.shared ? "Dibagikan" : "QR diunduh", {
-        id: "share-qr",
-        description: r.shared ? "" : "File QR + branding sudah masuk ke Unduhan.",
-      });
-    } catch {
-      toast.error("Gagal membagikan", { id: "share-qr" });
-    }
-  }
 
   function handleDownloadQr() {
     if (!qrDataUrl || !result) return;
@@ -694,14 +681,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                     <Download className="h-4 w-4" />
                   </Button>
                 </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-11 w-full gap-2 text-sm"
-                  onClick={handleShareBranded}
-                >
-                  <Share2 className="h-4 w-4" /> Bagikan sebagai gambar
-                </Button>
               </>
             )}
           </CardContent>
