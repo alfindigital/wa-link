@@ -12,7 +12,6 @@ import {
   Download,
   Check,
   X,
-  Pencil,
   Plus,
   Smile,
   Bold,
@@ -132,7 +131,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   const [copied, setCopied] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const phoneWarnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { add } = useWaHistory();
@@ -173,11 +171,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
 
   // Simpan draft otomatis tanpa menghapus setelah generate
   useWaDraft(phone, message, hydrated);
-
-  function scrollToForm() {
-    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    setTimeout(() => messageRef.current?.focus(), 400);
-  }
 
   function resizeTextarea() {
     const el = messageRef.current;
@@ -338,7 +331,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
 
   return (
     <div className="space-y-5">
-      <Card ref={formRef} className="border-border/60 shadow-sm">
+      <Card className="border-border/60 shadow-sm">
         <CardContent className="p-4 sm:p-6">
           <form onSubmit={handleGenerate} className="space-y-4">
             <div className="space-y-2">
@@ -594,19 +587,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
       {result && (
         <Card ref={resultRef} className="border-primary/40 bg-primary/5 shadow-sm">
           <CardContent className="space-y-4 p-4 sm:p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold">Link kamu</h2>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-8 gap-1.5 text-xs"
-                onClick={scrollToForm}
-              >
-                <Pencil className="h-3.5 w-3.5" />
-                Ubah Pesan
-              </Button>
-            </div>
+            <h2 className="text-sm font-semibold">Link kamu</h2>
 
             <div className="min-w-0 break-all rounded-md border border-border bg-background px-3 py-2 text-sm">
               {result.url}
