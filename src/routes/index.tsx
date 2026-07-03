@@ -47,7 +47,6 @@ import { toast } from "sonner";
 import { getPrefs, setPref } from "@/lib/feedback";
 import { copyToClipboard } from "@/lib/clipboard";
 import { exportHistoryCSV, exportHistoryJSON, importHistoryJSON } from "@/lib/history-io";
-import { getLinksThisMonth } from "@/lib/stats";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -94,7 +93,6 @@ function Index() {
   const [haptic, setHaptic] = useState(false);
   const [dark, setDark] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [linksMonth, setLinksMonth] = useState(0);
 
   useEffect(() => {
     const p = getPrefs();
@@ -103,12 +101,7 @@ function Index() {
     if (typeof document !== "undefined") {
       setDark(document.documentElement.classList.contains("dark"));
     }
-    setLinksMonth(getLinksThisMonth());
   }, []);
-
-  useEffect(() => {
-    setLinksMonth(getLinksThisMonth());
-  }, [items.length]);
 
   const editingItem = items.find((it) => it.id === editingId) ?? null;
 
@@ -212,13 +205,7 @@ function Index() {
                     Riwayat
                   </DialogTitle>
                 </DialogHeader>
-                <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-1">
-                  {linksMonth > 0 && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-                      Kamu buat {linksMonth} link bulan ini
-                    </span>
-                  )}
-                  <div className="ml-auto flex items-center gap-1">
+                <div className="flex flex-wrap items-center justify-end gap-1 px-1 pb-1">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -253,9 +240,8 @@ function Index() {
                       onClick={handleClearAll}
                       disabled={items.length === 0}
                     >
-                      <Trash2 className="h-3 w-3" /> Hapus semua
+                    <Trash2 className="h-3 w-3" /> Hapus semua
                     </Button>
-                  </div>
                 </div>
                 {items.length === 0 ? (
                   <p className="py-6 text-center text-sm text-muted-foreground">
