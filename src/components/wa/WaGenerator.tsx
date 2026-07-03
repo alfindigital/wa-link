@@ -675,6 +675,14 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                     <Download className="h-4 w-4" />
                   </Button>
                 </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-11 w-full gap-2 text-sm"
+                  onClick={handleShareBranded}
+                >
+                  <Share2 className="h-4 w-4" /> Bagikan sebagai gambar
+                </Button>
               </>
             )}
           </CardContent>
