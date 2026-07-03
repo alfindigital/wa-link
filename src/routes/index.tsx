@@ -47,7 +47,6 @@ import { toast } from "sonner";
 import { getPrefs, setPref } from "@/lib/feedback";
 import { copyToClipboard } from "@/lib/clipboard";
 import { exportHistoryCSV, exportHistoryJSON, importHistoryJSON } from "@/lib/history-io";
-import { getLinksThisMonth } from "@/lib/stats";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -94,7 +93,6 @@ function Index() {
   const [haptic, setHaptic] = useState(false);
   const [dark, setDark] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [linksMonth, setLinksMonth] = useState(0);
 
   useEffect(() => {
     const p = getPrefs();
@@ -103,12 +101,7 @@ function Index() {
     if (typeof document !== "undefined") {
       setDark(document.documentElement.classList.contains("dark"));
     }
-    setLinksMonth(getLinksThisMonth());
   }, []);
-
-  useEffect(() => {
-    setLinksMonth(getLinksThisMonth());
-  }, [items.length]);
 
   const editingItem = items.find((it) => it.id === editingId) ?? null;
 
