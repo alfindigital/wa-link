@@ -356,6 +356,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                           : ""
                     }`}
                     aria-invalid={!!error || phoneState === "invalid"}
+                    suppressHydrationWarning
                   />
                   {phoneState !== "empty" && (
                     <span
@@ -491,6 +492,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   }}
                   rows={4}
                   className="resize-none rounded-none border-0 bg-transparent text-base shadow-none focus-visible:ring-0"
+                  suppressHydrationWarning
                 />
                 <div className="flex items-center gap-0.5 border-t border-border bg-muted/40 px-1.5 py-1">
                   <button

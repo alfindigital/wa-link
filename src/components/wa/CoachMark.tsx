@@ -40,7 +40,7 @@ export function CoachMark() {
     <div
       role="dialog"
       aria-label="Panduan singkat"
-      className="fixed inset-x-0 bottom-4 z-30 mx-auto max-w-xs px-4"
+      className="fixed left-1/2 top-16 z-30 w-full max-w-xs -translate-x-1/2 px-4"
     >
       <div className="rounded-xl border border-primary/30 bg-background p-4 shadow-lg">
         <div className="flex items-start justify-between gap-2">
