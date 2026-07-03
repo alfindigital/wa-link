@@ -461,7 +461,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                       Tambah
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-64 space-y-2" align="start">
+                  <PopoverContent className="w-64 space-y-2" align="end" collisionPadding={12}>
                     <p className="text-xs font-medium">Template baru</p>
                     <Input
                       value={newTemplate}
@@ -547,10 +547,10 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                     </PopoverTrigger>
                     <PopoverContent
                       className="w-auto min-w-[14rem] max-w-[min(20rem,calc(100vw-1.5rem))] p-1.5 sm:min-w-[16rem] sm:p-2"
-                      align="start"
+                      align="end"
                       side="top"
                       sideOffset={8}
-                      collisionPadding={8}
+                      collisionPadding={12}
                     >
                       <EmojiGrid
                         onSelect={(emoji) => {
