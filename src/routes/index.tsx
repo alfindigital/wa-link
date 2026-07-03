@@ -131,6 +131,16 @@ function Index() {
           </h1>
           <div className="flex items-center gap-1">
             <Dialog open={histOpen} onOpenChange={setHistOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-10 w-10"
+                  aria-label="Riwayat"
+                >
+                  <History className="h-5 w-5" />
+                </Button>
+              </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle className="font-display text-xl font-black uppercase tracking-tight">
@@ -246,6 +256,16 @@ function Index() {
             </Dialog>
 
             <Dialog open={howOpen} onOpenChange={setHowOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-10 w-10"
+                  aria-label="Cara pakai"
+                >
+                  <HelpCircle className="h-5 w-5" />
+                </Button>
+              </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle className="font-display text-xl font-black uppercase tracking-tight">
