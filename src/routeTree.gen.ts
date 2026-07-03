@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivasiRouteImport } from './routes/privasi'
 import { Route as LinkWaJualanRouteImport } from './routes/link-wa-jualan'
 import { Route as LinkWaCsRouteImport } from './routes/link-wa-cs'
+import { Route as BulkRouteImport } from './routes/bulk'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -35,6 +36,11 @@ const LinkWaCsRoute = LinkWaCsRouteImport.update({
   path: '/link-wa-cs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BulkRoute = BulkRouteImport.update({
+  id: '/bulk',
+  path: '/bulk',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bulk': typeof BulkRoute
   '/link-wa-cs': typeof LinkWaCsRoute
   '/link-wa-jualan': typeof LinkWaJualanRoute
   '/privasi': typeof PrivasiRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bulk': typeof BulkRoute
   '/link-wa-cs': typeof LinkWaCsRoute
   '/link-wa-jualan': typeof LinkWaJualanRoute
   '/privasi': typeof PrivasiRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bulk': typeof BulkRoute
   '/link-wa-cs': typeof LinkWaCsRoute
   '/link-wa-jualan': typeof LinkWaJualanRoute
   '/privasi': typeof PrivasiRoute
@@ -67,15 +76,23 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/bulk'
     | '/link-wa-cs'
     | '/link-wa-jualan'
     | '/privasi'
     | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/link-wa-cs' | '/link-wa-jualan' | '/privasi' | '/sitemap.xml'
+  to:
+    | '/'
+    | '/bulk'
+    | '/link-wa-cs'
+    | '/link-wa-jualan'
+    | '/privasi'
+    | '/sitemap.xml'
   id:
     | '__root__'
     | '/'
+    | '/bulk'
     | '/link-wa-cs'
     | '/link-wa-jualan'
     | '/privasi'
@@ -84,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BulkRoute: typeof BulkRoute
   LinkWaCsRoute: typeof LinkWaCsRoute
   LinkWaJualanRoute: typeof LinkWaJualanRoute
   PrivasiRoute: typeof PrivasiRoute
@@ -120,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LinkWaCsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bulk': {
+      id: '/bulk'
+      path: '/bulk'
+      fullPath: '/bulk'
+      preLoaderRoute: typeof BulkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -132,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BulkRoute: BulkRoute,
   LinkWaCsRoute: LinkWaCsRoute,
   LinkWaJualanRoute: LinkWaJualanRoute,
   PrivasiRoute: PrivasiRoute,
