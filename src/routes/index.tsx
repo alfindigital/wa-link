@@ -13,6 +13,8 @@ import {
   Pencil,
   Settings,
   Moon,
+  Volume2,
+  Vibrate,
   Download,
   Upload,
   Phone,
@@ -425,7 +427,9 @@ function Index() {
                   <Switch id="pref-dark" checked={dark} onCheckedChange={toggleDark} />
                 </div>
                 <div className="flex items-center justify-between px-2 py-2 text-sm">
-                  <label htmlFor="pref-sound">Suara</label>
+                  <label htmlFor="pref-sound" className="flex items-center gap-2">
+                    <Volume2 className="h-3.5 w-3.5" /> Suara
+                  </label>
                   <Switch
                     id="pref-sound"
                     checked={sound}
@@ -436,7 +440,9 @@ function Index() {
                   />
                 </div>
                 <div className="flex items-center justify-between px-2 py-2 text-sm">
-                  <label htmlFor="pref-haptic">Getar</label>
+                  <label htmlFor="pref-haptic" className="flex items-center gap-2">
+                    <Vibrate className="h-3.5 w-3.5" /> Getar
+                  </label>
                   <Switch
                     id="pref-haptic"
                     checked={haptic}
