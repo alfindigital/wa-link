@@ -16,14 +16,13 @@ import {
   X,
   Share2,
   Pencil,
-  CloudCheck,
   Plus,
-  CheckCheck,
   Smile,
   Bold,
   Italic,
   Strikethrough,
   User,
+  CheckCheck,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
@@ -33,9 +32,6 @@ import { vibrate, playBlip } from "@/lib/feedback";
 
 const MAX_MESSAGE = 1000;
 const DIAL = "62";
-
-// Debounce handle for the auto-hide of the prefix-detected hint.
-let phoneWarnTimer: ReturnType<typeof setTimeout> | undefined;
 
 function cleanPhone(raw: string) {
   let p = raw.replace(/\D/g, "");
@@ -133,10 +129,10 @@ export function WaGenerator() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [qrError, setQrError] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [draftSaved, setDraftSaved] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
+  const phoneWarnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { add } = useWaHistory();
   const { items: templates, add: addTemplate, remove: removeTemplate } = useWaTemplates();
   const [newTemplate, setNewTemplate] = useState("");
@@ -155,14 +151,7 @@ export function WaGenerator() {
   }, []);
 
   // Simpan draft otomatis tanpa menghapus setelah generate
-  useWaDraft(phone, message, hydrated, () => setDraftSaved(true));
-
-  // Auto-hide draft saved indicator after 2s
-  useEffect(() => {
-    if (!draftSaved) return;
-    const t = setTimeout(() => setDraftSaved(false), 2000);
-    return () => clearTimeout(t);
-  }, [draftSaved]);
+  useWaDraft(phone, message, hydrated);
 
   function scrollToForm() {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -179,19 +168,18 @@ export function WaGenerator() {
     const prefix = detectPrefix(raw);
     if (prefix && cleaned.length > 0) {
       setDetected(prefix);
-      window.clearTimeout(phoneWarnTimer);
+      if (phoneWarnTimer.current) window.clearTimeout(phoneWarnTimer.current);
       // Warning tetap terlihat sampai pengguna mengubah input; deteksi sukses
       // akan hilang sendiri setelah 2.5 detik.
       if (prefix.kind !== "warning") {
-        phoneWarnTimer = setTimeout(() => setDetected(null), 2500);
+        phoneWarnTimer.current = setTimeout(() => setDetected(null), 2500);
       }
     } else {
       setDetected(null);
-      window.clearTimeout(phoneWarnTimer);
+      if (phoneWarnTimer.current) window.clearTimeout(phoneWarnTimer.current);
     }
     setPhone(cleaned.slice(0, 14));
     if (error) setError(null);
-    setDraftSaved(false);
   }
 
   function handlePhonePaste(e: React.ClipboardEvent<HTMLInputElement>) {
@@ -336,7 +324,6 @@ export function WaGenerator() {
     const after = message.slice(end);
     const next = (before + prefix + inner + suffix + after).slice(0, MAX_MESSAGE);
     setMessage(next);
-    setDraftSaved(false);
     const selStart = start + prefix.length;
     const selEnd = selStart + inner.length;
     cursorPosRef.current = selEnd;
@@ -444,7 +431,6 @@ export function WaGenerator() {
                       type="button"
                       onClick={() => {
                         setMessage(t.text.slice(0, MAX_MESSAGE));
-                        setDraftSaved(false);
                         vibrate(15);
                       }}
                       className="rounded-full border border-border bg-muted/50 px-2.5 py-1 text-xs text-foreground transition-colors hover:bg-muted"
@@ -507,7 +493,6 @@ export function WaGenerator() {
                   value={message}
                   onChange={(e) => {
                     setMessage(e.target.value.slice(0, MAX_MESSAGE));
-                    setDraftSaved(false);
                     cursorPosRef.current = e.target.selectionStart;
                   }}
                   onKeyUp={(e) => {
@@ -575,7 +560,6 @@ export function WaGenerator() {
                           const after = message.slice(pos);
                           const next = (before + emoji + after).slice(0, MAX_MESSAGE);
                           setMessage(next);
-                          setDraftSaved(false);
                           const newPos = pos + emoji.length;
                           cursorPosRef.current = newPos;
                           requestAnimationFrame(() => {

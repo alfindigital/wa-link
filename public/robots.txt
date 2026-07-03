@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://wa-linkq.lovable.app/sitemap.xml
+Sitemap: https://link-wa.alfindigital.com/sitemap.xml

@@ -44,21 +44,36 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "WAlinkQ — Buat Link WhatsApp Gratis" },
+      { title: "Link WhatsApp Gratis + QR Code — WAlinkQ" },
       {
         name: "description",
         content:
-          "Buat link WhatsApp (wa.me) lengkap dengan pesan otomatis dan QR code. Gratis, tanpa daftar, Bahasa Indonesia, cocok untuk jualan online dan bio sosmed.",
+          "Bikin link WhatsApp (wa.me) dengan pesan otomatis dan QR code, gratis dan tanpa daftar. Cocok untuk jualan online dan bio Instagram/TikTok.",
       },
-      { property: "og:title", content: "WAlinkQ — Buat Link WhatsApp Gratis" },
+      { property: "og:title", content: "Link WhatsApp Gratis + QR Code — WAlinkQ" },
       {
         property: "og:description",
         content: "Buat link WhatsApp dengan pesan siap kirim + QR code. Gratis dan tanpa login.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://wa-linkq.lovable.app/" },
+      { property: "og:url", content: "https://link-wa.alfindigital.com/" },
     ],
-    links: [{ rel: "canonical", href: "https://wa-linkq.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://link-wa.alfindigital.com/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "WAlinkQ",
+          applicationCategory: "UtilitiesApplication",
+          operatingSystem: "Any",
+          inLanguage: "id-ID",
+          url: "https://link-wa.alfindigital.com/",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "IDR" },
+        }),
+      },
+    ],
   }),
 });
 
@@ -74,11 +89,10 @@ function Index() {
     const p = getPrefs();
     setSound(p.sound);
     setHaptic(p.haptic);
-    const saved = typeof window !== "undefined" ? window.localStorage.getItem("theme") : null;
-    const isDark = saved === "dark";
-    setDark(isDark);
+    // Theme was applied pre-hydration by ScriptOnce in __root.tsx.
+    // Just mirror the current DOM state into React so the Switch reflects reality.
     if (typeof document !== "undefined") {
-      document.documentElement.classList.toggle("dark", isDark);
+      setDark(document.documentElement.classList.contains("dark"));
     }
   }, []);
 
@@ -113,7 +127,7 @@ function Index() {
         <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3 sm:px-6">
           <h1 className="font-display text-2xl font-black uppercase tracking-tight sm:text-[28px]">
             <span className="text-primary">WA</span>link<span className="text-primary">Q</span>
-            <span className="sr-only"> — Buat Link WhatsApp Gratis</span>
+            <span className="sr-only"> — Bikin Link WhatsApp + QR Code Gratis</span>
           </h1>
           <div className="flex items-center gap-1">
             <Dialog open={histOpen} onOpenChange={setHistOpen}>
