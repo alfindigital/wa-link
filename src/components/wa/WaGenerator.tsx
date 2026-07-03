@@ -594,19 +594,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
       {result && (
         <Card ref={resultRef} className="border-primary/40 bg-primary/5 shadow-sm">
           <CardContent className="space-y-4 p-4 sm:p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold">Link kamu</h2>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-8 gap-1.5 text-xs"
-                onClick={scrollToForm}
-              >
-                <Pencil className="h-3.5 w-3.5" />
-                Ubah Pesan
-              </Button>
-            </div>
+            <h2 className="text-sm font-semibold">Link kamu</h2>
 
             <div className="min-w-0 break-all rounded-md border border-border bg-background px-3 py-2 text-sm">
               {result.url}
