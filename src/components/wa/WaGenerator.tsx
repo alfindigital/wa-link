@@ -356,6 +356,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                           : ""
                     }`}
                     aria-invalid={!!error || phoneState === "invalid"}
+                    suppressHydrationWarning
                   />
                   {phoneState !== "empty" && (
                     <span
