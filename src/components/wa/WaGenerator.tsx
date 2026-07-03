@@ -144,6 +144,25 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
 
   // Load saved draft after mount to avoid hydration mismatch.
   useEffect(() => {
+    // Preset via URL hash: #p=base64({phone,msg})
+    try {
+      const h = window.location.hash;
+      if (h.startsWith("#p=")) {
+        const raw = h.slice(3);
+        const json = decodeURIComponent(escape(atob(raw)));
+        const parsed = JSON.parse(json);
+        if (parsed && typeof parsed === "object") {
+          if (typeof parsed.phone === "string") setPhone(cleanPhone(parsed.phone));
+          if (typeof parsed.msg === "string" && !initialMessage) setMessage(parsed.msg);
+          history.replaceState(null, "", window.location.pathname + window.location.search);
+          toast.success("Preset dimuat dari link");
+          setHydrated(true);
+          return;
+        }
+      }
+    } catch {
+      // fall through to draft load
+    }
     const d = loadDraft();
     if (d) {
       if (d.phone) setPhone(cleanPhone(d.phone));
