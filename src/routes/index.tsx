@@ -24,7 +24,7 @@ import {
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
 import { EditLabelDialog } from "@/components/wa/EditLabelDialog";
-import { CoachMark } from "@/components/wa/CoachMark";
+
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import {
