@@ -14,7 +14,6 @@ import {
   Download,
   Check,
   X,
-  Share2,
   Pencil,
   Plus,
   Smile,
@@ -23,6 +22,7 @@ import {
   Strikethrough,
   User,
   CheckCheck,
+  ChevronDown,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
@@ -129,6 +129,7 @@ export function WaGenerator() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [qrError, setQrError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [qrOpen, setQrOpen] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
@@ -290,27 +291,6 @@ export function WaGenerator() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-  }
-
-  async function handleShare() {
-    if (!result) return;
-    vibrate(40);
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Link WhatsApp",
-          text: result.message || "Halo!",
-          url: result.url,
-        });
-        add(result);
-      } catch (err) {
-        if ((err as Error).name !== "AbortError") {
-          toast.error("Gagal membagikan");
-        }
-      }
-    } else {
-      copyText(result.url, "Link");
-    }
   }
 
   function wrapSelection(prefix: string, suffix: string) {
