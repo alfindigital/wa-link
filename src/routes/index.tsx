@@ -337,7 +337,7 @@ function Index() {
                         Hapus semua
                       </Button>
                     </div>
-                )}
+                  </>
               </DialogContent>
             </Dialog>
 
