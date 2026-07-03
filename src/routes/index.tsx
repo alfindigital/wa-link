@@ -240,9 +240,8 @@ function Index() {
                       onClick={handleClearAll}
                       disabled={items.length === 0}
                     >
-                      <Trash2 className="h-3 w-3" /> Hapus semua
+                    <Trash2 className="h-3 w-3" /> Hapus semua
                     </Button>
-                  </div>
                 </div>
                 {items.length === 0 ? (
                   <p className="py-6 text-center text-sm text-muted-foreground">
