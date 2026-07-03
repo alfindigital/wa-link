@@ -198,12 +198,16 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     }
     let cancelled = false;
     setQrError(false);
-    QRCode.toDataURL(result.url, {
-      width: 512,
-      margin: 2,
-      color: { dark: "#000000", light: "#FFFFFF" },
-    })
-      .then((url) => {
+    // Lazy import qrcode only when a link exists (saves ~40KB on first paint).
+    import("qrcode")
+      .then(({ default: QRCode }) =>
+        QRCode.toDataURL(result.url, {
+          width: 512,
+          margin: 2,
+          color: { dark: "#000000", light: "#FFFFFF" },
+        }),
+      )
+      .then((url: string) => {
         if (!cancelled) setQrDataUrl(url);
       })
       .catch(() => {
@@ -211,6 +215,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
         setQrDataUrl(null);
         setQrError(true);
         toast.error("Gagal membuat QR", {
+          id: "qr-error",
           description: "Coba ulangi atau salin link manual.",
           icon: <XCircle className="h-4 w-4 text-destructive" />,
         });
@@ -238,6 +243,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     const next = { url, phone: fullPhone, message: trimmed };
     setResult(next);
     add(next);
+    bumpLinkCreated();
     vibrate(40);
     playBlip("success");
     setTimeout(() => {
@@ -246,40 +252,38 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   }
 
   async function copyText(text: string, label = "Link") {
-    try {
-      await navigator.clipboard.writeText(text);
+    const ok = await copyToClipboard(text);
+    if (ok) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       if (result) add(result);
       vibrate(20);
       playBlip("copy");
       toast.success("Berhasil disalin", {
+        id: "copy-ok",
         description: `${label} sudah tersimpan di papan klip.`,
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
       });
+    } else {
+      toast.error("Gagal menyalin", {
+        id: "copy-err",
+        description: "Coba salin manual dari kotak link di atas.",
+        icon: <XCircle className="h-4 w-4 text-destructive" />,
+      });
+    }
+  }
+
+  async function handleShareBranded() {
+    if (!result) return;
+    try {
+      vibrate(20);
+      const r = await shareOrDownloadBrandedQr({ url: result.url, phone: result.phone });
+      toast.success(r.shared ? "Dibagikan" : "QR diunduh", {
+        id: "share-qr",
+        description: r.shared ? "" : "File QR + branding sudah masuk ke Unduhan.",
+      });
     } catch {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        document.execCommand("copy");
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-        if (result) add(result);
-        vibrate(20);
-        playBlip("copy");
-        toast.success("Berhasil disalin", {
-          description: `${label} sudah tersimpan di papan klip.`,
-          icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
-        });
-      } catch {
-        toast.error("Gagal menyalin", {
-          description: "Coba salin manual atau periksa izin browser.",
-          icon: <XCircle className="h-4 w-4 text-destructive" />,
-        });
-      }
-      document.body.removeChild(ta);
+      toast.error("Gagal membagikan", { id: "share-qr" });
     }
   }
 
@@ -288,7 +292,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     vibrate(30);
     const a = document.createElement("a");
     a.href = qrDataUrl;
-    a.download = `wa-${result.phone}.png`;
+    a.download = `walinkq-${result.phone}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
