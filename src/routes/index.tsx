@@ -531,7 +531,7 @@ function Index() {
           if (editingId) setLabel(editingId, label);
         }}
       />
-      <CoachMark />
+      
     </div>
   );
 }
