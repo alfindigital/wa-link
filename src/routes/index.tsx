@@ -15,6 +15,9 @@ import {
   Moon,
   Download,
   Upload,
+  Phone,
+  MessageSquare,
+  Link2,
 } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
@@ -363,20 +366,46 @@ function Index() {
                     Cara Pakai
                   </DialogTitle>
                 </DialogHeader>
-                <ol className="space-y-3 text-sm text-muted-foreground">
-                  <li>
-                    <span className="font-semibold text-foreground">1.</span> Masukkan nomor
-                    WhatsApp tanpa angka 0 di depan.
-                  </li>
-                  <li>
-                    <span className="font-semibold text-foreground">2.</span> Tulis pesan otomatis
-                    (opsional) yang akan muncul saat dibuka.
-                  </li>
-                  <li>
-                    <span className="font-semibold text-foreground">3.</span> Salin link atau unduh
-                    QR, lalu tempel di bio sosmed.
-                  </li>
+                <ol className="space-y-2">
+                  {[
+                    {
+                      icon: Phone,
+                      title: "Masukkan nomor",
+                      desc: "Format +62, tanpa angka 0 di depan.",
+                    },
+                    {
+                      icon: MessageSquare,
+                      title: "Tulis pesan (opsional)",
+                      desc: "Muncul otomatis saat link dibuka.",
+                    },
+                    {
+                      icon: Link2,
+                      title: "Salin link atau unduh QR",
+                      desc: "Tempel di bio sosmed, katalog, atau cetak.",
+                    },
+                  ].map((step, i) => {
+                    const Icon = step.icon;
+                    return (
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 rounded-lg border border-border/60 bg-muted/40 p-3"
+                      >
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                          <Icon className="h-4 w-4" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-foreground">
+                            {i + 1}. {step.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground">{step.desc}</p>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ol>
+                <p className="pt-1 text-center text-[11px] text-muted-foreground">
+                  Semua diproses di perangkat kamu. Tanpa daftar, tanpa server.
+                </p>
               </DialogContent>
             </Dialog>
 
