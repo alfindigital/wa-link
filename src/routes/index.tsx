@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   History,
@@ -13,9 +13,13 @@ import {
   Pencil,
   Settings,
   Moon,
+  Download,
+  Upload,
 } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
+import { EditLabelDialog } from "@/components/wa/EditLabelDialog";
+import { CoachMark } from "@/components/wa/CoachMark";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,6 +40,9 @@ import { Switch } from "@/components/ui/switch";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { toast } from "sonner";
 import { getPrefs, setPref } from "@/lib/feedback";
+import { copyToClipboard } from "@/lib/clipboard";
+import { exportHistoryCSV, exportHistoryJSON, importHistoryJSON } from "@/lib/history-io";
+import { getLinksThisMonth } from "@/lib/stats";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -104,17 +111,66 @@ function Index() {
   }
 
   async function copyText(text: string) {
-    try {
-      await navigator.clipboard.writeText(text);
+    const ok = await copyToClipboard(text);
+    if (ok) {
       toast.success("Berhasil disalin", {
+        id: "hist-copy",
         description: "Link sudah tersimpan di papan klip.",
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
       });
-    } catch {
+    } else {
       toast.error("Gagal menyalin", {
+        id: "hist-copy",
         description: "Coba salin manual atau periksa izin browser.",
         icon: <XCircle className="h-4 w-4 text-destructive" />,
       });
+    }
+  }
+
+  function handleRemove(id: string) {
+    const snap = items;
+    remove(id);
+    toast("Dihapus dari riwayat", {
+      id: `undo-${id}`,
+      action: {
+        label: "Undo",
+        onClick: () => replaceAll(snap),
+      },
+      duration: 5000,
+    });
+  }
+
+  function handleClearAll() {
+    const snap = items;
+    clear();
+    toast("Semua riwayat dihapus", {
+      id: "undo-clear",
+      action: {
+        label: "Undo",
+        onClick: () => replaceAll(snap),
+      },
+      duration: 6000,
+    });
+  }
+
+  async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      const parsed = await importHistoryJSON(file);
+      if (!parsed.length) {
+        toast.error("Tidak ada entri valid di file itu");
+        return;
+      }
+      // Merge with existing, dedupe by url, cap kept by hook.
+      const merged = [...parsed, ...items].filter(
+        (it, idx, arr) => arr.findIndex((x) => x.url === it.url) === idx,
+      );
+      replaceAll(merged);
+      toast.success(`Berhasil import ${parsed.length} entri`);
+    } catch {
+      toast.error("File tidak bisa dibaca. Pastikan file .json dari WAlinkQ.");
     }
   }
 
