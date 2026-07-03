@@ -84,21 +84,28 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [howOpen, setHowOpen] = useState(false);
   const [histOpen, setHistOpen] = useState(false);
-  const { items, remove, clear, setLabel, toggleFavorite } = useWaHistory();
+  const { items, remove, clear, setLabel, toggleFavorite, replaceAll } = useWaHistory();
   const [sound, setSound] = useState(false);
   const [haptic, setHaptic] = useState(false);
   const [dark, setDark] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [linksMonth, setLinksMonth] = useState(0);
 
   useEffect(() => {
     const p = getPrefs();
     setSound(p.sound);
     setHaptic(p.haptic);
-    // Theme was applied pre-hydration by ScriptOnce in __root.tsx.
-    // Just mirror the current DOM state into React so the Switch reflects reality.
     if (typeof document !== "undefined") {
       setDark(document.documentElement.classList.contains("dark"));
     }
+    setLinksMonth(getLinksThisMonth());
   }, []);
+
+  useEffect(() => {
+    setLinksMonth(getLinksThisMonth());
+  }, [items.length]);
+
+  const editingItem = items.find((it) => it.id === editingId) ?? null;
 
   function toggleDark(v: boolean) {
     setDark(v);
