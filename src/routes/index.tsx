@@ -381,7 +381,7 @@ function Index() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10" aria-label="Pengaturan">
+                <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Pengaturan">
                   <Settings className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -426,18 +426,25 @@ function Index() {
         <WaGenerator />
       </main>
 
-      <footer className="flex items-center justify-center gap-2.5 py-3">
-        <span className="text-[11px] text-muted-foreground">
+      <footer className="flex flex-nowrap items-center justify-center gap-1.5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <span className="whitespace-nowrap text-[11px] text-muted-foreground">
           by <span className="font-medium text-foreground">@alfindigital</span>
         </span>
-        <span className="text-[11px] text-muted-foreground">|</span>
+        <span className="text-[11px] text-muted-foreground">·</span>
+        <Link
+          to="/privasi"
+          className="whitespace-nowrap rounded-md px-1 py-1 text-[11px] text-muted-foreground hover:text-primary"
+        >
+          Privasi
+        </Link>
+        <span className="text-[11px] text-muted-foreground">·</span>
         <a
           href="https://alfindigital.com"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Website alfindigital.com"
           title="alfindigital.com"
-          className="inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-primary"
+          className="inline-flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:text-primary"
         >
           <Globe className="h-3.5 w-3.5" aria-hidden="true" />
         </a>
@@ -447,7 +454,7 @@ function Index() {
           rel="noopener noreferrer"
           aria-label="X (Twitter) @alfindigital"
           title="X @alfindigital"
-          className="inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-primary"
+          className="inline-flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:text-primary"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -465,7 +472,7 @@ function Index() {
           rel="noopener noreferrer"
           aria-label="Telegram @alfidx"
           title="Telegram @alfidx"
-          className="inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-primary"
+          className="inline-flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:text-primary"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -480,6 +487,15 @@ function Index() {
       </footer>
 
       <Toaster position="top-center" />
+      <EditLabelDialog
+        open={editingId !== null}
+        initialLabel={editingItem?.label ?? ""}
+        onOpenChange={(v) => !v && setEditingId(null)}
+        onSave={(label) => {
+          if (editingId) setLabel(editingId, label);
+        }}
+      />
+      <CoachMark />
     </div>
   );
 }
