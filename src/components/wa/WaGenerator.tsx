@@ -131,7 +131,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   const [copied, setCopied] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const phoneWarnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { add } = useWaHistory();
@@ -332,7 +331,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
 
   return (
     <div className="space-y-5">
-      <Card ref={formRef} className="border-border/60 shadow-sm">
+      <Card className="border-border/60 shadow-sm">
         <CardContent className="p-4 sm:p-6">
           <form onSubmit={handleGenerate} className="space-y-4">
             <div className="space-y-2">
