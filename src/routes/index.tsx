@@ -249,9 +249,6 @@ function Index() {
                   </p>
                 ) : (
                   <>
-                    <p className="px-1 pb-2 text-[11px] text-muted-foreground sm:hidden">
-                      Tips: geser ke kiri untuk menghapus.
-                    </p>
                     <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
                       {items.map((it) => (
                         <li key={it.id}>
