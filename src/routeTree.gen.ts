@@ -10,27 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as RotasiRouteImport } from './routes/rotasi'
-import { Route as RRouteImport } from './routes/r'
 import { Route as PrivasiRouteImport } from './routes/privasi'
 import { Route as LinkWaJualanRouteImport } from './routes/link-wa-jualan'
 import { Route as LinkWaCsRouteImport } from './routes/link-wa-cs'
-import { Route as BulkRouteImport } from './routes/bulk'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RotasiRoute = RotasiRouteImport.update({
-  id: '/rotasi',
-  path: '/rotasi',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RRoute = RRouteImport.update({
-  id: '/r',
-  path: '/r',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivasiRoute = PrivasiRouteImport.update({
@@ -48,11 +35,6 @@ const LinkWaCsRoute = LinkWaCsRouteImport.update({
   path: '/link-wa-cs',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BulkRoute = BulkRouteImport.update({
-  id: '/bulk',
-  path: '/bulk',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -61,76 +43,50 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/bulk': typeof BulkRoute
   '/link-wa-cs': typeof LinkWaCsRoute
   '/link-wa-jualan': typeof LinkWaJualanRoute
   '/privasi': typeof PrivasiRoute
-  '/r': typeof RRoute
-  '/rotasi': typeof RotasiRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/bulk': typeof BulkRoute
   '/link-wa-cs': typeof LinkWaCsRoute
   '/link-wa-jualan': typeof LinkWaJualanRoute
   '/privasi': typeof PrivasiRoute
-  '/r': typeof RRoute
-  '/rotasi': typeof RotasiRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/bulk': typeof BulkRoute
   '/link-wa-cs': typeof LinkWaCsRoute
   '/link-wa-jualan': typeof LinkWaJualanRoute
   '/privasi': typeof PrivasiRoute
-  '/r': typeof RRoute
-  '/rotasi': typeof RotasiRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/bulk'
     | '/link-wa-cs'
     | '/link-wa-jualan'
     | '/privasi'
-    | '/r'
-    | '/rotasi'
     | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/bulk'
-    | '/link-wa-cs'
-    | '/link-wa-jualan'
-    | '/privasi'
-    | '/r'
-    | '/rotasi'
-    | '/sitemap.xml'
+  to: '/' | '/link-wa-cs' | '/link-wa-jualan' | '/privasi' | '/sitemap.xml'
   id:
     | '__root__'
     | '/'
-    | '/bulk'
     | '/link-wa-cs'
     | '/link-wa-jualan'
     | '/privasi'
-    | '/r'
-    | '/rotasi'
     | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BulkRoute: typeof BulkRoute
   LinkWaCsRoute: typeof LinkWaCsRoute
   LinkWaJualanRoute: typeof LinkWaJualanRoute
   PrivasiRoute: typeof PrivasiRoute
-  RRoute: typeof RRoute
-  RotasiRoute: typeof RotasiRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -141,20 +97,6 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rotasi': {
-      id: '/rotasi'
-      path: '/rotasi'
-      fullPath: '/rotasi'
-      preLoaderRoute: typeof RotasiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/r': {
-      id: '/r'
-      path: '/r'
-      fullPath: '/r'
-      preLoaderRoute: typeof RRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privasi': {
@@ -178,13 +120,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LinkWaCsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/bulk': {
-      id: '/bulk'
-      path: '/bulk'
-      fullPath: '/bulk'
-      preLoaderRoute: typeof BulkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -197,12 +132,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BulkRoute: BulkRoute,
   LinkWaCsRoute: LinkWaCsRoute,
   LinkWaJualanRoute: LinkWaJualanRoute,
   PrivasiRoute: PrivasiRoute,
-  RRoute: RRoute,
-  RotasiRoute: RotasiRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport

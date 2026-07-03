@@ -438,20 +438,6 @@ function Index() {
           Privasi
         </Link>
         <span className="text-[11px] text-muted-foreground">·</span>
-        <Link
-          to="/bulk"
-          className="whitespace-nowrap rounded-md px-1 py-1 text-[11px] text-muted-foreground hover:text-primary"
-        >
-          Bulk
-        </Link>
-        <span className="text-[11px] text-muted-foreground">·</span>
-        <Link
-          to="/rotasi"
-          className="whitespace-nowrap rounded-md px-1 py-1 text-[11px] text-muted-foreground hover:text-primary"
-        >
-          Rotasi
-        </Link>
-        <span className="text-[11px] text-muted-foreground">·</span>
         <a
           href="https://alfindigital.com"
           target="_blank"

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ShieldCheck, Database, EyeOff, Trash2, Info, Coffee, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/privasi")({
   component: PrivasiPage,
@@ -22,88 +22,100 @@ export const Route = createFileRoute("/privasi")({
 });
 
 function PrivasiPage() {
+  const sections = [
+    {
+      icon: Database,
+      title: "Data tersimpan lokal",
+      body:
+        "Nomor, pesan, riwayat, template, dan pengaturan disimpan di browser HP kamu (localStorage). WAlinkQ tidak punya database dan tidak mengirim input kamu ke server manapun.",
+    },
+    {
+      icon: EyeOff,
+      title: "Tanpa analytics & cookie pihak ketiga",
+      body:
+        "Tidak ada Google Analytics, pixel iklan, atau cookie pihak ketiga. Tanpa akun, tanpa login.",
+    },
+    {
+      icon: Trash2,
+      title: "Menghapus data kamu",
+      body:
+        "Gunakan tombol Hapus / Hapus semua di menu Riwayat, atau bersihkan data situs untuk domain ini dari pengaturan browser.",
+    },
+    {
+      icon: Info,
+      title: "Disclaimer",
+      body:
+        "WAlinkQ bukan produk resmi dan tidak berafiliasi dengan WhatsApp Inc. atau Meta. WhatsApp adalah merek dagang milik Meta Platforms, Inc.",
+    },
+  ];
+
   return (
-    <div className="mx-auto min-h-screen max-w-xl px-4 py-8">
+    <div className="mx-auto min-h-screen max-w-xl px-4 py-8 sm:py-12">
       <Link
         to="/"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" /> Kembali
       </Link>
 
-      <h1 className="font-display text-3xl font-black uppercase tracking-tight">Privasi</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Halaman ini dikelola oleh pemilik WAlinkQ untuk menjelaskan cara kerja aplikasi.
-      </p>
+      <div className="mt-6 flex items-center gap-3">
+        <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <ShieldCheck className="h-6 w-6" aria-hidden="true" />
+        </span>
+        <div>
+          <h1 className="font-display text-2xl font-black uppercase tracking-tight sm:text-3xl">
+            Privasi
+          </h1>
+          <p className="text-xs text-muted-foreground sm:text-sm">
+            Ringkas, jujur, tanpa server.
+          </p>
+        </div>
+      </div>
 
-      <section className="mt-6 space-y-2 text-sm">
-        <h2 className="text-base font-semibold">Data disimpan di perangkat kamu</h2>
-        <p className="text-muted-foreground">
-          Nomor, pesan, riwayat, template, dan pengaturan disimpan lokal di browser HP kamu
-          (localStorage). WAlinkQ tidak punya database, tidak pakai akun, dan tidak mengirim input
-          kamu ke server manapun.
-        </p>
-      </section>
+      <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-4 text-sm text-foreground">
+        Semua data yang kamu ketik tetap di HP kamu. Kami tidak mengirim apa pun ke server, tidak
+        menyimpan riwayat kamu di cloud, dan tidak pakai tracking.
+      </div>
 
-      <section className="mt-5 space-y-2 text-sm">
-        <h2 className="text-base font-semibold">Tanpa analytics pihak ketiga</h2>
-        <p className="text-muted-foreground">
-          Halaman ini tidak memuat Google Analytics, pixel iklan, atau cookie pihak ketiga.
-        </p>
-      </section>
-
-      <section className="mt-5 space-y-2 text-sm">
-        <h2 className="text-base font-semibold">Menghapus data kamu</h2>
-        <p className="text-muted-foreground">
-          Buka pengaturan browser → hapus data situs untuk domain ini, atau gunakan tombol Hapus /
-          Hapus semua di menu Riwayat.
-        </p>
-      </section>
-
-      <section className="mt-5 space-y-2 text-sm">
-        <h2 className="text-base font-semibold">Disclaimer</h2>
-        <p className="text-muted-foreground">
-          WAlinkQ bukan produk resmi dan tidak berafiliasi dengan WhatsApp Inc. atau Meta.
-          WhatsApp adalah merek dagang milik Meta Platforms, Inc.
-        </p>
-      </section>
-
-      <section className="mt-5 space-y-2 text-sm">
-        <h2 className="text-base font-semibold">Roadmap</h2>
-        <p className="text-muted-foreground">
-          Custom short link (mis. <code>walinkq/toko-budi</code>) dan analytics klik butuh backend
-          — belum tersedia. Ada masukan? Hubungi{" "}
-          <a
-            href="https://x.com/alfindigital"
-            className="text-primary underline"
-            target="_blank"
-            rel="noopener noreferrer"
+      <ul className="mt-4 space-y-3">
+        {sections.map(({ icon: Icon, title, body }) => (
+          <li
+            key={title}
+            className="rounded-2xl border border-border bg-card p-4"
           >
-            @alfindigital
-          </a>
-          .
-        </p>
-      </section>
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                <Icon className="h-4 w-4" aria-hidden="true" />
+              </span>
+              <div className="min-w-0">
+                <h2 className="text-sm font-semibold">{title}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">{body}</p>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
 
-      <section className="mt-5 space-y-2 text-sm">
-        <h2 className="text-base font-semibold">Dukung project</h2>
-        <p className="text-muted-foreground">
-          Kalau merasa terbantu, boleh traktir kopi di{" "}
-          <a
-            href="https://saweria.co/alfindigital"
-            className="text-primary underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Saweria
-          </a>
-          . Terima kasih.
-        </p>
-      </section>
-
-      <p className="mt-10 text-center text-[11px] text-muted-foreground">
-        Terakhir diperbarui: 2026-07-03
-      </p>
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <a
+          href="https://x.com/alfindigital"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium transition-colors hover:border-primary/40 hover:text-primary"
+        >
+          <MessageCircle className="h-4 w-4" aria-hidden="true" />
+          Kirim masukan
+        </a>
+        <a
+          href="https://trakteer.id/alfindigital"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-transform hover:scale-[1.01]"
+        >
+          <Coffee className="h-4 w-4" aria-hidden="true" />
+          Traktir di Trakteer
+        </a>
+      </div>
     </div>
   );
 }
