@@ -296,64 +296,6 @@ function Index() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <div className="flex items-center justify-between px-2 pb-1 pt-1.5">
-                  <DropdownMenuLabel className="px-0 py-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Riwayat terbaru
-                  </DropdownMenuLabel>
-                  {items.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setHistOpen(true)}
-                      className="text-[11px] font-medium text-primary hover:underline"
-                    >
-                      Lihat semua
-                    </button>
-                  )}
-                </div>
-                {items.length === 0 ? (
-                  <p className="px-2 py-2 text-xs text-muted-foreground">Belum ada riwayat.</p>
-                ) : (
-                  <ul className="max-h-56 overflow-y-auto">
-                    {items.slice(0, 5).map((it) => (
-                      <li
-                        key={it.id}
-                        className="flex items-center gap-1.5 px-1.5 py-1 hover:bg-accent/60"
-                      >
-                        <a
-                          href={it.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="min-w-0 flex-1 rounded px-1 py-0.5"
-                        >
-                          <p className="truncate text-xs font-medium">
-                            {it.label || `+${it.phone}`}
-                          </p>
-                          <p className="truncate text-[10px] text-muted-foreground">
-                            {it.label ? `+${it.phone}` : it.message || "Tanpa pesan"}
-                          </p>
-                        </a>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            remove(it.id);
-                          }}
-                          aria-label="Hapus riwayat"
-                          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-destructive"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => setHowOpen(true)}>
-                  <HelpCircle className="mr-2 h-4 w-4" />
-                  Cara pakai
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuLabel>Pengaturan</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <div className="flex items-center justify-between px-2 py-2 text-sm">
