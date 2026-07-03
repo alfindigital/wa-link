@@ -12,7 +12,6 @@ import {
   Download,
   Check,
   X,
-  Pencil,
   Plus,
   Smile,
   Bold,
