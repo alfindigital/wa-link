@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   History,
@@ -13,9 +13,13 @@ import {
   Pencil,
   Settings,
   Moon,
+  Download,
+  Upload,
 } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
+import { EditLabelDialog } from "@/components/wa/EditLabelDialog";
+import { CoachMark } from "@/components/wa/CoachMark";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,6 +40,9 @@ import { Switch } from "@/components/ui/switch";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { toast } from "sonner";
 import { getPrefs, setPref } from "@/lib/feedback";
+import { copyToClipboard } from "@/lib/clipboard";
+import { exportHistoryCSV, exportHistoryJSON, importHistoryJSON } from "@/lib/history-io";
+import { getLinksThisMonth } from "@/lib/stats";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -77,21 +84,28 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [howOpen, setHowOpen] = useState(false);
   const [histOpen, setHistOpen] = useState(false);
-  const { items, remove, clear, setLabel, toggleFavorite } = useWaHistory();
+  const { items, remove, clear, setLabel, toggleFavorite, replaceAll } = useWaHistory();
   const [sound, setSound] = useState(false);
   const [haptic, setHaptic] = useState(false);
   const [dark, setDark] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [linksMonth, setLinksMonth] = useState(0);
 
   useEffect(() => {
     const p = getPrefs();
     setSound(p.sound);
     setHaptic(p.haptic);
-    // Theme was applied pre-hydration by ScriptOnce in __root.tsx.
-    // Just mirror the current DOM state into React so the Switch reflects reality.
     if (typeof document !== "undefined") {
       setDark(document.documentElement.classList.contains("dark"));
     }
+    setLinksMonth(getLinksThisMonth());
   }, []);
+
+  useEffect(() => {
+    setLinksMonth(getLinksThisMonth());
+  }, [items.length]);
+
+  const editingItem = items.find((it) => it.id === editingId) ?? null;
 
   function toggleDark(v: boolean) {
     setDark(v);
@@ -104,35 +118,84 @@ function Index() {
   }
 
   async function copyText(text: string) {
-    try {
-      await navigator.clipboard.writeText(text);
+    const ok = await copyToClipboard(text);
+    if (ok) {
       toast.success("Berhasil disalin", {
+        id: "hist-copy",
         description: "Link sudah tersimpan di papan klip.",
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
       });
-    } catch {
+    } else {
       toast.error("Gagal menyalin", {
+        id: "hist-copy",
         description: "Coba salin manual atau periksa izin browser.",
         icon: <XCircle className="h-4 w-4 text-destructive" />,
       });
     }
   }
 
+  function handleRemove(id: string) {
+    const snap = items;
+    remove(id);
+    toast("Dihapus dari riwayat", {
+      id: `undo-${id}`,
+      action: {
+        label: "Undo",
+        onClick: () => replaceAll(snap),
+      },
+      duration: 5000,
+    });
+  }
+
+  function handleClearAll() {
+    const snap = items;
+    clear();
+    toast("Semua riwayat dihapus", {
+      id: "undo-clear",
+      action: {
+        label: "Undo",
+        onClick: () => replaceAll(snap),
+      },
+      duration: 6000,
+    });
+  }
+
+  async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      const parsed = await importHistoryJSON(file);
+      if (!parsed.length) {
+        toast.error("Tidak ada entri valid di file itu");
+        return;
+      }
+      // Merge with existing, dedupe by url, cap kept by hook.
+      const merged = [...parsed, ...items].filter(
+        (it, idx, arr) => arr.findIndex((x) => x.url === it.url) === idx,
+      );
+      replaceAll(merged);
+      toast.success(`Berhasil import ${parsed.length} entri`);
+    } catch {
+      toast.error("File tidak bisa dibaca. Pastikan file .json dari WAlinkQ.");
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-10 border-b border-primary/20 bg-background/85 backdrop-blur">
-        <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-xl items-center justify-between px-3 py-2.5 sm:px-6 sm:py-3">
           <h1 className="font-display text-2xl font-black uppercase tracking-tight sm:text-[28px]">
             <span className="text-primary">WA</span>link<span className="text-primary">Q</span>
             <span className="sr-only"> — Bikin Link WhatsApp + QR Code Gratis</span>
           </h1>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <Dialog open={histOpen} onOpenChange={setHistOpen}>
               <DialogTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10"
+                  className="h-9 w-9"
                   aria-label="Riwayat"
                 >
                   <History className="h-5 w-5" />
@@ -144,6 +207,42 @@ function Index() {
                     Riwayat
                   </DialogTitle>
                 </DialogHeader>
+                <div className="flex flex-wrap items-center justify-between gap-2 px-1 pb-1">
+                  {linksMonth > 0 && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                      Kamu buat {linksMonth} link bulan ini
+                    </span>
+                  )}
+                  <div className="ml-auto flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1 px-2 text-[11px]"
+                      onClick={() => exportHistoryJSON(items)}
+                      disabled={items.length === 0}
+                    >
+                      <Download className="h-3 w-3" /> JSON
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1 px-2 text-[11px]"
+                      onClick={() => exportHistoryCSV(items)}
+                      disabled={items.length === 0}
+                    >
+                      <Download className="h-3 w-3" /> CSV
+                    </Button>
+                    <label className="inline-flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 text-[11px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground">
+                      <Upload className="h-3 w-3" /> Import
+                      <input
+                        type="file"
+                        accept="application/json"
+                        className="hidden"
+                        onChange={handleImport}
+                      />
+                    </label>
+                  </div>
+                </div>
                 {items.length === 0 ? (
                   <p className="py-6 text-center text-sm text-muted-foreground">
                     Belum ada link tersimpan.
@@ -156,7 +255,7 @@ function Index() {
                     <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
                       {items.map((it) => (
                         <li key={it.id}>
-                          <SwipeToDelete onDelete={() => remove(it.id)}>
+                          <SwipeToDelete onDelete={() => handleRemove(it.id)}>
                             <div className="flex items-center gap-2 py-3">
                               <Button
                                 type="button"
@@ -193,13 +292,7 @@ function Index() {
                                 type="button"
                                 size="icon"
                                 variant="ghost"
-                                onClick={() => {
-                                  const next = window.prompt(
-                                    "Nama kontak (kosongkan untuk hapus):",
-                                    it.label ?? "",
-                                  );
-                                  if (next !== null) setLabel(it.id, next);
-                                }}
+                                onClick={() => setEditingId(it.id)}
                                 aria-label="Edit nama"
                                 className="h-8 w-8 shrink-0"
                               >
@@ -231,7 +324,7 @@ function Index() {
                                 type="button"
                                 size="icon"
                                 variant="ghost"
-                                onClick={() => remove(it.id)}
+                                onClick={() => handleRemove(it.id)}
                                 aria-label="Hapus"
                                 className="h-8 w-8 shrink-0"
                               >
@@ -243,7 +336,7 @@ function Index() {
                       ))}
                     </ul>
                     <div className="flex justify-end pt-2">
-                      <Button variant="ghost" size="sm" onClick={clear}>
+                      <Button variant="ghost" size="sm" onClick={handleClearAll}>
                         Hapus semua
                       </Button>
                     </div>
@@ -257,7 +350,7 @@ function Index() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10"
+                  className="h-9 w-9"
                   aria-label="Cara pakai"
                 >
                   <HelpCircle className="h-5 w-5" />
@@ -288,7 +381,7 @@ function Index() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10" aria-label="Pengaturan">
+                <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Pengaturan">
                   <Settings className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -333,18 +426,25 @@ function Index() {
         <WaGenerator />
       </main>
 
-      <footer className="flex items-center justify-center gap-2.5 py-3">
-        <span className="text-[11px] text-muted-foreground">
+      <footer className="flex flex-nowrap items-center justify-center gap-1.5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <span className="whitespace-nowrap text-[11px] text-muted-foreground">
           by <span className="font-medium text-foreground">@alfindigital</span>
         </span>
-        <span className="text-[11px] text-muted-foreground">|</span>
+        <span className="text-[11px] text-muted-foreground">·</span>
+        <Link
+          to="/privasi"
+          className="whitespace-nowrap rounded-md px-1 py-1 text-[11px] text-muted-foreground hover:text-primary"
+        >
+          Privasi
+        </Link>
+        <span className="text-[11px] text-muted-foreground">·</span>
         <a
           href="https://alfindigital.com"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Website alfindigital.com"
           title="alfindigital.com"
-          className="inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-primary"
+          className="inline-flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:text-primary"
         >
           <Globe className="h-3.5 w-3.5" aria-hidden="true" />
         </a>
@@ -354,7 +454,7 @@ function Index() {
           rel="noopener noreferrer"
           aria-label="X (Twitter) @alfindigital"
           title="X @alfindigital"
-          className="inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-primary"
+          className="inline-flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:text-primary"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -372,7 +472,7 @@ function Index() {
           rel="noopener noreferrer"
           aria-label="Telegram @alfidx"
           title="Telegram @alfidx"
-          className="inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-primary"
+          className="inline-flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:text-primary"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -387,6 +487,15 @@ function Index() {
       </footer>
 
       <Toaster position="top-center" />
+      <EditLabelDialog
+        open={editingId !== null}
+        initialLabel={editingItem?.label ?? ""}
+        onOpenChange={(v) => !v && setEditingId(null)}
+        onSave={(label) => {
+          if (editingId) setLabel(editingId, label);
+        }}
+      />
+      <CoachMark />
     </div>
   );
 }
