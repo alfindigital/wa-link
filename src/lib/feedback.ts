@@ -4,14 +4,14 @@ const HAPTIC_KEY = "wa-pref-haptic";
 export type FeedbackPrefs = { sound: boolean; haptic: boolean };
 
 export function getPrefs(): FeedbackPrefs {
-  if (typeof window === "undefined") return { sound: false, haptic: true };
+  if (typeof window === "undefined") return { sound: false, haptic: false };
   try {
     return {
       sound: window.localStorage.getItem(SOUND_KEY) === "1",
-      haptic: window.localStorage.getItem(HAPTIC_KEY) !== "0",
+      haptic: window.localStorage.getItem(HAPTIC_KEY) === "1",
     };
   } catch {
-    return { sound: false, haptic: true };
+    return { sound: false, haptic: false };
   }
 }
 

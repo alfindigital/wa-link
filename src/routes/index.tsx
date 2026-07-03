@@ -82,7 +82,7 @@ function Index() {
   const [histOpen, setHistOpen] = useState(false);
   const { items, remove, clear, setLabel, toggleFavorite } = useWaHistory();
   const [sound, setSound] = useState(false);
-  const [haptic, setHaptic] = useState(true);
+  const [haptic, setHaptic] = useState(false);
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
