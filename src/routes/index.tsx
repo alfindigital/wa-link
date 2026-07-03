@@ -339,6 +339,7 @@ function Index() {
                     </div>
                   </>
                 )}
+              </DialogContent>
             </Dialog>
 
             <Dialog open={howOpen} onOpenChange={setHowOpen}>
