@@ -74,6 +74,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#25D366" },
+      {
+        name: "google-site-verification",
+        content: "WSO8GoXdxKJzaVUuZc3IM1v6O4AE-5ygtuqDlJ7vSg4",
+      },
       { title: "WAlinkQ — Buat Link WhatsApp Gratis" },
       {
         name: "description",
