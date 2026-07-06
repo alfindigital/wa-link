@@ -35,6 +35,7 @@ function isValid(x: unknown): x is WaHistoryItem {
     typeof o.phone === "string" &&
     typeof o.message === "string" &&
     typeof o.url === "string" &&
+    /^https:\/\/wa\.me\//.test(o.url) &&
     typeof o.createdAt === "number"
   );
 }
