@@ -1,5 +1,9 @@
 import type { WaHistoryItem } from "@/hooks/use-wa-history";
 
+function isValidWaUrl(u: string): boolean {
+  return /^https:\/\/wa\.me\//.test(u);
+}
+
 function isValidItem(x: unknown): x is WaHistoryItem {
   if (!x || typeof x !== "object") return false;
   const o = x as Record<string, unknown>;
@@ -8,6 +12,7 @@ function isValidItem(x: unknown): x is WaHistoryItem {
     typeof o.phone === "string" &&
     typeof o.message === "string" &&
     typeof o.url === "string" &&
+    isValidWaUrl(o.url) &&
     typeof o.createdAt === "number"
   );
 }
