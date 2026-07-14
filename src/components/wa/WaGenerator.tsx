@@ -287,12 +287,21 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
         id: "copy-ok",
         description: `${label} sudah tersimpan di papan klip.`,
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
+        action: {
+          label: "Salin ulang",
+          onClick: () => copyText(text, label),
+        },
+        duration: 5000,
       });
     } else {
       toast.error("Gagal menyalin", {
         id: "copy-err",
         description: "Coba salin manual dari kotak link di atas.",
         icon: <XCircle className="h-4 w-4 text-destructive" />,
+        action: {
+          label: "Coba lagi",
+          onClick: () => copyText(text, label),
+        },
       });
     }
   }
