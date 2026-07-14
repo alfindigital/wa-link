@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   History,
@@ -8,7 +8,6 @@ import {
   ExternalLink,
   CheckCircle2,
   XCircle,
-  Globe,
   Star,
   Pencil,
   Settings,
