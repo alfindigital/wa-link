@@ -604,7 +604,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
             </div>
 
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <Button
                 type="button"
                 className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
@@ -622,6 +622,14 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                 <a href={result.url} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />
                 </a>
+              </Button>
+              <Button
+                type="button"
+                className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
+                onClick={() => copyText(`+${result.phone}`, "Nomor")}
+                aria-label="Salin nomor"
+              >
+                <Phone className="h-4 w-4" />
               </Button>
             </div>
 
