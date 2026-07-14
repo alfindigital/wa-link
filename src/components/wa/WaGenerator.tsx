@@ -20,6 +20,7 @@ import {
   User,
   CheckCheck,
   ChevronDown,
+  Phone,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
@@ -286,12 +287,21 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
         id: "copy-ok",
         description: `${label} sudah tersimpan di papan klip.`,
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
+        action: {
+          label: "Salin ulang",
+          onClick: () => copyText(text, label),
+        },
+        duration: 5000,
       });
     } else {
       toast.error("Gagal menyalin", {
         id: "copy-err",
         description: "Coba salin manual dari kotak link di atas.",
         icon: <XCircle className="h-4 w-4 text-destructive" />,
+        action: {
+          label: "Coba lagi",
+          onClick: () => copyText(text, label),
+        },
       });
     }
   }
@@ -594,7 +604,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
             </div>
 
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <Button
                 type="button"
                 className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
@@ -612,6 +622,14 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                 <a href={result.url} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />
                 </a>
+              </Button>
+              <Button
+                type="button"
+                className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
+                onClick={() => copyText(`+${result.phone}`, "Nomor")}
+                aria-label="Salin nomor"
+              >
+                <Phone className="h-4 w-4" />
               </Button>
             </div>
 
