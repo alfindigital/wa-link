@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ShieldCheck, Database, EyeOff, Trash2, Info, Coffee, MessageCircle } from "lucide-react";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 
 export const Route = createFileRoute("/privasi")({
   component: PrivasiPage,
@@ -50,8 +51,9 @@ function PrivasiPage() {
   ];
 
   return (
-    <div className="mx-auto min-h-screen max-w-xl px-4 py-8 sm:py-12">
-      <Link
+    <div className="flex min-h-screen flex-col bg-background">
+      <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8 sm:py-12">
+        <Link
         to="/"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
@@ -116,6 +118,8 @@ function PrivasiPage() {
           Traktir di Trakteer
         </a>
       </div>
+      </main>
+      <SiteFooter />
     </div>
   );
 }
