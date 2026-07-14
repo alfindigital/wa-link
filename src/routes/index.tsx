@@ -123,12 +123,21 @@ function Index() {
         id: "hist-copy",
         description: "Link sudah tersimpan di papan klip.",
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
+        action: {
+          label: "Salin ulang",
+          onClick: () => copyText(text),
+        },
+        duration: 5000,
       });
     } else {
       toast.error("Gagal menyalin", {
         id: "hist-copy",
         description: "Coba salin manual atau periksa izin browser.",
         icon: <XCircle className="h-4 w-4 text-destructive" />,
+        action: {
+          label: "Coba lagi",
+          onClick: () => copyText(text),
+        },
       });
     }
   }
