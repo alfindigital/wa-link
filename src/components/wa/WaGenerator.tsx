@@ -513,27 +513,24 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   <button
                     type="button"
                     aria-label="Tebal"
-                    title="Tebal (*teks*)"
                     onClick={() => wrapSelection("*", "*")}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
                     <Bold className="h-4 w-4" />
                   </button>
                   <button
                     type="button"
                     aria-label="Miring"
-                    title="Miring (_teks_)"
                     onClick={() => wrapSelection("_", "_")}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
                     <Italic className="h-4 w-4" />
                   </button>
                   <button
                     type="button"
                     aria-label="Coret"
-                    title="Coret (~teks~)"
                     onClick={() => wrapSelection("~", "~")}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
                     <Strikethrough className="h-4 w-4" />
                   </button>
@@ -543,8 +540,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                       <button
                         type="button"
                         aria-label="Tambah emoji"
-                        title="Tambah emoji"
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                       >
                         <Smile className="h-4 w-4" />
                       </button>
@@ -607,7 +603,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
             <div className="grid grid-cols-3 gap-2">
               <Button
                 type="button"
-                className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
+                className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                 onClick={() => copyText(result.url, "Link")}
                 aria-label="Salin link"
               >
@@ -615,7 +611,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
               </Button>
               <Button
                 type="button"
-                className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
+                className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                 asChild
                 aria-label="Buka di WhatsApp"
               >
@@ -625,7 +621,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
               </Button>
               <Button
                 type="button"
-                className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
+                className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                 onClick={() => copyText(`+${result.phone}`, "Nomor")}
                 aria-label="Salin nomor"
               >
@@ -669,7 +665,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     type="button"
-                    className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
+                    className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                     onClick={() => copyText(result.url, "Link")}
                     aria-label="Salin link"
                   >
@@ -677,7 +673,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   </Button>
                   <Button
                     type="button"
-                    className="h-11 bg-primary text-primary-foreground hover:bg-primary/90"
+                    className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                     onClick={handleDownloadQr}
                     disabled={!qrDataUrl}
                     aria-label="Unduh QR"
