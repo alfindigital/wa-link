@@ -133,6 +133,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   const [qrOpen, setQrOpen] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
+  const linkRef = useRef<HTMLInputElement>(null);
   const phoneWarnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { add } = useWaHistory();
   const { items: templates, add: addTemplate, remove: removeTemplate } = useWaTemplates();
@@ -272,6 +273,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     playBlip("success");
     setTimeout(() => {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      linkRef.current?.focus();
+      linkRef.current?.select();
     }, 50);
   }
 
@@ -595,9 +598,16 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
           <CardContent className="space-y-4 p-4 sm:p-6">
             <h2 className="text-sm font-semibold">Link kamu</h2>
 
-            <div className="min-w-0 break-all rounded-md border border-border bg-background px-3 py-2 text-sm">
-              {result.url}
-            </div>
+            <input
+              ref={linkRef}
+              type="text"
+              readOnly
+              value={result.url}
+              onFocus={(e) => e.currentTarget.select()}
+              onClick={(e) => e.currentTarget.select()}
+              aria-label="Link WhatsApp siap disalin"
+              className="w-full min-w-0 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 selection:bg-primary/20"
+            />
 
 
             <div className="grid grid-cols-3 gap-2">
