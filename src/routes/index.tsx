@@ -274,7 +274,7 @@ function Index() {
                                 onClick={() => toggleFavorite(it.id)}
                                 aria-label={it.favorite ? "Hapus dari favorit" : "Jadikan favorit"}
                                 aria-pressed={!!it.favorite}
-                                className="h-8 w-8 shrink-0"
+                                className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <Star
                                   className={`h-4 w-4 ${it.favorite ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
@@ -304,7 +304,7 @@ function Index() {
                                 variant="ghost"
                                 onClick={() => setEditingId(it.id)}
                                 aria-label="Edit nama"
-                                className="h-8 w-8 shrink-0"
+                                className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <Pencil className="h-4 w-4" />
                               </Button>
@@ -314,7 +314,7 @@ function Index() {
                                 variant="ghost"
                                 onClick={() => copyText(it.url)}
                                 aria-label="Salin link"
-                                className="h-8 w-8 shrink-0"
+                                className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <Copy className="h-4 w-4" />
                               </Button>
@@ -324,7 +324,7 @@ function Index() {
                                 variant="ghost"
                                 asChild
                                 aria-label="Buka link"
-                                className="h-8 w-8 shrink-0"
+                                className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <a href={it.url} target="_blank" rel="noopener noreferrer">
                                   <ExternalLink className="h-4 w-4" />
@@ -336,7 +336,7 @@ function Index() {
                                 variant="ghost"
                                 onClick={() => handleRemove(it.id)}
                                 aria-label="Hapus"
-                                className="h-8 w-8 shrink-0"
+                                className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
