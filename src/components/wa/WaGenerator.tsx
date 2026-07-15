@@ -513,7 +513,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   <button
                     type="button"
                     aria-label="Tebal"
-                    title="Tebal (*teks*)"
                     onClick={() => wrapSelection("*", "*")}
                     className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
@@ -522,7 +521,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   <button
                     type="button"
                     aria-label="Miring"
-                    title="Miring (_teks_)"
                     onClick={() => wrapSelection("_", "_")}
                     className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
@@ -531,7 +529,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   <button
                     type="button"
                     aria-label="Coret"
-                    title="Coret (~teks~)"
                     onClick={() => wrapSelection("~", "~")}
                     className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
@@ -543,7 +540,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                       <button
                         type="button"
                         aria-label="Tambah emoji"
-                        title="Tambah emoji"
                         className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                       >
                         <Smile className="h-4 w-4" />
