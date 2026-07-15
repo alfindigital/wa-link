@@ -203,7 +203,7 @@ function Index() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-9 w-9"
+                  className="h-11 w-11 touch-manipulation"
                   aria-label="Riwayat"
                 >
                   <History className="h-5 w-5" />
@@ -355,7 +355,7 @@ function Index() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-9 w-9"
+                  className="h-11 w-11 touch-manipulation"
                   aria-label="Cara pakai"
                 >
                   <HelpCircle className="h-5 w-5" />
@@ -415,7 +415,7 @@ function Index() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Pengaturan">
+                <Button variant="ghost" size="icon" className="h-11 w-11 touch-manipulation" aria-label="Pengaturan">
                   <Settings className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
