@@ -212,35 +212,36 @@ function Index() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-md">
-                <DialogHeader>
+                <DialogHeader className="flex-row items-center justify-between gap-2 pr-10">
                   <DialogTitle className="font-display text-xl font-black uppercase tracking-tight">
                     Riwayat
                   </DialogTitle>
-                  <DialogDescription className="sr-only">
-                    Daftar link WhatsApp yang pernah kamu buat.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="flex flex-wrap items-center justify-end gap-1 px-1 pb-1">
+                  <div className="flex items-center gap-0.5">
                     <Button
                       variant="ghost"
-                      size="sm"
-                      className="h-7 gap-1 px-2 text-[11px]"
+                      size="icon"
+                      className="h-9 w-9 touch-manipulation"
                       onClick={() => exportHistoryJSON(items)}
                       disabled={items.length === 0}
+                      aria-label="Export JSON"
                     >
-                      <Download className="h-3 w-3" /> JSON
+                      <FileJson className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="ghost"
-                      size="sm"
-                      className="h-7 gap-1 px-2 text-[11px]"
+                      size="icon"
+                      className="h-9 w-9 touch-manipulation"
                       onClick={() => exportHistoryCSV(items)}
                       disabled={items.length === 0}
+                      aria-label="Export CSV"
                     >
-                      <Download className="h-3 w-3" /> CSV
+                      <FileSpreadsheet className="h-4 w-4" />
                     </Button>
-                    <label className="inline-flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 text-[11px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground">
-                      <Upload className="h-3 w-3" /> Import
+                    <label
+                      className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                      aria-label="Import JSON"
+                    >
+                      <Upload className="h-4 w-4" />
                       <input
                         type="file"
                         accept="application/json"
@@ -250,14 +251,19 @@ function Index() {
                     </label>
                     <Button
                       variant="ghost"
-                      size="sm"
-                      className="h-7 gap-1 px-2 text-[11px] text-destructive hover:text-destructive"
+                      size="icon"
+                      className="h-9 w-9 touch-manipulation text-destructive hover:text-destructive"
                       onClick={handleClearAll}
                       disabled={items.length === 0}
+                      aria-label="Hapus semua"
                     >
-                    <Trash2 className="h-3 w-3" /> Hapus semua
+                      <Trash2 className="h-4 w-4" />
                     </Button>
-                </div>
+                  </div>
+                  <DialogDescription className="sr-only">
+                    Daftar link WhatsApp yang pernah kamu buat.
+                  </DialogDescription>
+                </DialogHeader>
                 {items.length === 0 ? (
                   <p className="py-6 text-center text-sm text-muted-foreground">
                     Belum ada link tersimpan.
