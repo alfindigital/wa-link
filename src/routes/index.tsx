@@ -19,6 +19,8 @@ import {
   Phone,
   MessageSquare,
   Link2,
+  FileJson,
+  FileSpreadsheet,
 } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
