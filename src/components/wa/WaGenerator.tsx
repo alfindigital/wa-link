@@ -130,6 +130,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [qrError, setQrError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedLabel, setCopiedLabel] = useState("Link");
   const [qrOpen, setQrOpen] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
