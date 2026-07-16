@@ -704,7 +704,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
 
       {result && copied && (
         <div className="pointer-events-none fixed bottom-4 left-1/2 z-20 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm sm:hidden">
-          Link disalin
+          {copiedLabel} disalin
         </div>
       )}
     </div>
