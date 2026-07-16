@@ -212,7 +212,7 @@ function Index() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-md">
-                <DialogHeader className="flex-row items-center justify-between gap-2 pr-10">
+                <DialogHeader className="flex-row items-center justify-between gap-2 pt-4 pb-2 pr-10">
                   <DialogTitle className="font-display text-xl font-black uppercase tracking-tight">
                     Riwayat
                   </DialogTitle>
