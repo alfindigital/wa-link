@@ -283,11 +283,12 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopied(true);
+      setCopiedLabel(label);
       setTimeout(() => setCopied(false), 2000);
       if (result) add(result);
       vibrate(20);
       playBlip("copy");
-      toast.success("Berhasil disalin", {
+      toast.success(`${label} disalin`, {
         id: "copy-ok",
         description: `${label} sudah tersimpan di papan klip.`,
         icon: <CheckCircle2 className="h-4 w-4 text-green-500" />,
@@ -298,9 +299,12 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
         duration: 5000,
       });
     } else {
-      toast.error("Gagal menyalin", {
+      toast.error(`Gagal menyalin ${label.toLowerCase()}`, {
         id: "copy-err",
-        description: "Coba salin manual dari kotak link di atas.",
+        description:
+          label === "Nomor"
+            ? "Coba salin manual dari kotak nomor atau periksa izin browser."
+            : "Coba salin manual dari kotak link di atas atau periksa izin browser.",
         icon: <XCircle className="h-4 w-4 text-destructive" />,
         action: {
           label: "Coba lagi",
