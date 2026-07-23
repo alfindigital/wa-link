@@ -99,6 +99,7 @@ function Index() {
   const [haptic, setHaptic] = useState(false);
   const [dark, setDark] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [historyQuery, setHistoryQuery] = useState("");
 
   useEffect(() => {
     const p = getPrefs();
