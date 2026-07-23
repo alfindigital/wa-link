@@ -175,6 +175,24 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   // Simpan draft otomatis tanpa menghapus setelah generate
   useWaDraft(phone, message, hydrated);
 
+  // Listen for "edit from history" events dispatched by the history dialog.
+  useEffect(() => {
+    function onPrefill(e: Event) {
+      const detail = (e as CustomEvent).detail as { phone?: string; message?: string } | undefined;
+      if (!detail) return;
+      if (typeof detail.phone === "string") setPhone(cleanPhone(detail.phone));
+      if (typeof detail.message === "string") setMessage(detail.message.slice(0, MAX_MESSAGE));
+      setResult(null);
+      setError(null);
+      setTimeout(() => {
+        messageRef.current?.focus();
+        messageRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 50);
+    }
+    window.addEventListener("wa-prefill", onPrefill as EventListener);
+    return () => window.removeEventListener("wa-prefill", onPrefill as EventListener);
+  }, []);
+
   function resizeTextarea() {
     const el = messageRef.current;
     if (!el) return;
