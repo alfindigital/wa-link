@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   History,
   HelpCircle,
@@ -22,6 +22,8 @@ import {
   FileJson,
   FileSpreadsheet,
   Edit3,
+  Search,
+  X,
 } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
