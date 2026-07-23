@@ -21,6 +21,7 @@ import {
   Link2,
   FileJson,
   FileSpreadsheet,
+  Edit3,
 } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
@@ -315,6 +316,28 @@ function Index() {
                                 className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => {
+                                  window.dispatchEvent(
+                                    new CustomEvent("wa-prefill", {
+                                      detail: { phone: it.phone, message: it.message },
+                                    }),
+                                  );
+                                  setHistOpen(false);
+                                  toast.success("Pesan dimuat ke form", {
+                                    id: "hist-edit",
+                                    description: "Ubah pesan lalu tekan Buat Link.",
+                                    duration: 4000,
+                                  });
+                                }}
+                                aria-label="Edit pesan & buat link baru"
+                                className="h-11 w-11 shrink-0 touch-manipulation"
+                              >
+                                <Edit3 className="h-4 w-4" />
                               </Button>
                               <Button
                                 type="button"
