@@ -112,6 +112,18 @@ function Index() {
 
   const editingItem = items.find((it) => it.id === editingId) ?? null;
 
+  const filteredItems = useMemo(() => {
+    const q = historyQuery.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter(
+      (it) =>
+        it.url.toLowerCase().includes(q) ||
+        it.phone.includes(q) ||
+        (it.message && it.message.toLowerCase().includes(q)) ||
+        (it.label && it.label.toLowerCase().includes(q)),
+    );
+  }, [items, historyQuery]);
+
   function toggleDark(v: boolean) {
     setDark(v);
     document.documentElement.classList.toggle("dark", v);
