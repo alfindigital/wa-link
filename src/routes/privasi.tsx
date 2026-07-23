@@ -52,7 +52,7 @@ function PrivasiPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8 sm:py-12">
+      <main className="mx-auto w-full max-w-xl flex-1 px-4 pt-8 pb-4 sm:px-6 sm:pt-12 sm:pb-6">
         <Link
         to="/"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"

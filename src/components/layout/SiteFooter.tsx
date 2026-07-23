@@ -3,7 +3,7 @@ import { Globe } from "lucide-react";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto flex w-full flex-nowrap items-center justify-center gap-1 px-3 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+    <footer className="mt-auto flex w-full flex-nowrap items-center justify-center gap-1 px-2 py-1 pb-[max(0.375rem,env(safe-area-inset-bottom))]">
       <span className="whitespace-nowrap text-[10px] text-muted-foreground">
         by <span className="font-medium text-foreground">@alfindigital</span>
       </span>
