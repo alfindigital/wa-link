@@ -417,7 +417,8 @@ function Index() {
                         </li>
                       ))}
                     </ul>
-                  </>
+                  )}
+                </>
                 )}
               </DialogContent>
             </Dialog>
