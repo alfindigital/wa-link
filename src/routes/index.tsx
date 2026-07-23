@@ -491,7 +491,7 @@ function Index() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-xl flex-1 px-4 pb-4 pt-4 sm:px-6 sm:pb-12 sm:pt-8">
+      <main className="mx-auto w-full max-w-xl flex-1 px-4 pb-2 pt-4 sm:px-6 sm:pb-4 sm:pt-6">
         <WaGenerator />
       </main>
 
