@@ -21,7 +21,6 @@ import {
   CheckCheck,
   ChevronDown,
   Phone,
-  Edit3,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
