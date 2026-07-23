@@ -314,7 +314,7 @@ function Index() {
                       </p>
                     ) : (
                       <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
-                      {items.map((it) => (
+                      {filteredItems.map((it) => (
                         <li key={it.id}>
                           <SwipeToDelete onDelete={() => handleRemove(it.id)}>
                             <div className="flex items-center gap-2 py-3">
