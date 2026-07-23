@@ -321,6 +321,28 @@ function Index() {
                                 type="button"
                                 size="icon"
                                 variant="ghost"
+                                onClick={() => {
+                                  window.dispatchEvent(
+                                    new CustomEvent("wa-prefill", {
+                                      detail: { phone: it.phone, message: it.message },
+                                    }),
+                                  );
+                                  setHistOpen(false);
+                                  toast.success("Pesan dimuat ke form", {
+                                    id: "hist-edit",
+                                    description: "Ubah pesan lalu tekan Buat Link.",
+                                    duration: 4000,
+                                  });
+                                }}
+                                aria-label="Edit pesan & buat link baru"
+                                className="h-11 w-11 shrink-0 touch-manipulation"
+                              >
+                                <Edit3 className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
                                 onClick={() => copyText(it.url)}
                                 aria-label="Salin link"
                                 className="h-11 w-11 shrink-0 touch-manipulation"
