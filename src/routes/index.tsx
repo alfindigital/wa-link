@@ -21,6 +21,7 @@ import {
   Link2,
   FileJson,
   FileSpreadsheet,
+  Edit3,
 } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
