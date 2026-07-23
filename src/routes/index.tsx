@@ -286,7 +286,33 @@ function Index() {
                   </p>
                 ) : (
                   <>
-                    <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
+                    <div className="relative mt-2">
+                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                      <Input
+                        type="search"
+                        placeholder="Cari link, nomor, atau pesan..."
+                        value={historyQuery}
+                        onChange={(e) => setHistoryQuery(e.target.value)}
+                        className="h-10 pl-9 pr-8 text-sm"
+                        aria-label="Cari riwayat"
+                      />
+                      {historyQuery && (
+                        <button
+                          type="button"
+                          onClick={() => setHistoryQuery("")}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:bg-muted"
+                          aria-label="Hapus pencarian"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
+                    {filteredItems.length === 0 ? (
+                      <p className="py-6 text-center text-sm text-muted-foreground">
+                        Tidak ada hasil yang cocok.
+                      </p>
+                    ) : (
+                      <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
                       {items.map((it) => (
                         <li key={it.id}>
                           <SwipeToDelete onDelete={() => handleRemove(it.id)}>
