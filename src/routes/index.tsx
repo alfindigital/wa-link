@@ -32,6 +32,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
