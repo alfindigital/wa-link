@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RiwayatRouteImport } from './routes/riwayat'
 import { Route as PrivasiRouteImport } from './routes/privasi'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RiwayatRoute = RiwayatRouteImport.update({
+  id: '/riwayat',
+  path: '/riwayat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivasiRoute = PrivasiRouteImport.update({
@@ -32,30 +38,34 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/privasi': typeof PrivasiRoute
+  '/riwayat': typeof RiwayatRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/privasi': typeof PrivasiRoute
+  '/riwayat': typeof RiwayatRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/privasi': typeof PrivasiRoute
+  '/riwayat': typeof RiwayatRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/privasi' | '/sitemap.xml'
+  fullPaths: '/' | '/privasi' | '/riwayat' | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/privasi' | '/sitemap.xml'
-  id: '__root__' | '/' | '/privasi' | '/sitemap.xml'
+  to: '/' | '/privasi' | '/riwayat' | '/sitemap.xml'
+  id: '__root__' | '/' | '/privasi' | '/riwayat' | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PrivasiRoute: typeof PrivasiRoute
+  RiwayatRoute: typeof RiwayatRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/riwayat': {
+      id: '/riwayat'
+      path: '/riwayat'
+      fullPath: '/riwayat'
+      preLoaderRoute: typeof RiwayatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privasi': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PrivasiRoute: PrivasiRoute,
+  RiwayatRoute: RiwayatRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
