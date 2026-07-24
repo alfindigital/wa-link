@@ -470,7 +470,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                       <button
                         type="button"
                         onClick={() => removeTemplate(t.id)}
-                        aria-label={`Hapus template ${t.text} title={`Hapus template ${t.text}`}
+                        aria-label={`Hapus template ${t.text}`}
+                        title={`Hapus template ${t.text}`}
                         className="ml-0.5 rounded-full p-0.5 text-muted-foreground hover:bg-muted hover:text-destructive"
                       >
                         <X className="h-3 w-3" />
@@ -835,7 +836,8 @@ function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
             type="button"
             onClick={() => handlePick(emoji)}
             className="flex h-7 w-7 items-center justify-center rounded-md text-base transition-colors hover:bg-muted sm:h-8 sm:w-8 sm:text-lg"
-            aria-label={`Insert emoji ${emoji} title={`Insert emoji ${emoji}`}
+            aria-label={`Insert emoji ${emoji}`}
+            title={`Insert emoji ${emoji}`}
           >
             {emoji}
           </button>
