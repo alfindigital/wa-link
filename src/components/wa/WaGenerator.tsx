@@ -470,7 +470,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                       <button
                         type="button"
                         onClick={() => removeTemplate(t.id)}
-                        aria-label={`Hapus template ${t.text}`}
+                        aria-label={`Hapus template ${t.text} title={`Hapus template ${t.text}`}
                         className="ml-0.5 rounded-full p-0.5 text-muted-foreground hover:bg-muted hover:text-destructive"
                       >
                         <X className="h-3 w-3" />
@@ -482,7 +482,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   <PopoverTrigger asChild>
                     <button
                       type="button"
-                      aria-label="Tambah template pesan"
+                      aria-label="Tambah template pesan" title="Tambah template pesan"
                       className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                     >
                       <Plus className="h-3 w-3" />
@@ -538,7 +538,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                 <div className="flex items-center gap-0.5 border-t border-border bg-muted/40 px-1.5 py-1">
                   <button
                     type="button"
-                    aria-label="Tebal"
+                    aria-label="Tebal" title="Tebal"
                     onClick={() => wrapSelection("*", "*")}
                     className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
@@ -546,7 +546,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   </button>
                   <button
                     type="button"
-                    aria-label="Miring"
+                    aria-label="Miring" title="Miring"
                     onClick={() => wrapSelection("_", "_")}
                     className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
@@ -554,7 +554,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   </button>
                   <button
                     type="button"
-                    aria-label="Coret"
+                    aria-label="Coret" title="Coret"
                     onClick={() => wrapSelection("~", "~")}
                     className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
@@ -565,7 +565,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                     <PopoverTrigger asChild>
                       <button
                         type="button"
-                        aria-label="Tambah emoji"
+                        aria-label="Tambah emoji" title="Tambah emoji"
                         className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                       >
                         <Smile className="h-4 w-4" />
@@ -628,7 +628,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
               value={result.url}
               onFocus={(e) => e.currentTarget.select()}
               onClick={(e) => e.currentTarget.select()}
-              aria-label="Link WhatsApp siap disalin"
+              aria-label="Link WhatsApp siap disalin" title="Link WhatsApp siap disalin"
               className="w-full min-w-0 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 selection:bg-primary/20"
             />
 
@@ -638,7 +638,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                 type="button"
                 className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                 onClick={() => copyText(result.url, "Link")}
-                aria-label="Salin link"
+                aria-label="Salin link" title="Salin link"
               >
                 <Copy className="h-4 w-4" />
               </Button>
@@ -646,7 +646,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                 type="button"
                 className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                 asChild
-                aria-label="Buka di WhatsApp"
+                aria-label="Buka di WhatsApp" title="Buka di WhatsApp"
               >
                 <a href={result.url} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />
@@ -656,7 +656,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                 type="button"
                 className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                 onClick={() => copyText(`+${result.phone}`, "Nomor")}
-                aria-label="Salin nomor"
+                aria-label="Salin nomor" title="Salin nomor"
               >
                 <Phone className="h-4 w-4" />
               </Button>
@@ -700,7 +700,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                     type="button"
                     className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                     onClick={() => copyText(result.url, "Link")}
-                    aria-label="Salin link"
+                    aria-label="Salin link" title="Salin link"
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
@@ -709,7 +709,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                     className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                     onClick={handleDownloadQr}
                     disabled={!qrDataUrl}
-                    aria-label="Unduh QR"
+                    aria-label="Unduh QR" title="Unduh QR"
                   >
                     <Download className="h-4 w-4" />
                   </Button>
@@ -835,7 +835,7 @@ function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
             type="button"
             onClick={() => handlePick(emoji)}
             className="flex h-7 w-7 items-center justify-center rounded-md text-base transition-colors hover:bg-muted sm:h-8 sm:w-8 sm:text-lg"
-            aria-label={`Insert emoji ${emoji}`}
+            aria-label={`Insert emoji ${emoji} title={`Insert emoji ${emoji}`}
           >
             {emoji}
           </button>
@@ -851,7 +851,7 @@ function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Cari emoji…"
-        aria-label="Cari emoji"
+        aria-label="Cari emoji" title="Cari emoji"
         className="h-8 text-xs"
       />
       {filtered ? (
@@ -911,7 +911,7 @@ function ChatPreview({ phone, message }: { phone: string; message: string }) {
   const text = message.trim();
   return (
     <div
-      aria-label="Pratinjau pesan"
+      aria-label="Pratinjau pesan" title="Pratinjau pesan"
       className="overflow-hidden rounded-lg border border-border bg-background"
     >
       <div className="flex items-center gap-2 border-b border-border bg-muted/60 px-3 py-2">

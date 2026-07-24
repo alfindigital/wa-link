@@ -19,7 +19,7 @@ export function SiteFooter() {
         href="https://alfindigital.com"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Website alfindigital.com"
+        aria-label="Website alfindigital.com" title="Website alfindigital.com"
         title="alfindigital.com"
         className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground transition-colors hover:text-primary"
       >
@@ -29,7 +29,7 @@ export function SiteFooter() {
         href="https://x.com/alfindigital"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="X (Twitter) @alfindigital"
+        aria-label="X (Twitter) @alfindigital" title="X (Twitter) @alfindigital"
         title="X @alfindigital"
         className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground transition-colors hover:text-primary"
       >
@@ -47,7 +47,7 @@ export function SiteFooter() {
         href="https://t.me/alfindigitalcom"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Telegram @alfindigitalcom"
+        aria-label="Telegram @alfindigitalcom" title="Telegram @alfindigitalcom"
         title="Telegram @alfindigitalcom"
         className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground transition-colors hover:text-primary"
       >
