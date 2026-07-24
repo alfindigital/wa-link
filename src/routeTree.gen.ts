@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RiwayatRouteImport } from './routes/riwayat'
 import { Route as PrivasiRouteImport } from './routes/privasi'
+import { Route as PengaturanRouteImport } from './routes/pengaturan'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -29,6 +30,11 @@ const PrivasiRoute = PrivasiRouteImport.update({
   path: '/privasi',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PengaturanRoute = PengaturanRouteImport.update({
+  id: '/pengaturan',
+  path: '/pengaturan',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,12 +43,14 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/pengaturan': typeof PengaturanRoute
   '/privasi': typeof PrivasiRoute
   '/riwayat': typeof RiwayatRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/pengaturan': typeof PengaturanRoute
   '/privasi': typeof PrivasiRoute
   '/riwayat': typeof RiwayatRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -50,20 +58,28 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/pengaturan': typeof PengaturanRoute
   '/privasi': typeof PrivasiRoute
   '/riwayat': typeof RiwayatRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/privasi' | '/riwayat' | '/sitemap.xml'
+  fullPaths: '/' | '/pengaturan' | '/privasi' | '/riwayat' | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/privasi' | '/riwayat' | '/sitemap.xml'
-  id: '__root__' | '/' | '/privasi' | '/riwayat' | '/sitemap.xml'
+  to: '/' | '/pengaturan' | '/privasi' | '/riwayat' | '/sitemap.xml'
+  id:
+    | '__root__'
+    | '/'
+    | '/pengaturan'
+    | '/privasi'
+    | '/riwayat'
+    | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PengaturanRoute: typeof PengaturanRoute
   PrivasiRoute: typeof PrivasiRoute
   RiwayatRoute: typeof RiwayatRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -92,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivasiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pengaturan': {
+      id: '/pengaturan'
+      path: '/pengaturan'
+      fullPath: '/pengaturan'
+      preLoaderRoute: typeof PengaturanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +127,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PengaturanRoute: PengaturanRoute,
   PrivasiRoute: PrivasiRoute,
   RiwayatRoute: RiwayatRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
