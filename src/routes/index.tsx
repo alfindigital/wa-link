@@ -223,7 +223,7 @@ function Index() {
                   variant="ghost"
                   size="icon"
                   className="h-11 w-11 touch-manipulation"
-                  aria-label="Riwayat"
+                  aria-label="Riwayat" title="Riwayat"
                 >
                   <History className="h-5 w-5" />
                 </Button>
@@ -240,7 +240,7 @@ function Index() {
                       className="h-9 w-9 touch-manipulation"
                       onClick={() => exportHistoryJSON(items)}
                       disabled={items.length === 0}
-                      aria-label="Export JSON"
+                      aria-label="Export JSON" title="Export JSON"
                     >
                       <FileJson className="h-4 w-4" />
                     </Button>
@@ -250,13 +250,13 @@ function Index() {
                       className="h-9 w-9 touch-manipulation"
                       onClick={() => exportHistoryCSV(items)}
                       disabled={items.length === 0}
-                      aria-label="Export CSV"
+                      aria-label="Export CSV" title="Export CSV"
                     >
                       <FileSpreadsheet className="h-4 w-4" />
                     </Button>
                     <label
                       className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
-                      aria-label="Import JSON"
+                      aria-label="Import JSON" title="Import JSON"
                     >
                       <Upload className="h-4 w-4" />
                       <input
@@ -272,7 +272,7 @@ function Index() {
                       className="h-9 w-9 touch-manipulation text-destructive hover:text-destructive"
                       onClick={handleClearAll}
                       disabled={items.length === 0}
-                      aria-label="Hapus semua"
+                      aria-label="Hapus semua" title="Hapus semua"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -295,14 +295,14 @@ function Index() {
                         value={historyQuery}
                         onChange={(e) => setHistoryQuery(e.target.value)}
                         className="h-10 pl-9 pr-8 text-sm"
-                        aria-label="Cari riwayat"
+                        aria-label="Cari riwayat" title="Cari riwayat"
                       />
                       {historyQuery && (
                         <button
                           type="button"
                           onClick={() => setHistoryQuery("")}
                           className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:bg-muted"
-                          aria-label="Hapus pencarian"
+                          aria-label="Hapus pencarian" title="Hapus pencarian"
                         >
                           <X className="h-3.5 w-3.5" />
                         </button>
@@ -323,7 +323,7 @@ function Index() {
                                 size="icon"
                                 variant="ghost"
                                 onClick={() => toggleFavorite(it.id)}
-                                aria-label={it.favorite ? "Hapus dari favorit" : "Jadikan favorit"}
+                                aria-label={it.favorite ? "Hapus dari favorit" : "Jadikan favorit"} title={it.favorite ? "Hapus dari favorit" : "Jadikan favorit"}
                                 aria-pressed={!!it.favorite}
                                 className="h-11 w-11 shrink-0 touch-manipulation"
                               >
@@ -354,7 +354,7 @@ function Index() {
                                 size="icon"
                                 variant="ghost"
                                 onClick={() => setEditingId(it.id)}
-                                aria-label="Edit nama"
+                                aria-label="Edit nama" title="Edit nama"
                                 className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <Pencil className="h-4 w-4" />
@@ -376,7 +376,7 @@ function Index() {
                                     duration: 4000,
                                   });
                                 }}
-                                aria-label="Edit pesan & buat link baru"
+                                aria-label="Edit pesan & buat link baru" title="Edit pesan & buat link baru"
                                 className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <Edit3 className="h-4 w-4" />
@@ -386,7 +386,7 @@ function Index() {
                                 size="icon"
                                 variant="ghost"
                                 onClick={() => copyText(it.url)}
-                                aria-label="Salin link"
+                                aria-label="Salin link" title="Salin link"
                                 className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <Copy className="h-4 w-4" />
@@ -396,7 +396,7 @@ function Index() {
                                 size="icon"
                                 variant="ghost"
                                 asChild
-                                aria-label="Buka link"
+                                aria-label="Buka link" title="Buka link"
                                 className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <a href={it.url} target="_blank" rel="noopener noreferrer">
@@ -408,7 +408,7 @@ function Index() {
                                 size="icon"
                                 variant="ghost"
                                 onClick={() => handleRemove(it.id)}
-                                aria-label="Hapus"
+                                aria-label="Hapus" title="Hapus"
                                 className="h-11 w-11 shrink-0 touch-manipulation"
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -430,7 +430,7 @@ function Index() {
                   variant="ghost"
                   size="icon"
                   className="h-11 w-11 touch-manipulation"
-                  aria-label="Cara pakai"
+                  aria-label="Cara pakai" title="Cara pakai"
                 >
                   <HelpCircle className="h-5 w-5" />
                 </Button>
@@ -489,7 +489,7 @@ function Index() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-11 w-11 touch-manipulation" aria-label="Pengaturan">
+                <Button variant="ghost" size="icon" className="h-11 w-11 touch-manipulation" aria-label="Pengaturan" title="Pengaturan">
                   <Settings className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
