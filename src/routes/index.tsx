@@ -235,15 +235,6 @@ function Index() {
       <SiteFooter />
 
       <Toaster position="top-center" />
-      <EditLabelDialog
-        open={editingId !== null}
-        initialLabel={editingItem?.label ?? ""}
-        onOpenChange={(v) => !v && setEditingId(null)}
-        onSave={(label) => {
-          if (editingId) setLabel(editingId, label);
-        }}
-      />
-      
     </div>
   );
 }
