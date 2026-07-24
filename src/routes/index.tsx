@@ -1,38 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
   History,
   HelpCircle,
-  Copy,
-  Trash2,
-  ExternalLink,
-  CheckCircle2,
-  XCircle,
-  Star,
-  Pencil,
   Settings,
   Moon,
   Volume2,
   Vibrate,
-  Download,
-  Upload,
   Phone,
   MessageSquare,
   Link2,
-  FileJson,
-  FileSpreadsheet,
-  Edit3,
-  Search,
-  X,
 } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
-import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
-import { EditLabelDialog } from "@/components/wa/EditLabelDialog";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -49,11 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
-import { useWaHistory } from "@/hooks/use-wa-history";
-import { toast } from "sonner";
 import { getPrefs, setPref } from "@/lib/feedback";
-import { copyToClipboard } from "@/lib/clipboard";
-import { exportHistoryCSV, exportHistoryJSON, importHistoryJSON } from "@/lib/history-io";
 
 export const Route = createFileRoute("/")({
   component: Index,
