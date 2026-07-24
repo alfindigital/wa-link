@@ -193,6 +193,26 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     return () => window.removeEventListener("wa-prefill", onPrefill as EventListener);
   }, []);
 
+  // Prefill dari halaman /riwayat via sessionStorage (navigasi antar-halaman).
+  useEffect(() => {
+    try {
+      const raw = window.sessionStorage.getItem("wa-prefill");
+      if (!raw) return;
+      window.sessionStorage.removeItem("wa-prefill");
+      const detail = JSON.parse(raw) as { phone?: string; message?: string };
+      if (typeof detail.phone === "string") setPhone(cleanPhone(detail.phone));
+      if (typeof detail.message === "string") setMessage(detail.message.slice(0, MAX_MESSAGE));
+      setResult(null);
+      setError(null);
+      setTimeout(() => {
+        messageRef.current?.focus();
+        messageRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 50);
+    } catch {
+      // ignore
+    }
+  }, []);
+
   function resizeTextarea() {
     const el = messageRef.current;
     if (!el) return;
