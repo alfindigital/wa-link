@@ -20,7 +20,6 @@ import {
 import { SwipeToDelete } from "@/components/wa/SwipeToDelete";
 import { EditLabelDialog } from "@/components/wa/EditLabelDialog";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useWaHistory } from "@/hooks/use-wa-history";

@@ -10,7 +10,6 @@ import {
   Link2,
 } from "lucide-react";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { getPrefs, setPref } from "@/lib/feedback";
