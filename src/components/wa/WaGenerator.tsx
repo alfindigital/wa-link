@@ -1,5 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  CheckCircle2,
+  XCircle,
   Copy,
   ExternalLink,
   Download,
@@ -254,15 +255,17 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     handlePhoneChange(text);
   }
 
+  // Reset cached QR when the link changes.
   useEffect(() => {
-    if (!result) {
-      setQrDataUrl(null);
-      setQrError(false);
-      return;
-    }
+    setQrDataUrl(null);
+    setQrError(false);
+  }, [result?.url]);
+
+  // Generate QR only when the panel is open (saves work + ~40KB import).
+  useEffect(() => {
+    if (!result || !qrOpen || qrDataUrl) return;
     let cancelled = false;
     setQrError(false);
-    // Lazy import qrcode only when a link exists (saves ~40KB on first paint).
     import("qrcode")
       .then(({ default: QRCode }) =>
         QRCode.toDataURL(result.url, {
@@ -287,7 +290,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     return () => {
       cancelled = true;
     };
-  }, [result]);
+  }, [result, qrOpen, qrDataUrl]);
 
   function handleGenerate(e: React.FormEvent) {
     e.preventDefault();
