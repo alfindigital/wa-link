@@ -256,11 +256,12 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   }
 
   useEffect(() => {
-    if (!result) {
+    if (!result || !qrOpen) {
       setQrDataUrl(null);
       setQrError(false);
       return;
     }
+    if (qrDataUrl) return;
     let cancelled = false;
     setQrError(false);
     // Lazy import qrcode only when a link exists (saves ~40KB on first paint).
@@ -288,7 +289,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     return () => {
       cancelled = true;
     };
-  }, [result]);
+  }, [result, qrOpen, qrDataUrl]);
 
   function handleGenerate(e: React.FormEvent) {
     e.preventDefault();
