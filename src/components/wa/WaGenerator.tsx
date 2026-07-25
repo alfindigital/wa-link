@@ -255,16 +255,17 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     handlePhoneChange(text);
   }
 
+  // Reset cached QR when the link changes.
   useEffect(() => {
-    if (!result || !qrOpen) {
-      setQrDataUrl(null);
-      setQrError(false);
-      return;
-    }
-    if (qrDataUrl) return;
+    setQrDataUrl(null);
+    setQrError(false);
+  }, [result?.url]);
+
+  // Generate QR only when the panel is open (saves work + ~40KB import).
+  useEffect(() => {
+    if (!result || !qrOpen || qrDataUrl) return;
     let cancelled = false;
     setQrError(false);
-    // Lazy import qrcode only when a link exists (saves ~40KB on first paint).
     import("qrcode")
       .then(({ default: QRCode }) =>
         QRCode.toDataURL(result.url, {
