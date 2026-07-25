@@ -365,7 +365,6 @@ function RiwayatPage() {
       </main>
 
       <SiteFooter />
-      <Toaster position="top-center" />
       <EditLabelDialog
         open={editingId !== null}
         initialLabel={editingItem?.label ?? ""}
