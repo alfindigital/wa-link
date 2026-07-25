@@ -2,8 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { History, Settings } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-
-import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -86,8 +84,6 @@ function Index() {
       </main>
 
       <SiteFooter />
-
-      <Toaster position="top-center" />
     </div>
   );
 }
