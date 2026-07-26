@@ -588,6 +588,48 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                       />
                     </PopoverContent>
                   </Popover>
+                  <Popover open={tplPopOpen} onOpenChange={setTplPopOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        disabled={!message.trim()}
+                        aria-label="Simpan sebagai template"
+                        title="Simpan sebagai template"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation disabled:opacity-40"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-64 space-y-2"
+                      align="end"
+                      side="top"
+                      collisionPadding={12}
+                    >
+                      <p className="text-xs font-medium">Simpan template</p>
+                      <Input
+                        value={newTitle}
+                        onChange={(e) => setNewTitle(e.target.value)}
+                        placeholder="Judul singkat (mis. Promo)"
+                        className="h-9 text-sm"
+                        maxLength={22}
+                      />
+                      <p className="line-clamp-2 text-[11px] text-muted-foreground">{message}</p>
+                      <Button
+                        type="button"
+                        size="sm"
+                        className="w-full"
+                        onClick={() => {
+                          addTemplate(message, newTitle);
+                          setNewTitle("");
+                          setTplPopOpen(false);
+                        }}
+                        disabled={!message.trim()}
+                      >
+                        Simpan
+                      </Button>
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
               {(phoneState === "valid" || message.trim().length > 0) && (
