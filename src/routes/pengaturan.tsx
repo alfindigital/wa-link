@@ -1,14 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-  ArrowLeft,
-  Moon,
-  Volume2,
-  Vibrate,
-  Phone,
-  MessageSquare,
-  Link2,
-} from "lucide-react";
+import { ArrowLeft, Moon, Volume2, Vibrate, Phone, MessageSquare, Link2 } from "lucide-react";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -104,9 +96,7 @@ function PengaturanPage() {
       <main className="mx-auto w-full max-w-3xl flex-1 space-y-6 px-3 pb-8 pt-4 sm:px-6 sm:pt-6">
         <section className="rounded-lg border border-border/60 bg-card">
           <div className="border-b border-border/60 px-4 py-3">
-            <h2 className="font-display text-sm font-black uppercase tracking-tight">
-              Preferensi
-            </h2>
+            <h2 className="font-display text-sm font-black uppercase tracking-tight">Preferensi</h2>
           </div>
           <div className="divide-y divide-border">
             <div className="flex items-center justify-between gap-3 px-4 py-3">
@@ -116,7 +106,9 @@ function PengaturanPage() {
                 </span>
                 <span className="flex flex-col">
                   <span className="font-medium text-foreground">Mode gelap</span>
-                  <span className="text-xs text-muted-foreground">Tampilan lebih nyaman di malam hari.</span>
+                  <span className="text-xs text-muted-foreground">
+                    Tampilan lebih nyaman di malam hari.
+                  </span>
                 </span>
               </label>
               <Switch id="pref-dark" checked={dark} onCheckedChange={toggleDark} />
@@ -128,7 +120,9 @@ function PengaturanPage() {
                 </span>
                 <span className="flex flex-col">
                   <span className="font-medium text-foreground">Suara</span>
-                  <span className="text-xs text-muted-foreground">Bunyi klik saat aksi berhasil.</span>
+                  <span className="text-xs text-muted-foreground">
+                    Bunyi klik saat aksi berhasil.
+                  </span>
                 </span>
               </label>
               <Switch
@@ -147,7 +141,9 @@ function PengaturanPage() {
                 </span>
                 <span className="flex flex-col">
                   <span className="font-medium text-foreground">Getar</span>
-                  <span className="text-xs text-muted-foreground">Getar singkat di perangkat mobile.</span>
+                  <span className="text-xs text-muted-foreground">
+                    Getar singkat di perangkat mobile.
+                  </span>
                 </span>
               </label>
               <Switch
@@ -164,9 +160,7 @@ function PengaturanPage() {
 
         <section className="rounded-lg border border-border/60 bg-card">
           <div className="border-b border-border/60 px-4 py-3">
-            <h2 className="font-display text-sm font-black uppercase tracking-tight">
-              Cara Pakai
-            </h2>
+            <h2 className="font-display text-sm font-black uppercase tracking-tight">Cara Pakai</h2>
           </div>
           <ol className="space-y-2 p-3">
             {steps.map((step, i) => {

@@ -1,4 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
+import { parseHistoryItem, parseHistoryList } from "@/lib/wa-history-schema";
+import { MAX_HISTORY_ITEMS, MAX_LABEL } from "@/lib/wa-limits";
 
 export type WaHistoryItem = {
   id: string;
@@ -11,7 +13,7 @@ export type WaHistoryItem = {
 };
 
 const KEY = "wa-link-history";
-const MAX = 100;
+const MAX = MAX_HISTORY_ITEMS;
 const EVT = "wa-link-history-change";
 
 function read(): WaHistoryItem[] {
@@ -20,24 +22,10 @@ function read(): WaHistoryItem[] {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return sortItems(parsed.filter(isValid));
+    return sortItems(parseHistoryList(parsed));
   } catch {
     return [];
   }
-}
-
-function isValid(x: unknown): x is WaHistoryItem {
-  if (!x || typeof x !== "object") return false;
-  const o = x as Record<string, unknown>;
-  return (
-    typeof o.id === "string" &&
-    typeof o.phone === "string" &&
-    typeof o.message === "string" &&
-    typeof o.url === "string" &&
-    /^https:\/\/wa\.me\//.test(o.url) &&
-    typeof o.createdAt === "number"
-  );
 }
 
 // When capping, keep favorites first, then most-recent.
@@ -86,22 +74,24 @@ export function useWaHistory() {
     (item: Omit<WaHistoryItem, "id" | "createdAt">) => {
       const current = read();
       const existing = current.find((it) => it.url === item.url);
-      const next: WaHistoryItem = {
+      const candidate: WaHistoryItem = {
         ...item,
         label: item.label ?? existing?.label,
         favorite: item.favorite ?? existing?.favorite,
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         createdAt: Date.now(),
       };
-      const deduped = current.filter((it) => it.url !== next.url);
-      persist(capItems(sortItems([next, ...deduped])));
+      const validated = parseHistoryItem(candidate);
+      if (!validated) return;
+      const deduped = current.filter((it) => it.url !== validated.url);
+      persist(capItems(sortItems([validated, ...deduped])));
     },
     [persist],
   );
 
   const replaceAll = useCallback(
     (list: WaHistoryItem[]) => {
-      persist(capItems(sortItems(list.filter(isValid))));
+      persist(capItems(sortItems(parseHistoryList(list))));
     },
     [persist],
   );
@@ -115,9 +105,8 @@ export function useWaHistory() {
 
   const setLabel = useCallback(
     (id: string, label: string) => {
-      const next = read().map((it) =>
-        it.id === id ? { ...it, label: label.trim() || undefined } : it,
-      );
+      const trimmed = label.trim().slice(0, MAX_LABEL);
+      const next = read().map((it) => (it.id === id ? { ...it, label: trimmed || undefined } : it));
       persist(sortItems(next));
     },
     [persist],

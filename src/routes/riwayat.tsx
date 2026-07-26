@@ -119,13 +119,25 @@ function RiwayatPage() {
         toast.error("Tidak ada entri valid di file itu");
         return;
       }
-      const merged = [...parsed, ...items].filter(
+      const ok = window.confirm(
+        `Import ${parsed.length} entri dari "${file.name}"?\n\n` +
+          "Entri dengan URL yang sama akan diganti. Pastikan file ini dari sumber yang kamu percaya.",
+      );
+      if (!ok) return;
+      // Prefer existing local entries when URL collides — import fills gaps only.
+      const merged = [...items, ...parsed].filter(
         (it, idx, arr) => arr.findIndex((x) => x.url === it.url) === idx,
       );
       replaceAll(merged);
-      toast.success(`Berhasil import ${parsed.length} entri`);
-    } catch {
-      toast.error("File tidak bisa dibaca. Pastikan file .json dari WAlinkQ.");
+      const added = merged.length - items.length;
+      toast.success(
+        added > 0
+          ? `Berhasil import ${added} entri baru (${parsed.length} valid di file)`
+          : `Tidak ada entri baru — ${parsed.length} entri di file sudah ada`,
+      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "";
+      toast.error(msg || "File tidak bisa dibaca. Pastikan file .json dari WAlinkQ.");
     }
   }
 

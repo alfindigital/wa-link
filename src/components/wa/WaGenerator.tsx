@@ -24,16 +24,55 @@ import {
   Phone,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
 import { useWaTemplates, templateTitle, TITLE_MAX } from "@/hooks/use-wa-templates";
 import { vibrate, playBlip } from "@/lib/feedback";
 import { copyToClipboard } from "@/lib/clipboard";
 import { bumpLinkCreated } from "@/lib/stats";
+import { MAX_MESSAGE } from "@/lib/wa-limits";
 
-
-const MAX_MESSAGE = 1000;
 const DIAL = "62";
+
+type PendingPreset = { phone: string; msg: string };
+
+function decodePresetPayload(raw: string): PendingPreset | null {
+  // Prefer UTF-8-safe decode; fall back to legacy escape/atob for older links.
+  let json: string;
+  try {
+    const bytes = Uint8Array.from(atob(raw), (c) => c.charCodeAt(0));
+    json = new TextDecoder().decode(bytes);
+  } catch {
+    try {
+      json = decodeURIComponent(escape(atob(raw)));
+    } catch {
+      return null;
+    }
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(json);
+  } catch {
+    return null;
+  }
+  if (!parsed || typeof parsed !== "object") return null;
+  const o = parsed as Record<string, unknown>;
+  const phone = typeof o.phone === "string" ? cleanPhone(o.phone) : "";
+  const msg = typeof o.msg === "string" ? o.msg.slice(0, MAX_MESSAGE) : "";
+  if (!phone && !msg) return null;
+  if (phone && (phone.length < 6 || phone.length > 14)) return null;
+  return { phone, msg };
+}
 
 function cleanPhone(raw: string) {
   let p = raw.replace(/\D/g, "");
@@ -143,36 +182,55 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   const [tplError, setTplError] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
+  const [pendingPreset, setPendingPreset] = useState<PendingPreset | null>(null);
   const cursorPosRef = useRef(0);
 
+  function applyDraft() {
+    const d = loadDraft();
+    if (d) {
+      if (d.phone) setPhone(cleanPhone(d.phone));
+      if (d.message && !initialMessage) setMessage(d.message.slice(0, MAX_MESSAGE));
+    }
+  }
+
   // Load saved draft after mount to avoid hydration mismatch.
+  // Preset links (#p=) require explicit confirmation to reduce phishing risk.
   useEffect(() => {
-    // Preset via URL hash: #p=base64({phone,msg})
     try {
       const h = window.location.hash;
       if (h.startsWith("#p=")) {
         const raw = h.slice(3);
-        const json = decodeURIComponent(escape(atob(raw)));
-        const parsed = JSON.parse(json);
-        if (parsed && typeof parsed === "object") {
-          if (typeof parsed.phone === "string") setPhone(cleanPhone(parsed.phone));
-          if (typeof parsed.msg === "string" && !initialMessage) setMessage(parsed.msg);
-          history.replaceState(null, "", window.location.pathname + window.location.search);
-          toast.success("Preset dimuat dari link");
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+        const preset = decodePresetPayload(raw);
+        if (preset) {
+          setPendingPreset(preset);
           setHydrated(true);
           return;
         }
+        toast.error("Preset dari link tidak valid");
       }
     } catch {
       // fall through to draft load
     }
-    const d = loadDraft();
-    if (d) {
-      if (d.phone) setPhone(cleanPhone(d.phone));
-      if (d.message && !initialMessage) setMessage(d.message);
-    }
+    applyDraft();
     setHydrated(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only hydrate
   }, [initialMessage]);
+
+  function acceptPreset() {
+    if (!pendingPreset) return;
+    if (pendingPreset.phone) setPhone(pendingPreset.phone);
+    if (pendingPreset.msg && !initialMessage) {
+      setMessage(pendingPreset.msg.slice(0, MAX_MESSAGE));
+    }
+    setPendingPreset(null);
+    toast.success("Preset dimuat dari link");
+  }
+
+  function declinePreset() {
+    setPendingPreset(null);
+    applyDraft();
+  }
 
   // Simpan draft otomatis tanpa menghapus setelah generate
   useWaDraft(phone, message, hydrated);
@@ -304,7 +362,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
     }
     setError(null);
     const fullPhone = `${DIAL}${cleaned}`;
-    const trimmed = message.trim();
+    const trimmed = message.trim().slice(0, MAX_MESSAGE);
     const url = trimmed
       ? `https://wa.me/${fullPhone}?text=${encodeURIComponent(trimmed)}`
       : `https://wa.me/${fullPhone}`;
@@ -355,7 +413,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
       });
     }
   }
-
 
   function handleDownloadQr() {
     if (!qrDataUrl || !result) return;
@@ -529,7 +586,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                 <div className="flex items-center gap-0.5 border-t border-border bg-muted/40 px-1.5 py-1">
                   <button
                     type="button"
-                    aria-label="Tebal" title="Tebal"
+                    aria-label="Tebal"
+                    title="Tebal"
                     onClick={() => wrapSelection("*", "*")}
                     className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
@@ -537,7 +595,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   </button>
                   <button
                     type="button"
-                    aria-label="Miring" title="Miring"
+                    aria-label="Miring"
+                    title="Miring"
                     onClick={() => wrapSelection("_", "_")}
                     className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
@@ -545,7 +604,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                   </button>
                   <button
                     type="button"
-                    aria-label="Coret" title="Coret"
+                    aria-label="Coret"
+                    title="Coret"
                     onClick={() => wrapSelection("~", "~")}
                     className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                   >
@@ -556,7 +616,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                     <PopoverTrigger asChild>
                       <button
                         type="button"
-                        aria-label="Tambah emoji" title="Tambah emoji"
+                        aria-label="Tambah emoji"
+                        title="Tambah emoji"
                         className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted touch-manipulation"
                       >
                         <Smile className="h-4 w-4" />
@@ -684,17 +745,18 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
               value={result.url}
               onFocus={(e) => e.currentTarget.select()}
               onClick={(e) => e.currentTarget.select()}
-              aria-label="Link WhatsApp siap disalin" title="Link WhatsApp siap disalin"
+              aria-label="Link WhatsApp siap disalin"
+              title="Link WhatsApp siap disalin"
               className="w-full min-w-0 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 selection:bg-primary/20"
             />
-
 
             <div className="grid grid-cols-3 gap-2">
               <Button
                 type="button"
                 className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                 onClick={() => copyText(result.url, "Link")}
-                aria-label="Salin link" title="Salin link"
+                aria-label="Salin link"
+                title="Salin link"
               >
                 <Copy className="h-4 w-4" />
               </Button>
@@ -702,7 +764,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                 type="button"
                 className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                 asChild
-                aria-label="Buka di WhatsApp" title="Buka di WhatsApp"
+                aria-label="Buka di WhatsApp"
+                title="Buka di WhatsApp"
               >
                 <a href={result.url} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />
@@ -712,7 +775,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                 type="button"
                 className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                 onClick={() => copyText(`+${result.phone}`, "Nomor")}
-                aria-label="Salin nomor" title="Salin nomor"
+                aria-label="Salin nomor"
+                title="Salin nomor"
               >
                 <Phone className="h-4 w-4" />
               </Button>
@@ -756,7 +820,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                     type="button"
                     className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                     onClick={() => copyText(result.url, "Link")}
-                    aria-label="Salin link" title="Salin link"
+                    aria-label="Salin link"
+                    title="Salin link"
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
@@ -765,7 +830,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                     className="h-11 bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 active:scale-[0.98] touch-manipulation"
                     onClick={handleDownloadQr}
                     disabled={!qrDataUrl}
-                    aria-label="Unduh QR" title="Unduh QR"
+                    aria-label="Unduh QR"
+                    title="Unduh QR"
                   >
                     <Download className="h-4 w-4" />
                   </Button>
@@ -781,6 +847,44 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
           {copiedLabel} disalin
         </div>
       )}
+
+      <AlertDialog
+        open={!!pendingPreset}
+        onOpenChange={(open) => {
+          if (!open) declinePreset();
+        }}
+      >
+        <AlertDialogContent className="max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Muat preset dari link?</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>
+                  Link ini mencoba mengisi nomor dan pesan. Pastikan kamu percaya pengirimnya
+                  sebelum melanjutkan.
+                </p>
+                {pendingPreset?.phone ? (
+                  <p>
+                    <span className="font-medium text-foreground">Nomor:</span> +62{" "}
+                    {formatPhoneDisplay(pendingPreset.phone)}
+                  </p>
+                ) : null}
+                {pendingPreset?.msg ? (
+                  <p className="whitespace-pre-wrap break-words rounded-md border border-border bg-muted/40 px-2 py-1.5 text-foreground">
+                    {pendingPreset.msg}
+                  </p>
+                ) : (
+                  <p className="italic">Tanpa pesan otomatis</p>
+                )}
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={declinePreset}>Tolak</AlertDialogCancel>
+            <AlertDialogAction onClick={acceptPreset}>Muat preset</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
@@ -908,7 +1012,8 @@ function EmojiGrid({ onSelect }: { onSelect: (emoji: string) => void }) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Cari emoji…"
-        aria-label="Cari emoji" title="Cari emoji"
+        aria-label="Cari emoji"
+        title="Cari emoji"
         className="h-8 text-xs"
       />
       {filtered ? (
@@ -968,7 +1073,8 @@ function ChatPreview({ phone, message }: { phone: string; message: string }) {
   const text = message.trim();
   return (
     <div
-      aria-label="Pratinjau pesan" title="Pratinjau pesan"
+      aria-label="Pratinjau pesan"
+      title="Pratinjau pesan"
       className="overflow-hidden rounded-lg border border-border bg-background"
     >
       <div className="flex items-center gap-2 border-b border-border bg-muted/60 px-3 py-2">
