@@ -26,7 +26,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
-import { useWaTemplates, templateTitle } from "@/hooks/use-wa-templates";
+import { useWaTemplates, templateTitle, TITLE_MAX } from "@/hooks/use-wa-templates";
 import { vibrate, playBlip } from "@/lib/feedback";
 import { copyToClipboard } from "@/lib/clipboard";
 import { bumpLinkCreated } from "@/lib/stats";
@@ -140,6 +140,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   const { add } = useWaHistory();
   const { items: templates, add: addTemplate, remove: removeTemplate } = useWaTemplates();
   const [tplPopOpen, setTplPopOpen] = useState(false);
+  const [tplError, setTplError] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
   const cursorPosRef = useRef(0);
@@ -609,22 +610,45 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                       <p className="text-xs font-medium">Simpan template</p>
                       <Input
                         value={newTitle}
-                        onChange={(e) => setNewTitle(e.target.value)}
+                        onChange={(e) => {
+                          setNewTitle(e.target.value.slice(0, TITLE_MAX));
+                          setTplError(null);
+                        }}
                         placeholder="Judul singkat (mis. Promo)"
                         className="h-9 text-sm"
-                        maxLength={22}
+                        maxLength={TITLE_MAX}
+                        aria-invalid={!!tplError}
+                        aria-describedby="tpl-error"
                       />
-                      <p className="line-clamp-2 text-[11px] text-muted-foreground">{message}</p>
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="line-clamp-2 flex-1 text-[11px] text-muted-foreground">
+                          {message}
+                        </p>
+                        <span className="shrink-0 text-[11px] text-muted-foreground">
+                          {newTitle.trim().length}/{TITLE_MAX}
+                        </span>
+                      </div>
+                      {tplError && (
+                        <p id="tpl-error" className="text-[11px] font-medium text-destructive">
+                          {tplError}
+                        </p>
+                      )}
                       <Button
                         type="button"
                         size="sm"
                         className="w-full"
                         onClick={() => {
-                          addTemplate(message, newTitle);
+                          const res = addTemplate(message, newTitle);
+                          if (!res.ok) {
+                            setTplError(res.error);
+                            return;
+                          }
+                          setTplError(null);
                           setNewTitle("");
                           setTplPopOpen(false);
+                          toast.success("Template disimpan");
                         }}
-                        disabled={!message.trim()}
+                        disabled={!message.trim() || newTitle.trim().length < 2}
                       >
                         Simpan
                       </Button>
