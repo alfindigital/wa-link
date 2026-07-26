@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { z } from "zod";
 
 export type WaTemplate = {
   id: string;
@@ -10,6 +11,23 @@ export type WaTemplate = {
 const KEY = "wa-link-templates";
 const EVT = "wa-link-templates-change";
 const MAX = 20;
+export const TITLE_MAX = 22;
+export const TEXT_MAX = 1000;
+
+export const templateSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(2, { message: "Judul minimal 2 karakter" })
+    .max(TITLE_MAX, { message: `Judul maksimal ${TITLE_MAX} karakter` }),
+  text: z
+    .string()
+    .trim()
+    .min(1, { message: "Pesan tidak boleh kosong" })
+    .max(TEXT_MAX, { message: `Pesan maksimal ${TEXT_MAX} karakter` }),
+});
+
+export type AddTemplateResult = { ok: true } | { ok: false; error: string };
 
 const DEFAULTS: WaTemplate[] = [
   { id: "d-1", text: "Halo, saya mau order", title: "Mau order", isDefault: true },
@@ -67,17 +85,36 @@ export function useWaTemplates() {
   }, []);
 
   const add = useCallback(
-    (text: string, title?: string) => {
-      const trimmed = text.trim();
-      if (!trimmed) return;
+    (text: string, title?: string): AddTemplateResult => {
+      const fallbackTitle = text.trim().split("\n")[0].slice(0, TITLE_MAX);
+      const parsed = templateSchema.safeParse({
+        title: title?.trim() ? title : fallbackTitle,
+        text,
+      });
+      if (!parsed.success) {
+        return { ok: false, error: parsed.error.issues[0].message };
+      }
       const current = read();
-      if (current.some((t) => t.text === trimmed)) return;
+      if (current.length >= MAX) {
+        return { ok: false, error: `Maksimal ${MAX} template tersimpan` };
+      }
+      if (current.some((t) => t.text === parsed.data.text)) {
+        return { ok: false, error: "Template dengan pesan ini sudah ada" };
+      }
+      if (
+        current.some(
+          (t) => templateTitle(t).toLowerCase() === parsed.data.title.toLowerCase().slice(0, 22),
+        )
+      ) {
+        return { ok: false, error: "Judul sudah dipakai template lain" };
+      }
       const next: WaTemplate = {
         id: `c-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        text: trimmed,
-        title: title?.trim() || trimmed.split("\n")[0].slice(0, 22),
+        text: parsed.data.text,
+        title: parsed.data.title,
       };
       persist([...current, next].slice(0, MAX));
+      return { ok: true };
     },
     [persist],
   );
