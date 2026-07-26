@@ -1,10 +1,18 @@
 import { useEffect, useRef } from "react";
+import { MAX_MESSAGE, MAX_PHONE_DIGITS } from "@/lib/wa-limits";
 
 const KEY = "wa-link-draft";
 const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 const DEBOUNCE_MS = 500;
 
 export type WaDraft = { phone: string; message: string };
+
+function sanitizeDraft(phone: unknown, message: unknown): WaDraft {
+  const p =
+    typeof phone === "string" ? phone.replace(/\D/g, "").slice(0, MAX_PHONE_DIGITS + 2) : "";
+  const m = typeof message === "string" ? message.slice(0, MAX_MESSAGE) : "";
+  return { phone: p, message: m };
+}
 
 export function loadDraft(): WaDraft | null {
   if (typeof window === "undefined") return null;
@@ -14,7 +22,7 @@ export function loadDraft(): WaDraft | null {
     const parsed = JSON.parse(raw) as { phone?: string; message?: string; savedAt?: number };
     if (!parsed || typeof parsed !== "object") return null;
     if (!parsed.savedAt || Date.now() - parsed.savedAt > MAX_AGE_MS) return null;
-    return { phone: parsed.phone ?? "", message: parsed.message ?? "" };
+    return sanitizeDraft(parsed.phone, parsed.message);
   } catch {
     return null;
   }
@@ -37,11 +45,12 @@ export function useWaDraft(phone: string, message: string, enabled: boolean, onS
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       try {
-        if (!phone && !message) {
+        const safe = sanitizeDraft(phone, message);
+        if (!safe.phone && !safe.message) {
           window.localStorage.removeItem(KEY);
           return;
         }
-        window.localStorage.setItem(KEY, JSON.stringify({ phone, message, savedAt: Date.now() }));
+        window.localStorage.setItem(KEY, JSON.stringify({ ...safe, savedAt: Date.now() }));
         onSaved?.();
       } catch {
         // ignore

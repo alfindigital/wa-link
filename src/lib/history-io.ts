@@ -1,21 +1,6 @@
 import type { WaHistoryItem } from "@/hooks/use-wa-history";
-
-function isValidWaUrl(u: string): boolean {
-  return /^https:\/\/wa\.me\//.test(u);
-}
-
-function isValidItem(x: unknown): x is WaHistoryItem {
-  if (!x || typeof x !== "object") return false;
-  const o = x as Record<string, unknown>;
-  return (
-    typeof o.id === "string" &&
-    typeof o.phone === "string" &&
-    typeof o.message === "string" &&
-    typeof o.url === "string" &&
-    isValidWaUrl(o.url) &&
-    typeof o.createdAt === "number"
-  );
-}
+import { parseHistoryList } from "@/lib/wa-history-schema";
+import { MAX_IMPORT_BYTES } from "@/lib/wa-limits";
 
 function csvEscape(v: string) {
   if (/[",\n]/.test(v)) return `"${v.replace(/"/g, '""')}"`;
@@ -61,8 +46,19 @@ export function exportHistoryCSV(items: WaHistoryItem[]) {
 }
 
 export async function importHistoryJSON(file: File): Promise<WaHistoryItem[]> {
+  if (file.size > MAX_IMPORT_BYTES) {
+    throw new Error(`File terlalu besar (maks ${Math.round(MAX_IMPORT_BYTES / 1024)} KB).`);
+  }
   const text = await file.text();
-  const parsed = JSON.parse(text);
+  if (text.length > MAX_IMPORT_BYTES) {
+    throw new Error(`File terlalu besar (maks ${Math.round(MAX_IMPORT_BYTES / 1024)} KB).`);
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error("File JSON tidak valid");
+  }
   if (!Array.isArray(parsed)) throw new Error("File JSON tidak valid");
-  return parsed.filter(isValidItem);
+  return parseHistoryList(parsed);
 }

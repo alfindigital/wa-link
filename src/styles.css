@@ -1,5 +1,8 @@
 @import "tailwindcss" source(none);
 @import "tw-animate-css";
+@import "@fontsource-variable/inter";
+@import "@fontsource/archivo/800.css";
+@import "@fontsource/archivo/900.css";
 @source "../src";
 
 @custom-variant dark (&:is(.dark *));
@@ -143,11 +146,11 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family:
+      "Inter Variable",
       "Inter",
       system-ui,
       -apple-system,
       "Segoe UI",
-      Roboto,
       sans-serif;
     font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
