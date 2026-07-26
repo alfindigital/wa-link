@@ -140,6 +140,7 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   const { add } = useWaHistory();
   const { items: templates, add: addTemplate, remove: removeTemplate } = useWaTemplates();
   const [tplPopOpen, setTplPopOpen] = useState(false);
+  const [tplError, setTplError] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
   const cursorPosRef = useRef(0);
