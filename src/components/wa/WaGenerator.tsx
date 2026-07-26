@@ -26,7 +26,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWaHistory } from "@/hooks/use-wa-history";
 import { loadDraft, useWaDraft } from "@/hooks/use-wa-draft";
-import { useWaTemplates, templateTitle } from "@/hooks/use-wa-templates";
+import { useWaTemplates, templateTitle, TITLE_MAX } from "@/hooks/use-wa-templates";
 import { vibrate, playBlip } from "@/lib/feedback";
 import { copyToClipboard } from "@/lib/clipboard";
 import { bumpLinkCreated } from "@/lib/stats";
