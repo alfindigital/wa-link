@@ -139,8 +139,8 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
   const phoneWarnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { add } = useWaHistory();
   const { items: templates, add: addTemplate, remove: removeTemplate } = useWaTemplates();
-  const [newTemplate, setNewTemplate] = useState("");
   const [tplPopOpen, setTplPopOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
   const cursorPosRef = useRef(0);
 
@@ -485,16 +485,17 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                         setMessage(t.text.slice(0, MAX_MESSAGE));
                         vibrate(15);
                       }}
+                      title={t.text}
                       className="rounded-full border border-border bg-muted/50 px-2.5 py-1 text-xs text-foreground transition-colors hover:bg-muted"
                     >
-                      {t.text}
+                      {templateTitle(t)}
                     </button>
                     {!t.isDefault && (
                       <button
                         type="button"
                         onClick={() => removeTemplate(t.id)}
-                        aria-label={`Hapus template ${t.text}`}
-                        title={`Hapus template ${t.text}`}
+                        aria-label={`Hapus template ${templateTitle(t)}`}
+                        title={`Hapus template ${templateTitle(t)}`}
                         className="ml-0.5 rounded-full p-0.5 text-muted-foreground hover:bg-muted hover:text-destructive"
                       >
                         <X className="h-3 w-3" />
@@ -502,41 +503,6 @@ export function WaGenerator({ initialMessage }: { initialMessage?: string } = {}
                     )}
                   </span>
                 ))}
-                <Popover open={tplPopOpen} onOpenChange={setTplPopOpen}>
-                  <PopoverTrigger asChild>
-                    <button
-                      type="button"
-                      aria-label="Tambah template pesan" title="Tambah template pesan"
-                      className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    >
-                      <Plus className="h-3 w-3" />
-                      Tambah
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-64 space-y-2" align="end" collisionPadding={12}>
-                    <p className="text-xs font-medium">Template baru</p>
-                    <Input
-                      value={newTemplate}
-                      onChange={(e) => setNewTemplate(e.target.value)}
-                      placeholder="Tulis pesan template..."
-                      className="h-9 text-sm"
-                      maxLength={120}
-                    />
-                    <Button
-                      type="button"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => {
-                        addTemplate(newTemplate);
-                        setNewTemplate("");
-                        setTplPopOpen(false);
-                      }}
-                      disabled={!newTemplate.trim()}
-                    >
-                      Simpan
-                    </Button>
-                  </PopoverContent>
-                </Popover>
               </div>
               <div className="overflow-hidden rounded-md border border-input bg-background focus-within:ring-1 focus-within:ring-ring">
                 <Textarea
