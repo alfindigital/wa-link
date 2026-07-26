@@ -28,7 +28,15 @@ function read(): WaTemplate[] {
     if (!raw) return DEFAULTS;
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return DEFAULTS;
-    return parsed as WaTemplate[];
+    const valid = (parsed as unknown[]).filter(
+      (t): t is WaTemplate =>
+        !!t &&
+        typeof t === "object" &&
+        typeof (t as WaTemplate).id === "string" &&
+        typeof (t as WaTemplate).text === "string" &&
+        (t as WaTemplate).text.trim().length > 0,
+    );
+    return valid.slice(0, MAX);
   } catch {
     return DEFAULTS;
   }
