@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { getPrefs, setPref } from "@/lib/feedback";
+import { OG_IMAGE_URL, SITE_URL } from "@/lib/seo";
 
 export const Route = createFileRoute("/pengaturan")({
   component: PengaturanPage,
@@ -22,10 +23,12 @@ export const Route = createFileRoute("/pengaturan")({
         content: "Preferensi tampilan dan panduan singkat WAlinkQ.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://link-wa.alfindigital.com/pengaturan" },
-      { name: "robots", content: "noindex" },
+      { property: "og:url", content: `${SITE_URL}/pengaturan` },
+      { property: "og:image", content: OG_IMAGE_URL },
+      { property: "og:image:alt", content: "Pengaturan dan cara pakai WAlinkQ" },
+      { name: "twitter:image", content: OG_IMAGE_URL },
     ],
-    links: [{ rel: "canonical", href: "https://link-wa.alfindigital.com/pengaturan" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/pengaturan` }],
   }),
 });
 
@@ -184,7 +187,7 @@ function PengaturanPage() {
             })}
           </ol>
           <p className="px-4 pb-4 text-center text-[11px] text-muted-foreground">
-            Semua diproses di perangkat kamu. Tanpa daftar, tanpa server.
+            Semua diproses di perangkat kamu. Tanpa daftar, input generator tidak dikirim ke cloud.
           </p>
         </section>
       </main>

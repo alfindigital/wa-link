@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { OG_IMAGE_URL, SITE_URL } from "@/lib/seo";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -93,12 +94,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "WAlinkQ" },
       { property: "og:locale", content: "id_ID" },
+      { property: "og:image", content: OG_IMAGE_URL },
+      { property: "og:image:alt", content: "WAlinkQ — Link WhatsApp Gratis + QR Code" },
+      { property: "og:url", content: SITE_URL },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "WAlinkQ — Buat Link WhatsApp Gratis" },
       {
         name: "twitter:description",
         content: "Buat link WhatsApp dengan pesan siap kirim + QR code. Gratis dan tanpa login.",
       },
+      { name: "twitter:image", content: OG_IMAGE_URL },
     ],
     links: [
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
@@ -117,7 +122,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "WAlinkQ",
-          url: "https://link-wa.alfindigital.com/",
+          url: SITE_URL,
           inLanguage: "id-ID",
         }),
       },

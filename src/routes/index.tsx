@@ -3,6 +3,7 @@ import { History, Settings } from "lucide-react";
 import { WaGenerator } from "@/components/wa/WaGenerator";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Button } from "@/components/ui/button";
+import { OG_IMAGE_URL, SITE_URL } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -20,9 +21,12 @@ export const Route = createFileRoute("/")({
         content: "Buat link WhatsApp dengan pesan siap kirim + QR code. Gratis dan tanpa login.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://link-wa.alfindigital.com/" },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:image", content: OG_IMAGE_URL },
+      { property: "og:image:alt", content: "WAlinkQ — generator link WhatsApp dan QR code" },
+      { name: "twitter:image", content: OG_IMAGE_URL },
     ],
-    links: [{ rel: "canonical", href: "https://link-wa.alfindigital.com/" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
     scripts: [
       {
         type: "application/ld+json",
@@ -33,7 +37,7 @@ export const Route = createFileRoute("/")({
           applicationCategory: "UtilitiesApplication",
           operatingSystem: "Any",
           inLanguage: "id-ID",
-          url: "https://link-wa.alfindigital.com/",
+          url: `${SITE_URL}/`,
           offers: { "@type": "Offer", price: "0", priceCurrency: "IDR" },
         }),
       },

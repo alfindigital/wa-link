@@ -10,6 +10,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { OG_IMAGE_URL, SITE_URL } from "@/lib/seo";
 
 export const Route = createFileRoute("/privasi")({
   component: PrivasiPage,
@@ -24,10 +25,14 @@ export const Route = createFileRoute("/privasi")({
       { property: "og:title", content: "Privasi & Disclaimer — WAlinkQ" },
       {
         property: "og:description",
-        content: "Kebijakan privasi WAlinkQ: data lokal di perangkat, tanpa akun, tanpa tracking.",
+        content:
+          "Kebijakan privasi WAlinkQ: data lokal di perangkat, tanpa akun, input generator tidak dikirim ke cloud.",
       },
+      { property: "og:image", content: OG_IMAGE_URL },
+      { property: "og:image:alt", content: "Privasi dan disclaimer WAlinkQ" },
+      { name: "twitter:image", content: OG_IMAGE_URL },
     ],
-    links: [{ rel: "canonical", href: "https://link-wa.alfindigital.com/privasi" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/privasi` }],
   }),
 });
 
@@ -40,8 +45,8 @@ function PrivasiPage() {
     },
     {
       icon: EyeOff,
-      title: "Tanpa analytics & cookie pihak ketiga",
-      body: "Tidak ada Google Analytics, pixel iklan, atau cookie pihak ketiga. Font dimuat dari server WAlinkQ (bukan Google Fonts). Tanpa akun, tanpa login.",
+      title: "Hosting & privasi",
+      body: "WAlinkQ dipublikasikan lewat platform hosting Lovable. Font dimuat dari server WAlinkQ (bukan Google Fonts), dan input generator tetap tidak dikirim atau disimpan di cloud.",
     },
     {
       icon: Trash2,
@@ -80,7 +85,7 @@ function PrivasiPage() {
         <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-4 text-sm text-foreground">
           Semua data yang kamu ketik (nomor, pesan, riwayat, template) tetap di HP kamu lewat
           localStorage. Halaman web tetap dilayani dari server seperti situs biasa, tapi input
-          generator tidak dikirim atau disimpan di cloud, dan kami tidak pakai tracking.
+          generator tidak dikirim atau disimpan di cloud.
         </div>
 
         <ul className="mt-4 space-y-3">
