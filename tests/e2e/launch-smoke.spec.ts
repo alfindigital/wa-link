@@ -25,11 +25,11 @@ test.describe("WAlinkQ launch smoke", () => {
 
     const resultInput = page.getByLabel("Link WhatsApp siap disalin");
     await expect(resultInput).toHaveValue(
-      "https://wa.me/6281234567890?text=Halo%20dari%20smoke%20test",
+      "https://wa.me/EXAMPLE_NUMBER?text=Halo%20dari%20smoke%20test",
     );
 
     await page.goto("/riwayat");
-    await expect(page.getByText("6281234567890")).toBeVisible();
+    await expect(page.getByText("EXAMPLE_NUMBER")).toBeVisible();
     await expect(page.getByText("Halo dari smoke test")).toBeVisible();
   });
 
@@ -60,3 +60,4 @@ test.describe("WAlinkQ launch smoke", () => {
     expect(xml).toContain("<loc>https://link-wa.alfindigital.com/privasi</loc>");
   });
 });
+
