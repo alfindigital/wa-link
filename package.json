@@ -1,6 +1,7 @@
 {
-  "name": "tanstack_start_ts",
-  "private": true,
+  "name": "wa-link",
+  "private": false,
+  "license": "MIT",
   "sideEffects": false,
   "type": "module",
   "scripts": {
@@ -62,3 +63,4 @@
     "vite": "^7.3.6"
   }
 }
+

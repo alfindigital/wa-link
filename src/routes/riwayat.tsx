@@ -43,10 +43,10 @@ export const Route = createFileRoute("/riwayat")({
         content: "Kelola riwayat link WhatsApp kamu. Simpan lokal, tanpa server.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://link-wa.alfindigital.com/riwayat" },
+      { property: "og:url", content: `${SITE_URL}/riwayat` },
       { name: "robots", content: "noindex" },
     ],
-    links: [{ rel: "canonical", href: "https://link-wa.alfindigital.com/riwayat" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/riwayat` }],
   }),
 });
 
