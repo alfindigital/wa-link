@@ -106,7 +106,7 @@ function PrivasiPage() {
 
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <a
-            href="https://x.com/alfindigital"
+            href="https://github.com/alfindigital/wa-link"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium transition-colors hover:border-primary/40 hover:text-primary"
@@ -115,7 +115,7 @@ function PrivasiPage() {
             Kirim masukan
           </a>
           <a
-            href="https://trakteer.id/alfindigital"
+            href="https://github.com/alfindigital/wa-link"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-transform hover:scale-[1.01]"
@@ -129,3 +129,5 @@ function PrivasiPage() {
     </div>
   );
 }
+
+
