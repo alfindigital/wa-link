@@ -4,7 +4,6 @@ import { SITE_URL } from "@/lib/seo";
 
 const BASE_URL = SITE_URL;
 
-
 interface SitemapEntry {
   path: string;
   lastmod?: string;

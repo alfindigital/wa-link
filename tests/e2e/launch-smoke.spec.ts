@@ -60,4 +60,3 @@ test.describe("WAlinkQ launch smoke", () => {
     expect(xml).toContain("<loc>https://link-wa.alfindigital.com/privasi</loc>");
   });
 });
-

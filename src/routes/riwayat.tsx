@@ -26,6 +26,7 @@ import { useWaHistory } from "@/hooks/use-wa-history";
 import { toast } from "sonner";
 import { copyToClipboard } from "@/lib/clipboard";
 import { exportHistoryCSV, exportHistoryJSON, importHistoryJSON } from "@/lib/history-io";
+import { SITE_URL } from "@/lib/seo";
 
 export const Route = createFileRoute("/riwayat")({
   component: RiwayatPage,
