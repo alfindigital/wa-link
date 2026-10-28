@@ -129,5 +129,3 @@ function PrivasiPage() {
     </div>
   );
 }
-
-
